@@ -1,0 +1,2 @@
+# Development and test dependencies (install after editable package).
+-e .[dev,full]

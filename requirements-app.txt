@@ -1,0 +1,3 @@
+# Runtime dependencies only (used by one-click installers).
+# For development/tests, use requirements.txt instead.
+-e .[full]

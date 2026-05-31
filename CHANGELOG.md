@@ -5,6 +5,7 @@
 - **Engineering:** Central `offsets.py` + `audit.py`; offset audit tests on corpus; `tempo_audit.warnings` + `tempo_model`.
 - **Fix:** `onset_extraction`, MIDI fallback (`input_layer`), Mustextu legacy XML path.
 - **CI:** Windows + Ubuntu; mypy on core package. See `docs/OFFSET_AUDIT.md`, `docs/ENGINEERING_95.md`.
+- **Release:** `NOTICE.md`, `CITATION.cff`, one-click installers (`installers/`, `INSTALL-*.bat|.sh|.command`), README legal & acknowledgements (aligned with Music_anisotropy).
 
 ## 1.0.4
 

@@ -38,3 +38,6 @@ Thumbs.db
 .env.*
 *.pem
 credentials.json
+
+# Installer log
+install.log

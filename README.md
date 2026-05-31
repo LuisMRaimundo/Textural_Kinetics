@@ -1,31 +1,52 @@
-# Granularity Analyser (Granular_v2 v1.0.5)
+# Granularity Analyser
 
-Fused symbolic analyzer combining **Granularidade** (Mustextu, spectral heatmap) and **Densidade horizontal_v3** (activity density, dual heatmaps, partitional option).
+**Fused symbolic temporal-density analyzer** for **MusicXML** and **MIDI** scores.
 
-## Precise event rates
+Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), and three **pitch–time heatmaps** (basic, advanced, spectral). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-| Metric | Unit | Definition |
-|--------|------|------------|
-| `events_per_second` | 1/s | N / (last_onset − first_onset) in seconds |
-| `events_per_millisecond` | 1/ms | `events_per_second / 1000` |
-| `events_per_millisecond_in_window` | 1/ms | onsets in window / window_ms |
-| `events_per_second_in_bar` | 1/s | onsets in measure / measure duration (s) |
-| `events_per_beat_in_bar` | 1/beat | onsets in measure / notated beats |
-| `rate_events_per_second` (Mustextu) | 1/s | unique onsets / window (after coincidence merge) |
+**Package version:** 1.0.5 (`granular_v2/__init__.py`)  
+**Python:** ≥ 3.10
 
-All exported in `analysis.json` under `event_rates` with unit definitions.
+**Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, GUI) + `corpus/` (fixtures & regression).
 
-## Heatmaps (3 PNGs)
+**CI:** GitHub Actions — tests, coverage ≥72%, corpus comparison, mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
-- `heatmap_basic.png` — time × pitch (log counts)
-- `heatmap_advanced.png` — smoothed, note names, measure lines
-- `heatmap_spectral.png` — velocity-weighted grid (symbolic, not audio)
+> **docs/FORMULAS.md** — Metric definitions  
+> **docs/LIMITATIONS.md** — Scope and tempo model  
+> **docs/OFFSET_AUDIT.md** — Global-offset audit manifest  
+> **docs/ENGINEERING_95.md** — Engineering quality path  
+> **docs/current_rating.md** — Evidence-based rating
 
-## Install
+## Programmatic usage
+
+```python
+from granular_v2 import run_analysis, default_analysis_config
+
+result = run_analysis("score.musicxml", default_analysis_config(), output_dir="out")
+print(result["event_rates"]["global"]["events_per_second"])
+print(result["mustextu_summary"]["rate_events_per_second"])
+print(result["tempo_audit"])
+```
+
+## One-click install (no Python knowledge required)
+
+Download or clone the project, then use **one file** for your system:
+
+| System | First-time install | Later (already installed) |
+|--------|-------------------|---------------------------|
+| **Windows 10/11** | Double-click **installers/windows/INSTALL.bat** (or **INSTALL-WINDOWS.bat** at repo root) | **START-Granularity.bat** |
+| **macOS** | Double-click **INSTALL-MAC.command** | **START-Granularity.command** |
+| **Linux** | **bash installers/linux/install-easy.sh** (or **INSTALL-LINUX.sh**) | **./START-Granularity.sh** |
+
+The installer installs Python 3.10+ if needed, creates `.venv/`, installs dependencies, and opens the **desktop GUI** (Tkinter). Details: [installers/README.md](installers/README.md).
+
+## Manual install (developers)
 
 ```bash
 pip install -e ".[dev,full]"
 ```
+
+Runtime-only deps (used by installers): `requirements-app.txt`.
 
 ## CLI
 
@@ -34,33 +55,53 @@ python -m granular_v2.run score.musicxml -o out
 python -m granular_v2.run score.musicxml -o out --no-heatmaps --partitional
 ```
 
-## API
-
-```python
-from granular_v2 import run_analysis, default_analysis_config
-
-result = run_analysis("score.musicxml", default_analysis_config(), output_dir="out")
-print(result["event_rates"]["global"]["events_per_second"])
-print(result["mustextu_summary"]["rate_events_per_second"])
-```
-
 ## GUI
 
 ```bash
 python -m granular_v2.gui
 ```
 
-Windows: `run_gui.bat`
+Windows: `run_gui.bat` or **START-Granularity.bat** (after installer).
 
-## Tests & regression
+## Tests and corpus
 
 ```bash
 pytest tests -q
 python corpus/scripts/compare_all.py
 ```
 
-Corpus fixtures: `corpus/fixtures/*.musicxml` (from Granularidade synthetic scores).
+Corpus fixtures: `corpus/fixtures/*.musicxml`.
 
-## Scope
+## Limitations (summary)
 
-Symbolic notation only. See `export_metadata` in JSON output.
+* Symbolic notation only; stepwise tempo plateaus (not continuous accelerandi).
+* See `docs/LIMITATIONS.md` and `tempo_audit` in exported JSON (`tempo_model`, `warnings`).
+
+## Legal and citation
+
+| File | Purpose |
+|------|---------|
+| **[NOTICE.md](NOTICE.md)** | Copyright and use terms (proprietary; no open-source licence granted). |
+| **[CITATION.cff](CITATION.cff)** | Citation metadata for software recognition. |
+
+## Installers (optional)
+
+**Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
+
+End users without Python: see **installers/** — especially on Windows, double-click **`installers/windows/INSTALL.bat`**.
+
+| Folder | Standard install | Portable build (PyInstaller) |
+|--------|------------------|------------------------------|
+| [installers/windows/](installers/windows/) | **INSTALL.bat** | *Not in git* |
+| [installers/mac/](installers/mac/) | install-easy.sh / install.sh | *Not in git* |
+| [installers/linux/](installers/linux/) | install-easy.sh / install.sh | *Not in git* |
+
+Built `.exe` / `.app` / `.dmg` / `.tar.gz` files are **not** in git — use GitHub Releases if you distribute frozen builds.
+
+## Acknowledgements
+
+This project was developed by **Luís Raimundo** with the support and funding of the **Fundação para a Ciência e a Tecnologia (FCT)** and **Universidade NOVA de Lisboa**.
+
+**Funding DOI:** https://doi.org/10.54499/2020.08817.BD
+
+The author also gratefully acknowledges **Isabel Pires** for her support throughout the development of this work.
