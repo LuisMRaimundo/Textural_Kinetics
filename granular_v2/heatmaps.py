@@ -22,6 +22,13 @@ import numpy as np
 
 from .config import HeatmapConfig
 from .exceptions import VisualizationError
+from .heatmap_style import (
+    add_professional_colorbar,
+    apply_publication_style,
+    display_norm_and_cmap,
+    robust_display_range,
+    style_axes,
+)
 from .note_types import NoteMatrix
 
 log = logging.getLogger(__name__)
@@ -261,16 +268,34 @@ def _major_event_times(energy: np.ndarray, t_min: float, t_max: float, max_n: in
     return out[:max_n]
 
 
+def _draw_measure_lines(ax, measure_starts: List[float], time_units: str) -> None:
+    if not measure_starts:
+        return
+    scale = 1000.0 if time_units == "ms" else (100.0 if time_units == "cs" else 1.0)
+    for t in measure_starts:
+        ax.axvline(
+            t * scale,
+            color="#334155",
+            linestyle=(0, (4, 4)),
+            alpha=0.42,
+            linewidth=0.75,
+            zorder=4,
+        )
+
+
 def plot_heatmap_basic(
     note_matrix: NoteMatrix,
     cfg: Optional[HeatmapConfig] = None,
     *,
-    title: str = "Activity heatmap (time × pitch)",
+    title: str = "Activity density",
 ) -> "matplotlib.figure.Figure":
-    """Heatmap 1 — basic: log1p counts, robust 99.5% vmax."""
+    """Heatmap 1 — basic: log1p counts, publication palette, robust contrast."""
     import matplotlib.pyplot as plt
 
     cfg = cfg or HeatmapConfig()
+    if cfg.publication_style:
+        apply_publication_style()
+
     H, t_axis, p_axis = build_pitch_time_matrix(
         note_matrix,
         bin_sec=cfg.bin_sec,
@@ -278,26 +303,49 @@ def plot_heatmap_basic(
         mode=cfg.mode if cfg.mode != "velocity" else "occupancy",
     )
     X = np.log1p(H.astype(float))
-    vmax = float(np.percentile(X, 99.5)) if X.max() > 0 else 1.0
+    vmin, vmax = robust_display_range(
+        X,
+        vmin_pct=cfg.contrast_vmin_percentile,
+        vmax_pct=cfg.contrast_vmax_percentile,
+        floor=0.0,
+    )
     t_plot, xlabel = _time_scale(t_axis, cfg.time_units)
+    norm, cmap = display_norm_and_cmap(
+        X, cfg.cmap_basic, vmin=vmin, vmax=vmax, gamma=cfg.gamma
+    )
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(13, 6.5), facecolor="#f7f8fa")
     extent = [float(t_plot[0]), float(t_plot[-1]), float(p_axis[0]), float(p_axis[-1])]
     im = ax.imshow(
         X,
         aspect="auto",
         origin="lower",
         extent=extent,
-        cmap=cfg.cmap_basic,
-        vmin=0,
-        vmax=vmax,
+        cmap=cmap,
+        norm=norm,
         interpolation="bilinear",
+        rasterized=True,
     )
+    style_axes(ax)
     ax.set_xlabel(xlabel)
     ax.set_ylabel("Pitch (MIDI)")
-    ax.set_title(title + "\n(symbolic occupancy — not measured audio)")
-    plt.colorbar(im, ax=ax, label="log1p(count)")
-    plt.tight_layout()
+    ax.set_title(
+        title,
+        fontsize=13,
+        color="#1a202c",
+        pad=10,
+    )
+    ax.text(
+        0.0,
+        1.02,
+        "Symbolic occupancy · not measured audio",
+        transform=ax.transAxes,
+        fontsize=9,
+        color="#64748b",
+        va="bottom",
+    )
+    add_professional_colorbar(fig, im, ax, "log1p density", extend="max")
+    plt.tight_layout(pad=1.2)
     return fig
 
 
@@ -305,61 +353,76 @@ def plot_heatmap_advanced(
     note_matrix: NoteMatrix,
     cfg: Optional[HeatmapConfig] = None,
     *,
-    title: str = "Advanced activity heatmap (time × pitch)",
+    title: str = "Activity density (refined)",
     measure_starts: Optional[List[float]] = None,
 ) -> "matplotlib.figure.Figure":
-    """Heatmap 2 — advanced: smoothing, gamma, note names, overlays, measure lines."""
+    """Heatmap 2 — advanced: smoothing, gamma, note names, measure lines, publication style."""
     import matplotlib.pyplot as plt
 
     cfg = cfg or HeatmapConfig()
-    mode = cfg.mode
+    if cfg.publication_style:
+        apply_publication_style()
+
     H, t_axis, p_axis = build_pitch_time_matrix(
         note_matrix,
         bin_sec=cfg.bin_sec,
         pitch_step_semitones=cfg.pitch_step_semitones,
-        mode=mode,
+        mode=cfg.mode,
     )
     X = preprocess_heatmap(H, cfg)
-    vmax = float(np.percentile(X, 99.5)) if np.isfinite(X).all() and X.max() > 0 else 1.0
+    vmin, vmax = robust_display_range(
+        X,
+        vmin_pct=cfg.contrast_vmin_percentile,
+        vmax_pct=cfg.contrast_vmax_percentile,
+        floor=0.0,
+    )
     t_plot, xlabel = _time_scale(t_axis, cfg.time_units)
+    norm, cmap = display_norm_and_cmap(
+        X, cfg.cmap_advanced, vmin=vmin, vmax=vmax, gamma=cfg.gamma
+    )
 
-    try:
-        plt.style.use("seaborn-v0_8-whitegrid")
-    except OSError:
-        pass
-
-    fig, ax = plt.subplots(figsize=(12, 7))
+    fig, ax = plt.subplots(figsize=(13.5, 7.5), facecolor="#f7f8fa")
     extent = [float(t_plot[0]), float(t_plot[-1]), float(p_axis[0]), float(p_axis[-1])]
     im = ax.imshow(
         X,
         aspect="auto",
         origin="lower",
         extent=extent,
-        cmap=cfg.cmap_advanced,
-        vmin=0,
-        vmax=vmax,
+        cmap=cmap,
+        norm=norm,
         interpolation="bilinear",
+        rasterized=True,
     )
-    ax.set_axisbelow(True)
-    ax.grid(True, color="#cccccc", alpha=0.25, linestyle="--", linewidth=0.6)
+    style_axes(ax)
 
     if len(p_axis) > 1:
         step = max(1, int(round(1.0 / max(p_axis[1] - p_axis[0], 0.5))))
-        step = min(step, max(1, len(p_axis) // 30))
+        step = min(step, max(1, len(p_axis) // 28))
         idx = np.arange(0, len(p_axis), step)
         ax.set_yticks(p_axis[idx])
-        ax.set_yticklabels([midi_to_note_name(float(v)) for v in p_axis[idx]])
+        ax.set_yticklabels(
+            [midi_to_note_name(float(v)) for v in p_axis[idx]],
+            fontsize=8,
+        )
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel("Pitch")
-    ax.set_title(title + "\n(symbolic — not measured audio)")
+    ax.set_title(title, fontsize=13, color="#1a202c", pad=10)
+    ax.text(
+        0.0,
+        1.02,
+        f"Mode: {cfg.mode} · smoothed · symbolic",
+        transform=ax.transAxes,
+        fontsize=9,
+        color="#64748b",
+        va="bottom",
+    )
 
     if cfg.show_measure_lines and measure_starts:
-        scale = 1000.0 if cfg.time_units == "ms" else (100.0 if cfg.time_units == "cs" else 1.0)
-        for t in measure_starts:
-            ax.axvline(t * scale, color="#555555", linestyle=":", alpha=0.45, linewidth=0.8)
+        _draw_measure_lines(ax, measure_starts, cfg.time_units)
 
-    plt.colorbar(im, ax=ax, label="Intensity")
+    extend = "max" if float(X.max()) > vmax else "neither"
+    add_professional_colorbar(fig, im, ax, "Relative intensity", extend=extend)
 
     if cfg.overlay_points and note_matrix:
         xs = np.array(
@@ -370,9 +433,18 @@ def plot_heatmap_advanced(
         )
         ys = np.array([float(n.get("pitch", 60)) for n in note_matrix])
         xs_plot, _ = _time_scale(xs, cfg.time_units)
-        ax.scatter(xs_plot, ys, s=8.0, c="white", alpha=0.22, linewidths=0, zorder=5)
+        ax.scatter(
+            xs_plot,
+            ys,
+            s=6.0,
+            c="#f8fafc",
+            edgecolors="#1e293b",
+            linewidths=0.25,
+            alpha=0.35,
+            zorder=6,
+        )
 
-    plt.tight_layout()
+    plt.tight_layout(pad=1.2)
     return fig
 
 
@@ -381,15 +453,17 @@ def plot_spectral_energy_heatmap(
     cfg: Optional[HeatmapConfig] = None,
     *,
     score=None,
-    title: str = "Spectral energy heatmap (velocity-weighted, symbolic)",
+    title: str = "Velocity-weighted energy",
 ) -> "matplotlib.figure.Figure":
     """
-    Heatmap 3 — Granularidade-style spectral energy, improved:
-    seconds on X-axis, no duplicate event markers, optional contours & measures.
+    Heatmap 3 — spectral energy grid with publication styling.
     """
     import matplotlib.pyplot as plt
 
     cfg = cfg or HeatmapConfig()
+    if cfg.publication_style:
+        apply_publication_style()
+
     try:
         energy, (t_min, t_max), (p_min, p_max) = build_spectral_energy_matrix(
             note_matrix,
@@ -399,42 +473,85 @@ def plot_spectral_energy_heatmap(
     except Exception as e:
         raise VisualizationError(str(e)) from e
 
-    fig, ax = plt.subplots(figsize=(14, 8), facecolor="white")
+    vmin, vmax = robust_display_range(
+        energy,
+        vmin_pct=cfg.contrast_vmin_percentile,
+        vmax_pct=cfg.contrast_vmax_percentile,
+        floor=0.0,
+    )
+    norm, cmap = display_norm_and_cmap(
+        energy, cfg.spectral_cmap, vmin=vmin, vmax=vmax, gamma=cfg.gamma
+    )
+
+    fig, ax = plt.subplots(figsize=(14.5, 8), facecolor="#f7f8fa")
     im = ax.imshow(
         energy,
         aspect="auto",
         origin="lower",
         extent=[t_min, t_max, p_min, p_max],
-        cmap=cfg.spectral_cmap,
+        cmap=cmap,
+        norm=norm,
+        interpolation="bilinear",
+        rasterized=True,
     )
+    style_axes(ax)
 
-    pitch_ticks = np.arange(int(p_min), int(p_max) + 1, max(1, int((p_max - p_min) / 12)))
+    span = max(int(p_max - p_min), 1)
+    pitch_step = max(1, span // 14)
+    pitch_ticks = np.arange(int(p_min), int(p_max) + 1, pitch_step)
     ax.set_yticks(pitch_ticks)
-    ax.set_yticklabels([midi_to_note_name(float(v)) for v in pitch_ticks])
+    ax.set_yticklabels(
+        [midi_to_note_name(float(v)) for v in pitch_ticks],
+        fontsize=8,
+    )
 
     if cfg.show_event_markers:
         for t in _major_event_times(energy, t_min, t_max, cfg.max_event_markers):
-            ax.axvline(t, color="#FFD54F", linestyle="--", linewidth=1.2, alpha=0.75)
+            ax.axvline(
+                t,
+                color="#b45309",
+                linestyle=(0, (5, 3)),
+                linewidth=0.9,
+                alpha=0.55,
+                zorder=5,
+            )
 
     if energy.max() > 0:
-        levels = np.linspace(energy.max() * 0.25, energy.max() * 0.85, 6)
+        levels = np.linspace(vmax * 0.35, vmax * 0.92, 5)
         tx = np.linspace(t_min, t_max, energy.shape[1])
         py = np.linspace(p_min, p_max, energy.shape[0])
-        ax.contour(tx, py, energy, levels=levels, colors="white", alpha=0.35, linewidths=0.6)
+        ax.contour(
+            tx,
+            py,
+            energy,
+            levels=levels,
+            colors="#f1f5f9",
+            alpha=0.5,
+            linewidths=0.55,
+            zorder=4,
+        )
 
     mstarts = measure_starts_sec(note_matrix)
     if not mstarts and score is not None:
         mstarts = extract_measure_starts_from_score(score)
     if cfg.show_measure_lines:
-        for t in mstarts:
-            ax.axvline(t, color="#888888", linestyle=":", alpha=0.4, linewidth=0.7)
+        _draw_measure_lines(ax, mstarts, "s")
 
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Pitch")
-    ax.set_title(title)
-    cbar = plt.colorbar(im, ax=ax, pad=0.02)
-    cbar.set_label("Symbolic energy (velocity-weighted)")
-    plt.tight_layout()
+    ax.set_title(title, fontsize=13, color="#1a202c", pad=10)
+    ax.text(
+        0.0,
+        1.02,
+        "Velocity-weighted symbolic grid · not audio spectrogram",
+        transform=ax.transAxes,
+        fontsize=9,
+        color="#64748b",
+        va="bottom",
+    )
+    extend = "max" if float(energy.max()) > vmax else "neither"
+    add_professional_colorbar(fig, im, ax, "Symbolic energy", extend=extend)
+    plt.tight_layout(pad=1.2)
     return fig
 
 
@@ -444,7 +561,7 @@ def save_both_heatmaps(
     cfg: Optional[HeatmapConfig] = None,
     *,
     score=None,
-    dpi: int = 150,
+    dpi: Optional[int] = None,
 ) -> Dict[str, str]:
     """
     Save all three heatmap PNGs (basic, advanced, spectral).
@@ -453,6 +570,7 @@ def save_both_heatmaps(
     import matplotlib.pyplot as plt
 
     cfg = cfg or HeatmapConfig()
+    save_dpi = int(dpi if dpi is not None else cfg.save_dpi)
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     mstarts = measure_starts_sec(note_matrix)
@@ -471,7 +589,7 @@ def save_both_heatmaps(
     ):
         fig = plot_fn(note_matrix, cfg, **kwargs)
         p = out / f"{name}.png"
-        fig.savefig(p, dpi=dpi, bbox_inches="tight")
+        fig.savefig(p, dpi=save_dpi, bbox_inches="tight", facecolor=fig.get_facecolor())
         plt.close(fig)
         paths[name] = str(p)
         log.info("Saved %s", p)

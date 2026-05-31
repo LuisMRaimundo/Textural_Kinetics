@@ -4,18 +4,27 @@
 
 Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), and three **pitch–time heatmaps** (basic, advanced, spectral). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.5 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.6 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, GUI) + `corpus/` (fixtures & regression).
 
 **CI:** GitHub Actions — tests, coverage ≥72%, corpus comparison, mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
-> **docs/FORMULAS.md** — Metric definitions  
-> **docs/LIMITATIONS.md** — Scope and tempo model  
-> **docs/OFFSET_AUDIT.md** — Global-offset audit manifest  
-> **docs/ENGINEERING_95.md** — Engineering quality path  
-> **docs/current_rating.md** — Evidence-based rating
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[docs/MANUAL_TECNICO.md](docs/MANUAL_TECNICO.md)** | **Full technical manual** (tutorial + formulas + algorithms) |
+| [docs/MANUAL_METRICAS.md](docs/MANUAL_METRICAS.md) | Quick metric reference |
+| [docs/FORMULAS.md](docs/FORMULAS.md) | Compact formula sheet |
+| [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | Scope and tempo model |
+| [docs/CORPUS_REFERENCIA.md](docs/CORPUS_REFERENCIA.md) | Regression corpus |
+| [docs/README.md](docs/README.md) | Documentation index |
+
+## Heatmaps
+
+Publication-style rendering (`granular_blue` / `granular_ember` palettes, percentile contrast, 200 DPI export). See manual §9.
 
 ## Programmatic usage
 

@@ -123,8 +123,12 @@ class GranularGUI:
             messagebox.showwarning("Warning", "matplotlib required.")
             return
         from .config import HeatmapConfig
-        from .heatmaps import plot_heatmap_advanced, plot_heatmap_basic, plot_spectral_energy_heatmap
-        from .measures import extract_measure_starts_from_score
+        from .heatmaps import (
+            extract_measure_starts_from_score,
+            plot_heatmap_advanced,
+            plot_heatmap_basic,
+            plot_spectral_energy_heatmap,
+        )
         cfg = HeatmapConfig()
         mstarts = extract_measure_starts_from_score(self.score) if self.score else []
         if kind == "basic":

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.6
+
+- **Docs:** `docs/MANUAL_TECNICO.md` (tutorial + full formulas & algorithms), `MANUAL_METRICAS.md`, `CORPUS_REFERENCIA.md`, docs index.
+- **Heatmaps:** Publication style (`heatmap_style.py`), custom palettes, robust contrast.
+- **Fix:** GUI heatmap import (`extract_measure_starts_from_score` from `heatmaps`).
+
 ## 1.0.5
 
 - **Engineering:** Central `offsets.py` + `audit.py`; offset audit tests on corpus; `tempo_audit.warnings` + `tempo_model`.

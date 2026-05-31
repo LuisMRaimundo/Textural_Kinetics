@@ -23,22 +23,26 @@ class HeatmapConfig:
     bin_sec: float = 0.05
     pitch_step_semitones: float = 0.5
     mode: str = "occupancy"
-    smooth_t_bins: float = 1.0
-    smooth_p_bins: float = 0.6
+    smooth_t_bins: float = 1.2
+    smooth_p_bins: float = 0.8
     log1p: bool = True
-    gamma: float = 1.0
+    gamma: float = 0.82
     normalize_rows: bool = False
-    rowwise_percentile: float = 99.5
-    overlay_points: bool = True
+    rowwise_percentile: float = 96.0
+    overlay_points: bool = False
     time_units: str = "s"
-    cmap_basic: str = "YlOrRd"
-    cmap_advanced: str = "YlOrRd"
-    spectral_resolution: Tuple[int, int] = (128, 256)
-    spectral_smoothing: float = 1.2
-    spectral_cmap: str = "plasma"
+    publication_style: bool = True
+    contrast_vmin_percentile: float = 3.0
+    contrast_vmax_percentile: float = 97.5
+    cmap_basic: str = "granular_blue"
+    cmap_advanced: str = "granular_blue"
+    spectral_resolution: Tuple[int, int] = (160, 320)
+    spectral_smoothing: float = 1.4
+    spectral_cmap: str = "granular_ember"
     show_measure_lines: bool = True
     show_event_markers: bool = True
-    max_event_markers: int = 20
+    max_event_markers: int = 16
+    save_dpi: int = 200
     enabled: bool = True
 
     def __post_init__(self) -> None:
