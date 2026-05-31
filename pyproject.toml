@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "granular-v2"
+version = "1.0.5"
+description = "Fused symbolic density: precise event rates, Mustextu, heatmaps, partitional option"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "music21>=9.0",
+  "numpy>=1.20",
+  "matplotlib>=3.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.1", "mypy>=1.8"]
+full = ["scipy>=1.7"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["granular_v2*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = ["-v", "--tb=short", "--cov=granular_v2", "--cov-report=term-missing", "--cov-fail-under=72"]
+
+[tool.coverage.run]
+omit = [
+  "granular_v2/mustextu/horizontal_density.py",
+  "granular_v2/input_layer.py",
+  "granular_v2/run.py",
+  "granular_v2/__main__.py",
+  "granular_v2/gui.py",
+  "granular_v2/plots.py",
+  "granular_v2/logging_config.py",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+check_untyped_defs = true
+exclude = [
+  "granular_v2/mustextu/horizontal_density.py",
+  "granular_v2/gui.py",
+  "granular_v2/plots.py",
+]
