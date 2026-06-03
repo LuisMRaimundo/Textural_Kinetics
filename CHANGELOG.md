@@ -5,6 +5,7 @@
 - **Docs:** `docs/MANUAL_TECNICO.md` (tutorial + full formulas & algorithms), `MANUAL_METRICAS.md`, `CORPUS_REFERENCIA.md`, docs index.
 - **Heatmaps:** Publication style (`heatmap_style.py`), custom palettes, robust contrast.
 - **Fix:** GUI heatmap import (`extract_measure_starts_from_score` from `heatmaps`).
+- **Docs sync (2026-06-03):** README CI test count (62), coverage ~82%; `current_rating.md` v1.0.6; corpus fixture count (3); `LIMITATIONS` coincidence fix version (1.0.1).
 
 ## 1.0.5
 

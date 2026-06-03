@@ -25,4 +25,5 @@ What is **implemented in software** vs what remains **thesis / corpus work**.
 | v1.0.3 (util_tempo only) | ~72 |
 | v1.0.4 (timebase + notes) | ~88–90 |
 | v1.0.5 (audit + warnings + tests + CI) | ~92–94 |
+| v1.0.6 (manual técnico + heatmap publication style) | ~93–95 (docs) |
 | + real corpus + sibling port | ~95 |

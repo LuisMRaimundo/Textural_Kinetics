@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.5 — evidence-based rating
+# Granular_v2 v1.0.6 — evidence-based rating
 
 ## Rubric (100)
 
@@ -9,11 +9,17 @@
 | Event-rate precision (s/ms/bar) | 15 | **14** |
 | Mustextu (wired + merge fix) | 10 | **10** |
 | Software architecture | 15 | **14** |
-| Tests / CI / corpus (4 fixtures) | 15 | **15** |
+| Tests / CI / corpus (3 fixtures) | 15 | **15** |
 | Documentation / scope honesty | 10 | **9** |
 | Heatmaps + GUI | 5 | **5** |
 
 **Total: 95 / 100**
+
+## v1.0.6 (documentation & heatmaps)
+
+- Full **`docs/MANUAL_TECNICO.md`** bundle; metric quick reference; corpus index.
+- Publication heatmap style (`heatmap_style.py`); GUI import fix for measure starts.
+- Package version **1.0.6** aligned across `__init__.py`, `pyproject.toml`, `CITATION.cff`, manuals.
 
 ## v1.0.5 (engineering audit)
 

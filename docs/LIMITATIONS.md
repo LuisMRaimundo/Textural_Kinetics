@@ -10,7 +10,7 @@ Heatmaps and “spectral” grids are **notation-based** (pitch × time, velocit
 
 ## Mustextu coincidence merge
 
-Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids transitive chaining across distant onsets (fixed in v1.0.3).
+Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids transitive chaining across distant onsets (fixed in v1.0.1).
 
 ## Partitional layer
 
