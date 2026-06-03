@@ -14,4 +14,4 @@ Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids tra
 
 ## Partitional layer
 
-Optional partition indices are simplified (channel-based); not full Gentil-Nunes / PARSEMAT equivalence.
+Optional partition indices are simplified (channel-based); not a complete partitional formalism.

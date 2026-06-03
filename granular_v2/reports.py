@@ -16,7 +16,7 @@ SCOPE = [
 
 NOT_CLAIMED = [
     "Acoustic STFT / psychoacoustic validation",
-    "Full Gentil-Nunes PARSEMAT equivalence",
+    "Full external partitional-analysis formalism",
 ]
 
 

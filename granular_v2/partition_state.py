@@ -1,4 +1,4 @@
-"""Optional partition-state layer (Gentil-Nunes style indices)."""
+"""Optional partition-state layer (channel-based n, alpha, d indices)."""
 
 from typing import Any, Dict, List, Tuple
 

@@ -50,6 +50,6 @@
 
 ## Not claimed
 
-- Full PARSEMAT / Gentil-Nunes equivalence
+- Full external partitional-analysis formalism
 - Measured audio / psychoacoustic validation
 - Licensed multi-composer benchmark (synthetic corpus only)

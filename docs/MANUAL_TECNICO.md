@@ -572,7 +572,7 @@ T = \sum_i \binom{n_i}{2} = \sum_i \frac{n_i(n_i-1)}{2}
 
 **Dispersion:** \(N - T\) where \(N = \sum_i n_i\).
 
-Simplified proxy — not full PARSEMAT equivalence (see [LIMITATIONS.md](LIMITATIONS.md)).
+Simplified channel-based proxy — not a complete partitional formalism (see [LIMITATIONS.md](LIMITATIONS.md)).
 
 ---
 
