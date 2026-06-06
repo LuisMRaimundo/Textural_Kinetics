@@ -15,7 +15,8 @@ python corpus/scripts/inspect_musicological_regression.py
 - **Qualitative tests:** `tests/test_musicological_regression.py`
 
 > Phase 1 does **not** lock numerical golden values in `corpus/reference/`.  
-> Review inspection output before promoting metrics to strict regression.
+> Review inspection output before promoting metrics to strict regression.  
+> **Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — especially before promoting EPS, IOI CV, or synchrony fraction.
 
 ---
 
@@ -27,7 +28,7 @@ python corpus/scripts/inspect_musicological_regression.py
 |--------|--------|
 | **Musical situation** | Three parts (Soprano, Alto, Tenor) in four measures; each part plays one pitch class per beat; all parts attack on the same quarter-note grid (120 BPM). |
 | **Analytical purpose** | Vertical alignment / homorhythmic coincidence; near-periodic IOIs on the composite onset train. |
-| **Expected behaviour** | High Mustextu synchrony fraction; up to three simultaneous attacks per onset; stable 0.5 s IOIs at 120 BPM. |
+| **Expected behaviour** | High `max_simultaneous_pitches` (3); inspection reports synchrony fraction ≈ 0.67 (layer τ-merge, not pitch count alone). Unique-onset IOIs ~0.5 s at 120 BPM; raw-event IOI CV may be high — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4. |
 
 ### `tied_sustained_texture`
 
@@ -51,7 +52,7 @@ python corpus/scripts/inspect_musicological_regression.py
 |--------|--------|
 | **Musical situation** | Three parts with staggered eighth-note entries (0, 0.5, 1.0 quarter offsets within a 8-QL span). |
 | **Analytical purpose** | Low vertical coincidence; dispersed onset layers. |
-| **Expected behaviour** | Low synchrony fraction vs homorhythm; staggered IOI profile. |
+| **Expected behaviour** | Low Mustextu synchrony fraction vs homorhythm (staggered layer onsets); staggered IOI profile on the event stream. |
 
 > **Note:** Distinct from legacy `corpus/fixtures/layered_async.musicxml` (older corpus regression set).
 
@@ -131,7 +132,7 @@ python corpus/scripts/inspect_musicological_regression.py
 
 ## Analyst checklist before phase 2
 
-1. Run `inspect_musicological_regression.py` and review IOIs, synchrony, and event counts.
+1. Run `inspect_musicological_regression.py` and review IOIs, synchrony, and event counts against [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md).
 2. Confirm qualitative pytest invariants pass on Python 3.10 and 3.11.
 3. Select metrics to promote into `corpus/reference/musicological_regression/*.json` (if desired).
 4. Document tolerances in `docs/CORPUS_REFERENCIA.md` or a dedicated phase-2 note.

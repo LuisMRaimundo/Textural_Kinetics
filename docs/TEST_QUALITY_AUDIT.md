@@ -2,7 +2,8 @@
 
 **Date:** 2026-06-06  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
-**Constraint:** Audit only — no production code, tests, or CI configuration were modified.
+**Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
+**Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
 
 ---
 
@@ -107,7 +108,7 @@ Source of truth for individual test names: `test_inventory.txt` (125 entries, ma
 | **Transposing instruments beyond simple clarinet** | One B♭ clarinet case in `test_loader.py`; no horn in F, piccolo, etc. | Written vs sounding errors in multi-instrument scores |
 | **Complex MusicXML layouts** | Corpus fixtures are music21-generated, relatively regular; no pickup measures, tuplets, divisions quirks, multi-staff parts | Parser edge cases in wild exports |
 | **Malformed / incomplete score data** | Good defensive unit tests (fakes/monkeypatch); few real corrupt MusicXML files | Production failures on user uploads |
-| **Numerical metric regression** | Only 3 scalar snapshots per fixture; no golden IOI distributions, burstiness, heatmap hashes, or per-bar rates | Silent analytical drift in thesis-facing metrics |
+| **Numerical metric regression** | Only 3 scalar snapshots per fixture; no golden IOI distributions, burstiness, heatmap hashes, or per-bar rates | Silent analytical drift in thesis-facing metrics; interpret scalars per [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) before locking |
 | **Negative / zero duration prohibition at pipeline level** | Asserted in unit tests, not as a global post-condition on every corpus run | Rare corruption could slip through integration |
 | **`merge_audits` and multi-warning export** | `audit.py` mostly untested | Incomplete warning propagation in combined exports |
 | **`input_layer` direct paths** | Omitted from coverage; loader tests partially subsume | MIDI/MusicXML divergence between layers |
@@ -123,7 +124,7 @@ Source of truth for individual test names: `test_inventory.txt` (125 entries, ma
 | Aspect | Detail |
 |--------|--------|
 | **Musical situation** | Single part, 120 BPM, rapid succession of short notes — a local **onset burst** within a measure. |
-| **Expected analytical behaviour** | High global event rate (~21 events/s); many distinct onset times; tests global-offset timeline span; Mustextu rate (`rate_eps` ≈ 20). |
+| **Expected analytical behaviour** | High global EPS (~21 events/s over onset span); many distinct onset times; tests global-offset timeline span; Mustextu `rate_eps` ≈ 20 (window-based, distinct merged onsets — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)). |
 | **Reference snapshot** | `num_events: 20`, `events_per_second: 21.053…`, `rate_eps: 20.0` |
 | **Test usage** | **Strong** — parametrized in `test_offset_audit.py` (timeline span, Mustextu alignment); included in `compare_all.py` and `test_util_tempo_parity.py`. |
 
@@ -155,7 +156,7 @@ All three fixtures share the same regression shape (3 scalars). They validate **
 
 | Proposed fixture | Purpose | Priority |
 |------------------|---------|----------|
-| **`regular_homorhythm`** | Steady chordal blocks at fixed IOI — calibrate granularity index ≈ 1, IOI CV ≈ 0 | High |
+| **`regular_homorhythm`** | Steady homorhythmic layers — structural counts + unique-onset IOIs; raw-event IOI CV may be high despite regular pulse ([METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4) | High (implemented in `musicological_regression/`) |
 | **`tied_sustained_texture`** | Cross-measure tied notes — validate merged durations and onset counts | High |
 | **`tempo_change_mid_score`** | Mid-piece BPM change (e.g. 120→60) — anchor QL→seconds and rate denominators | High |
 | **`repeated_section`** | Start/end repeat or DC al coda — exercise `expand_repeats_if_requested` in pipeline + metric stability | High |
@@ -174,7 +175,7 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 1. Add **cross-measure tie** and **tempo-change** corpus fixtures with reference metrics and loader/onset invariant tests.
 2. Add **repeat-section** fixture run through full `run_analysis` with expanded vs unexpanded comparison.
-3. Extend corpus regression beyond three scalars — e.g. golden **IOI CV**, **burstiness**, and **per-bar rates** for at least one fixture.
+3. Extend corpus regression beyond three scalars — e.g. golden **IOI CV**, **burstiness**, and **per-bar rates** for at least one fixture (definitions and risks in [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)).
 4. Test **partitional fusion** on `layered_async` (multi-part fixture already exists).
 5. Add **`input_layer`**-targeted tests or remove omission only after coverage — document parity with `loader` for MIDI/MusicXML.
 

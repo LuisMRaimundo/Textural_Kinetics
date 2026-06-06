@@ -24,6 +24,8 @@ python corpus/scripts/compare_all.py
 
 Tolerâncias: `events_per_second` ±1e-5; Mustextu `rate_eps` ±0.02.
 
+**Semântica:** `events_per_second` usa o intervalo entre primeiro e último onset (não a duração total da peça); `rate_eps` usa a janela Mustextu e onsets fundidos. Ver **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
+
 ## Regenerar referências
 
 Após alteração intencional de métricas:
