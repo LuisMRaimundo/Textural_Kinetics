@@ -1,0 +1,371 @@
+[
+  {
+    "fixture": "dense_chordal_blocks",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\dense_chordal_blocks.musicxml",
+    "load_ok": true,
+    "num_events": 12,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 2.0,
+    "duration_min": 0.5,
+    "max_simultaneous_pitches": 4,
+    "unique_onsets": 3,
+    "granularity": {
+      "num_events": 12,
+      "total_span_sec": 2.0,
+      "events_per_sec_global": 6.0,
+      "ioi_mean_sec": 0.18181818181818182,
+      "ioi_std_sec": 0.38569460791993493,
+      "ioi_cv": 2.121320343559642,
+      "granularity_index": 0.3203772410170408,
+      "burstiness": -0.10102051443364375
+    },
+    "events_per_second": 6.0,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 1.0,
+      "granularity_score": 0.02
+    }
+  },
+  {
+    "fixture": "empty_or_degenerate_score",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\empty_or_degenerate_score.musicxml",
+    "load_ok": false,
+    "num_events": 0,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": null,
+    "onset_max": null,
+    "duration_min": null,
+    "max_simultaneous_pitches": 0,
+    "unique_onsets": 0,
+    "granularity": {},
+    "error": "ValueError('onsets_per_layer_ms cannot be empty.')"
+  },
+  {
+    "fixture": "grace_note_passage",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\grace_note_passage.musicxml",
+    "load_ok": true,
+    "num_events": 8,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 1.5,
+    "duration_min": 0.0,
+    "max_simultaneous_pitches": 2,
+    "unique_onsets": 4,
+    "granularity": {
+      "num_events": 8,
+      "total_span_sec": 1.5,
+      "events_per_sec_global": 5.333333333333333,
+      "ioi_mean_sec": 0.21428571428571427,
+      "ioi_std_sec": 0.24743582965269673,
+      "ioi_cv": 1.1547005383792515,
+      "granularity_index": 0.4641016151377546,
+      "burstiness": -1.0
+    },
+    "events_per_second": 5.333333333333333,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 2.0,
+      "granularity_score": 0.04
+    },
+    "grace_compare": {
+      "onsets_ignore_grace": 4,
+      "onsets_include_grace": 8
+    }
+  },
+  {
+    "fixture": "layered_async",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\layered_async.musicxml",
+    "load_ok": true,
+    "num_events": 12,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": false,
+      "n_tempo_segments": 3,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 3.5,
+    "duration_min": 0.25,
+    "max_simultaneous_pitches": 1,
+    "unique_onsets": 12,
+    "granularity": {
+      "num_events": 12,
+      "total_span_sec": 3.5,
+      "events_per_sec_global": 3.4285714285714284,
+      "ioi_mean_sec": 0.3181818181818182,
+      "ioi_std_sec": 0.11134044285378082,
+      "ioi_cv": 0.3499271061118826,
+      "granularity_index": 0.7407807395469246,
+      "burstiness": -0.5
+    },
+    "events_per_second": 3.4285714285714284,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 3.0,
+      "granularity_score": 0.06
+    }
+  },
+  {
+    "fixture": "multi_voice_polyphony",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\multi_voice_polyphony.musicxml",
+    "load_ok": true,
+    "num_events": 5,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 1.25,
+    "duration_min": 0.5,
+    "max_simultaneous_pitches": 1,
+    "unique_onsets": 5,
+    "granularity": {
+      "num_events": 5,
+      "total_span_sec": 1.25,
+      "events_per_sec_global": 4.0,
+      "ioi_mean_sec": 0.3125,
+      "ioi_std_sec": 0.10825317547305482,
+      "ioi_cv": 0.34641016151377546,
+      "granularity_index": 0.742715725552528,
+      "burstiness": 0.10429692079309506
+    },
+    "events_per_second": 4.0,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 1.6666666666666667,
+      "granularity_score": 0.03333333333333333
+    }
+  },
+  {
+    "fixture": "regular_homorhythm",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\regular_homorhythm.musicxml",
+    "load_ok": true,
+    "num_events": 48,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": false,
+      "n_tempo_segments": 3,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 7.5,
+    "duration_min": 0.5,
+    "max_simultaneous_pitches": 3,
+    "unique_onsets": 16,
+    "granularity": {
+      "num_events": 48,
+      "total_span_sec": 7.5,
+      "events_per_sec_global": 6.4,
+      "ioi_mean_sec": 0.1595744680851064,
+      "ioi_std_sec": 0.23307342872560263,
+      "ioi_cv": 1.460593486680443,
+      "granularity_index": 0.4064060176592144,
+      "burstiness": -1.0
+    },
+    "events_per_second": 6.4,
+    "mustextu": {
+      "synchrony_fraction": 0.6666666666666667,
+      "rate_events_per_second": 2.0,
+      "granularity_score": 0.04
+    }
+  },
+  {
+    "fixture": "repeated_section",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\repeated_section.musicxml",
+    "load_ok": true,
+    "num_events": 2,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 2.0,
+    "duration_min": 2.0,
+    "max_simultaneous_pitches": 1,
+    "unique_onsets": 2,
+    "granularity": {
+      "num_events": 2,
+      "total_span_sec": 2.0,
+      "events_per_sec_global": 1.0,
+      "ioi_mean_sec": 2.0,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "burstiness": 0.2679491924311227
+    },
+    "events_per_second": 1.0,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 0.5,
+      "granularity_score": 0.01
+    },
+    "repeat_compare": {
+      "events_before": 2,
+      "events_after": 4
+    }
+  },
+  {
+    "fixture": "tempo_change_mid_score",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\tempo_change_mid_score.musicxml",
+    "load_ok": true,
+    "num_events": 16,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": false,
+      "n_tempo_segments": 4,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 11.5,
+    "duration_min": 0.5,
+    "max_simultaneous_pitches": 1,
+    "unique_onsets": 16,
+    "granularity": {
+      "num_events": 16,
+      "total_span_sec": 11.5,
+      "events_per_sec_global": 1.391304347826087,
+      "ioi_mean_sec": 0.7666666666666667,
+      "ioi_std_sec": 0.2494438257849294,
+      "ioi_cv": 0.32536151189338613,
+      "granularity_index": 0.7545111209479888,
+      "burstiness": -0.17157287525380988
+    },
+    "events_per_second": 1.391304347826087,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 1.3333333333333333,
+      "granularity_score": 0.026666666666666665
+    },
+    "tempo_iois": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "fixture": "tied_sustained_texture",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\tied_sustained_texture.musicxml",
+    "load_ok": true,
+    "num_events": 4,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 2.0,
+    "duration_min": 2.0,
+    "max_simultaneous_pitches": 2,
+    "unique_onsets": 2,
+    "granularity": {
+      "num_events": 4,
+      "total_span_sec": 2.0,
+      "events_per_sec_global": 2.0,
+      "ioi_mean_sec": 0.6666666666666666,
+      "ioi_std_sec": 0.9428090415820634,
+      "ioi_cv": 1.4142135623730951,
+      "granularity_index": 0.4142135623730951,
+      "burstiness": 0.2679491924311227
+    },
+    "events_per_second": 2.0,
+    "mustextu": {
+      "synchrony_fraction": 0.5,
+      "rate_events_per_second": 0.75,
+      "granularity_score": 0.015
+    },
+    "tied_compare": {
+      "merged_events": 4,
+      "raw_events": 6,
+      "merged_unique_onsets": 2,
+      "raw_unique_onsets": 3
+    }
+  },
+  {
+    "fixture": "transposing_instrument_score",
+    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\transposing_instrument_score.musicxml",
+    "load_ok": true,
+    "num_events": 3,
+    "tempo_audit": {
+      "source": "timebase_segments",
+      "tempo_fallback_used": true,
+      "n_tempo_segments": 1,
+      "warnings": []
+    },
+    "onset_min": 0.0,
+    "onset_max": 1.0,
+    "duration_min": 0.5,
+    "max_simultaneous_pitches": 1,
+    "unique_onsets": 3,
+    "granularity": {
+      "num_events": 3,
+      "total_span_sec": 1.0,
+      "events_per_sec_global": 3.0,
+      "ioi_mean_sec": 0.5,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "burstiness": -1.0
+    },
+    "events_per_second": 3.0,
+    "mustextu": {
+      "synchrony_fraction": 0.0,
+      "rate_events_per_second": 2.0,
+      "granularity_score": 0.04
+    },
+    "transposition_compare": {
+      "written_pitches": [
+        60,
+        64,
+        67
+      ],
+      "sounding_pitches": [
+        58,
+        62,
+        65
+      ],
+      "written_onsets": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "sounding_onsets": [
+        0.0,
+        0.5,
+        1.0
+      ]
+    }
+  }
+]
