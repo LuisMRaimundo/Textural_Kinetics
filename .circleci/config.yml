@@ -1,0 +1,56 @@
+version: 2.1
+
+jobs:
+  test:
+    parameters:
+      python-version:
+        type: string
+
+    docker:
+      - image: cimg/python:<< parameters.python-version >>
+
+    steps:
+      - checkout
+
+      - run:
+          name: Show Python version
+          command: python --version
+
+      - run:
+          name: Upgrade pip
+          command: python -m pip install --upgrade pip
+
+      - run:
+          name: Install project with development dependencies
+          command: pip install -e ".[dev,full]"
+
+      - run:
+          name: Type check selected core modules with mypy
+          command: >
+            mypy --follow-imports=skip
+            granular_v2/offsets.py
+            granular_v2/audit.py
+            granular_v2/timebase.py
+            granular_v2/note_extraction.py
+            granular_v2/onset_extraction.py
+            granular_v2/loader.py
+            granular_v2/util_tempo.py
+
+      - run:
+          name: Run tests
+          command: pytest tests -q
+
+      - run:
+          name: Run corpus comparison
+          command: python corpus/scripts/compare_all.py
+
+workflows:
+  test-python:
+    jobs:
+      - test:
+          name: test-python-3-10
+          python-version: "3.10"
+
+      - test:
+          name: test-python-3-11
+          python-version: "3.11"
