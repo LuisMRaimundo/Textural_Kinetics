@@ -124,26 +124,38 @@ def test_is_grace_exception_fallback_returns_false():
     assert _is_grace(_BrokenElement()) is False
 
 
-def test_flatten_fallback_when_flatten_raises(monkeypatch):
-    part = _part_with_notes(note.Note("C4", quarterLength=1), part_name="Cello")
-    score = _score_with_parts(part)
-    notes_and_rests = list(part.recurse().notesAndRests)
+def test_flatten_fallback_when_flatten_raises():
+    onset_note = note.Note("C4", quarterLength=1)
+    onset_note.offset = 0.0
 
-    class _FlatFallback:
-        notesAndRests = notes_and_rests
+    class _FlatView:
+        def __init__(self, elements):
+            self.notesAndRests = elements
 
-    def _raise_flatten(*_args, **_kwargs):
-        raise RuntimeError("flatten failed")
+    class _FakePart:
+        partName = "Cello"
+        id = "P1"
+        flat = _FlatView([onset_note])
 
-    original_flat = type(part).flat
-    monkeypatch.setattr(part, "flatten", _raise_flatten)
-    monkeypatch.setattr(
-        type(part),
-        "flat",
-        property(lambda self: _FlatFallback() if self is part else original_flat.fget(self)),
-    )
+        def flatten(self):
+            raise RuntimeError("flatten failed")
 
-    layers, t_end_ms, _, _ = extract_onsets_per_layer_ms_from_score(score)
+        def getInstrument(self, returnDefault=False):
+            return None
+
+    class _FakeScore:
+        highestTime = 1.0
+        parts = [_FakePart()]
+
+        def recurse(self):
+            class _Recurse:
+                @staticmethod
+                def getElementsByClass(_cls):
+                    return []
+
+            return _Recurse()
+
+    layers, t_end_ms, _, _ = extract_onsets_per_layer_ms_from_score(_FakeScore())
 
     assert layers["Cello"] == [pytest.approx(0.0)]
     assert t_end_ms == pytest.approx(500.0)
