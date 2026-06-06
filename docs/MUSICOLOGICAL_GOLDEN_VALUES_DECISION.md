@@ -1,7 +1,8 @@
 # Musicological golden values — Phase 2 decision record
 
 **Source report:** `corpus/reports/musicological_regression_inspection.md` (generated 2026-06-06 12:20 UTC)  
-**Phase:** Decision only — no golden tests or reference files are created by this document.
+**Phase:** Decision only — no golden tests or reference files are created by this document.  
+**Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — values marked **EXPLORE** or **CLARIFY** below should not be locked until that document is accepted.
 
 ---
 
@@ -147,7 +148,7 @@ Optional later sections (after **CLARIFY** items resolved): `sync_fraction`, `io
 ## 5. Phase 2 implementation rules
 
 1. **Lock structurally exact values first** — event counts, unique onsets, pitch lists, repeat expansion ratios, grace onset counts, tempo IOI bands.
-2. **Avoid locking ambiguous derived metrics** — EPS global, IOI CV, Mustextu synchrony fraction until definitions are written in `docs/FORMULAS.md` or `docs/MANUAL_METRICAS.md` and agreed by the analyst.
+2. **Avoid locking ambiguous derived metrics** — EPS global, IOI CV, Mustextu synchrony fraction until [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) is agreed by the analyst (formulas remain in `FORMULAS.md` / `MANUAL_METRICAS.md`).
 3. **Use tolerances for floating-point seconds** — recommend `1e-6` for synthetic fixtures at 60/120 BPM; looser tolerances only if MusicXML export rounding is proven platform-dependent.
 4. **Keep `empty_or_degenerate_score` out of normal golden regression** — treat as defensive/degenerate; define empty-input contract separately (explicit empty output vs documented skip).
 5. **Analyst review gate** — every golden value must be compared against a fresh `inspect_musicological_regression.py` run and signed off before pytest enforcement or CI integration.
@@ -180,4 +181,4 @@ After the first structural golden file is reviewed, add a dedicated compare scri
 
 ---
 
-*Cross-references: `docs/MUSICOLOGICAL_REGRESSION_FIXTURES.md`, `corpus/reports/musicological_regression_inspection.md`, `docs/TEST_QUALITY_AUDIT.md`.*
+*Cross-references: [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md), [MUSICOLOGICAL_REGRESSION_FIXTURES.md](MUSICOLOGICAL_REGRESSION_FIXTURES.md), `corpus/reports/musicological_regression_inspection.md`, [TEST_QUALITY_AUDIT.md](TEST_QUALITY_AUDIT.md).*

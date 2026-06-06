@@ -17,6 +17,7 @@ Granularity Analyser combines precise **event rates** (per second, millisecond, 
 |----------|-------------|
 | **[docs/MANUAL_TECNICO.md](docs/MANUAL_TECNICO.md)** | **Full technical manual** (tutorial + formulas + algorithms) |
 | [docs/MANUAL_METRICAS.md](docs/MANUAL_METRICAS.md) | Quick metric reference |
+| [docs/METRIC_SEMANTICS.md](docs/METRIC_SEMANTICS.md) | **Metric semantics & interpretive limits** (EPS, IOI CV, synchrony, density) |
 | [docs/FORMULAS.md](docs/FORMULAS.md) | Compact formula sheet |
 | [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | Scope and tempo model |
 | [docs/CORPUS_REFERENCIA.md](docs/CORPUS_REFERENCIA.md) | Regression corpus |

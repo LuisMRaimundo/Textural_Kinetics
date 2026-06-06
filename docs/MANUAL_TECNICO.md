@@ -10,6 +10,8 @@ This manual documents purpose, architecture, **mathematical definitions**, and *
 
 ---
 
+> **Metric interpretive limits:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) (EPS span, raw-event IOI CV, synchrony vs vertical density).
+
 ## Table of contents
 
 1. [Introduction](#1-introduction)
@@ -281,6 +283,8 @@ T_{\mathrm{span}} = t_N - t_1 \quad (\text{or } 1\text{s if single onset})
 R_{\mathrm{global}} = \frac{N}{T_{\mathrm{span}}} \quad [\mathrm{s}^{-1}]
 \]
 
+\(T_{\mathrm{span}}\) is **first-to-last onset** only (1 s if degenerate), not full score length — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §3.
+
 \[
 R_{\mathrm{ms}} = \frac{R_{\mathrm{global}}}{1000} \quad [\mathrm{ms}^{-1}]
 \]
@@ -324,6 +328,8 @@ where \(B_m\) = notated beats in bar (quarterLength sum).
 \mathrm{IOI}_k = t_{k+1} - t_k,\quad k = 1,\ldots,N-1
 \]
 
+Onsets \(t_k\) are **one per note-matrix row**, sorted, **not** deduplicated — simultaneous events yield **zero** IOIs. See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4.
+
 ### 6.2 IOI statistics
 
 \[
@@ -341,7 +347,7 @@ where \(B_m\) = notated beats in bar (quarterLength sum).
 G_{\mathrm{index}} = \frac{1}{1 + \mathrm{ioi\_cv}}
 \]
 
-High \(G_{\mathrm{index}}\) → IOIs relatively uniform (finer temporal grain in a regularity sense).
+High \(G_{\mathrm{index}}\) → lower IOI CV on the **raw event stream** (regularity of extracted attacks, not necessarily unique-onset pulse).
 
 ### 6.4 Burstiness (binned)
 
@@ -389,13 +395,15 @@ A_j = \#\{\text{notes with } [s,e) \cap [b_j,b_{j+1}) \neq \emptyset\}
 
 Reported time point: bin centre \(b_j + \Delta/2\).
 
+**Onset vs active:** onset density counts **new attacks** per bin; active density counts **sounding** events (overlap). Curves can diverge for sustained textures — [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §8.
+
 ---
 
 ## 8. Mustextu horizontal density
 
 **Module:** `mustextu/horizontal_density.py`, bridge `granularity_mustextu.py`
 
-Mustextu quantifies **how many distinct onset times** occur per second when multi-layer (multi-part) onsets are merged within a tolerance.
+Mustextu quantifies **how many distinct onset times** occur per second when multi-layer (multi-part) onsets are merged within a tolerance. `synchrony_fraction` measures redundant layer entries after merge — **not** the same as note-matrix vertical pitch count; see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §7.
 
 ### 8.1 Onset extraction for Mustextu
 

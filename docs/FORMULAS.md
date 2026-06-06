@@ -1,12 +1,13 @@
 # Formula sheet (compact)
 
 Full derivations, algorithms, and tutorials: **[MANUAL_TECNICO.md](MANUAL_TECNICO.md)**.  
-One-page metric table: **[MANUAL_METRICAS.md](MANUAL_METRICAS.md)**.
+One-page metric table: **[MANUAL_METRICAS.md](MANUAL_METRICAS.md)**.  
+Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Global event rates
 
-- \(N\) = number of onset events (after optional tie merge)
-- \(T_{\mathrm{span}} = t_N - t_1\) (seconds between first and last onset)
+- \(N\) = number of note-matrix events (one onset per row; tie merge may reduce rows earlier in the pipeline)
+- \(T_{\mathrm{span}} = t_{\mathrm{last\,onset}} - t_{\mathrm{first\,onset}}\) (seconds; forced to 1 s if degenerate) — **not** full notated duration
 - **events_per_second** = \(N / T_{\mathrm{span}}\)
 - **events_per_millisecond** = events_per_second / 1000
 
@@ -27,15 +28,15 @@ One-page metric table: **[MANUAL_METRICAS.md](MANUAL_METRICAS.md)**.
 
 ## IOI and granularity
 
-- \(\mathrm{IOI}_k = t_{k+1} - t_k\)
-- **ioi_cv** = \(\sigma / \mu\) on IOIs
+- \(\mathrm{IOI}_k = t_{k+1} - t_k\) on sorted **raw** event onsets (includes zero IOIs for simultaneous events)
+- **ioi_cv** = \(\sigma / \mu\) on those IOIs (not unique-onset IOIs unless derived separately)
 - **granularity_index** = \(1 / (1 + \mathrm{ioi\_cv})\)
 - **burstiness** = \((\sigma_c - \mu_c) / (\sigma_c + \mu_c)\) on 0.5 s onset bins
 
 ## Mustextu
 
 - **rate_events_per_second** (`rate_eps`) = unique merged onsets / (window_ms / 1000)
-- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\)
+- **synchrony_fraction** (`sync_fraction`) = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of all layer onsets (default τ = 2 ms, adaptive optional)
 - **granularity_score** = clip(rate_eps / gran_max_eps, 0, 1)
 - Regular layers: \(g^\* = \gcd(e_i)\), \(\mathrm{LCM}^\* = \mathrm{lcm}(e_i)\) — see manual §8.7
 

@@ -8,6 +8,8 @@
 
 Heatmaps and “spectral” grids are **notation-based** (pitch × time, velocity-weighted). They do not represent measured audio spectra or psychoacoustic loudness.
 
+Scalar metrics (EPS global, IOI CV, synchrony fraction, burstiness) are likewise **score-derived model outputs**, not perceptual measures. See **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
+
 ## Mustextu coincidence merge
 
 Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids transitive chaining across distant onsets (fixed in v1.0.1).

@@ -4,7 +4,11 @@
 |----------|----------|----------|
 | **[MANUAL_TECNICO.md](MANUAL_TECNICO.md)** | Researchers, developers | Full technical manual: tutorial, architecture, **all formulas & algorithms** |
 | **[MANUAL_METRICAS.md](MANUAL_METRICAS.md)** | Quick reference | Metric definitions (one page per family) |
+| **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)** | Analysts / thesis | Interpretive limits of EPS, IOI CV, burstiness, synchrony, density curves |
 | **[FORMULAS.md](FORMULAS.md)** | Thesis appendix | Compact formula sheet (links to manual) |
+| **[MUSICOLOGICAL_REGRESSION_FIXTURES.md](MUSICOLOGICAL_REGRESSION_FIXTURES.md)** | QA / musicology | Phase-1 controlled fixtures |
+| **[MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md](MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md)** | Analyst gate | PROMOTE / EXPLORE / CLARIFY before golden lock |
+| **[TEST_QUALITY_AUDIT.md](TEST_QUALITY_AUDIT.md)** | Engineering | Test suite audit |
 | **[LIMITATIONS.md](LIMITATIONS.md)** | Everyone | Scope, tempo model, symbolic-only heatmaps |
 | **[OFFSET_AUDIT.md](OFFSET_AUDIT.md)** | Maintainers | Global-offset audit manifest |
 | **[CORPUS_REFERENCIA.md](CORPUS_REFERENCIA.md)** | QA / regression | Fixture corpus & `compare_all.py` |
