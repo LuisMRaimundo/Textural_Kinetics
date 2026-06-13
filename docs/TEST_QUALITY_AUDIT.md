@@ -1,6 +1,6 @@
 # Test Quality Audit — Granularity-Analyser
 
-**Date:** 2026-06-06  
+**Date:** 2026-06-10 (summary refreshed; module table below reflects 2026-06-06 audit unless noted)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
 **Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
 **Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
@@ -13,15 +13,15 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **125** |
-| Test modules (excluding `conftest.py`) | **20** |
+| Collected tests | **147** |
+| Test modules (excluding `conftest.py`) | **21** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
 | Corpus reference JSON snapshots | 3 (matching fixture stems) |
 | `granular_v2` line coverage (full suite) | **91.48%** (threshold: 72%) |
 | External regression script | `corpus/scripts/compare_all.py` (invoked by `tests/test_corpus.py`) |
 
-Source of truth for individual test names: `test_inventory.txt` (125 entries, matches `pytest --collect-only`).
+Source of truth for individual test names: `test_inventory.txt` (may lag; prefer `pytest --collect-only` for current count).
 
 ### Test modules and analytical coverage
 
@@ -224,4 +224,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Generated from `test_inventory.txt` (125 tests) and full-suite pytest run. Re-run `python -m pytest tests --collect-only -q` to refresh counts after adding tests.*
+*Summary refreshed 2026-06-10 (147 tests, 21 modules, 91.48% coverage). Detailed module table below is the 2026-06-06 audit snapshot; re-run `python -m pytest tests --collect-only -q` after adding tests.*
