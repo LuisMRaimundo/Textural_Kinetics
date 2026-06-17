@@ -35,16 +35,18 @@ Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Mustextu
 
-- **rate_events_per_second** (`rate_eps`) = unique merged onsets / (window_ms / 1000)
-- **synchrony_fraction** (`sync_fraction`) = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of all layer onsets (default τ = 2 ms, adaptive optional)
+- **rate_events_per_second** (composite key `rate_eps`) = unique merged onsets / (window_ms / 1000)
+- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of all layer onsets (default τ = 2 ms, adaptive optional)
 - **granularity_score** = clip(rate_eps / gran_max_eps, 0, 1)
 - Regular layers: \(g^\* = \gcd(e_i)\), \(\mathrm{LCM}^\* = \mathrm{lcm}(e_i)\) — see manual §8.7
 
 ## Tempo (stepwise)
 
 \[
-t(q) = s_0^{(i)} + \frac{60}{b_i}(q - q_0^{(i)})\quad \text{for } q \in [q_0^{(i)}, q_1^{(i)})
+t(q) = s_0^{(i)} + \frac{60}{b_i}(q - q_0^{(i)})\quad \text{for the first segment with } q \in [q_0^{(i)}, q_1^{(i)}]
 \]
+
+(Canonical `timebase.ql_to_seconds_fn` uses the closed test `q0 ≤ q ≤ q1` and returns the first matching segment; the `util_tempo` fallback uses the half-open `[q0, q1)`. Both agree at the shared, contiguous segment boundaries.)
 
 ## Heatmaps (symbolic)
 

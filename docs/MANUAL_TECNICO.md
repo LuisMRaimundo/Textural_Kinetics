@@ -299,11 +299,13 @@ R_k = \frac{c_k}{\Delta}
 
 ### 5.3 Sliding millisecond windows
 
-Window width \(W\) ms, count \(n_W(t)\) onsets in \([t, t+W]\):
+Window width \(W\) ms **centred** on \(t_c\) and stepped by 25 ms (default), counting onsets \(n_W(t_c)\) in the half-open interval \([t_c - W/2,\ t_c + W/2)\):
 
 \[
-\rho_W(t) = \frac{n_W(t)}{W}
+\rho_W(t_c) = \frac{n_W(t_c)}{W}
 \]
+
+Computed through the same `activity_rate_per_window` machinery as §6.5: if the timeline is shorter than \(W\), the window shrinks to fit (the reported `window_ms` reflects the effective width). Reported as `events_per_millisecond_in_window` (and `events_per_second`).
 
 ### 5.4 Per-bar rates
 
@@ -453,13 +455,13 @@ F_{\mathrm{sync}} = 1 - \frac{M_{\mathrm{unique}}}{M}
 
 ### 8.4 Adaptive tolerance
 
-If enabled, with estimated minimum period \(P_{\min}\) among layers (median IOI):
+If enabled, with estimated minimum period \(P_{\min}\) among layers:
 
 \[
 \tau_{\mathrm{eff}} = \min\bigl(\tau_{\mathrm{config}},\; f \cdot P_{\min}\bigr)
 \]
 
-default \(f = 0.05\).
+default \(f = 0.05\). In the **real-score path** (`compute_horizontal_density_from_onsets`, used by the pipeline) \(P_{\min}\) is the smallest **per-layer median IEI**; in the synthetic-layer path (`compute_horizontal_density`) it is the smallest exact layer period \(\mathrm{beat\_ms}/e_i\).
 
 ### 8.5 IEI diagnostics (merged stream)
 
@@ -568,17 +570,23 @@ Vertical lines at measure start times \(t_m\) (seconds), from score or `measure_
 **Module:** `partition_state.py`  
 Enable: `AnalysisConfig.include_partitional = True`
 
-Within each time bin \([b, b+\Delta)\):
+Within each time bin \([b, b+\Delta)\), a note counts toward the bin when its sounding interval overlaps it (`end > b` and `onset < b+\Delta`):
 
-**Channel partition:** count notes per MIDI channel → multiset \(\mathbf{n} = (n_1,\ldots,n_c)\).
+**Channel partition:** count active notes per MIDI channel → multiset \(\mathbf{n} = (n_1,\ldots,n_c)\), with total \(n = \sum_i n_i\) (exported as `n`).
 
-**Agglomeration index:**
+**Agglomeration** (exported `agglomeration`) — within-channel coincident pairs:
 
 \[
-T = \sum_i \binom{n_i}{2} = \sum_i \frac{n_i(n_i-1)}{2}
+\alpha = \sum_i \binom{n_i}{2} = \sum_{i:\,n_i \ge 2} \frac{n_i(n_i-1)}{2}
 \]
 
-**Dispersion:** \(N - T\) where \(N = \sum_i n_i\).
+**Dispersion** (exported `dispersion`) — cross-channel pairs, i.e. total pairs minus within-channel pairs:
+
+\[
+d = \binom{n}{2} - \alpha = \frac{n(n-1)}{2} - \sum_i \binom{n_i}{2}
+\]
+
+(The total-pairs term \(T = \binom{n}{2}\) is computed internally; only `n`, `agglomeration`, and `dispersion` are exported per bin.)
 
 Simplified channel-based proxy — not a complete partitional formalism (see [LIMITATIONS.md](LIMITATIONS.md)).
 
@@ -595,12 +603,12 @@ Top-level keys from `run_full_analysis` / `run_analysis`:
 | `activity_granularity` | IOI list, granularity dict, by_interval |
 | `mustextu_summary` | rates, synchrony, granularity_score |
 | `tempo_audit` | source, warnings, tempo_model |
-| `export_metadata` | version, scope disclaimer |
+| `export_metadata` | `scope` / `not_claimed` disclaimers + config echo (`merge_ties`, `pitch_domain`, `density_intervals`, `enable_mustextu`, `enable_heatmaps`, `include_partitional`) |
 | `partitional` | optional time series |
 | `heatmap_paths` | if saved |
-| `source_file` | path string |
+| `source_file` | path string (added by `run_analysis`) |
 
-Event rate units are documented inside `event_rates.*.units` where applicable.
+Event-rate unit definitions are documented inside `event_rates.global.definition` and `event_rates.by_ms_window.<W>.definition`.
 
 ---
 

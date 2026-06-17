@@ -23,7 +23,7 @@ Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANU
 
 | Metric | Formula |
 |--------|---------|
-| `events_per_millisecond_in_window` | count in \([t, t+W]\) / \(W\) |
+| `events_per_millisecond_in_window` | count in centred window \([t_c - W/2,\ t_c + W/2)\) / \(W\) (window shrinks if the timeline is shorter than \(W\)) |
 
 ## Per bar
 
@@ -47,7 +47,7 @@ Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANU
 |--------|---------|
 | `rate_eps` | \(N_{\mathrm{unique}} / T_{\mathrm{win}}\) (events/s) |
 | `rate_eps_raw` | \(N_{\mathrm{raw}} / T_{\mathrm{win}}\) |
-| `synchrony_fraction` (`sync_fraction`) | \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after τ-merge of **all layer** onsets (ms); not vertical pitch count |
+| `synchrony_fraction` | \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after τ-merge of **all layer** onsets (ms); not vertical pitch count (informal alias in prose: *sync fraction*) |
 | `granularity_score` | \(\mathrm{clip}( \mathrm{rate\_eps} / \mathrm{gran\_max\_eps},\, 0,\, 1)\) |
 | GCD/LCM (regular layers) | analytic coincidence on integer events/beat |
 
