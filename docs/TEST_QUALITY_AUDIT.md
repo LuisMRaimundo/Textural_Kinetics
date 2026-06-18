@@ -93,7 +93,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Mustextu onsets align with loader** | `test_offset_audit.py` (parametrized, ±50 ms) | Medium |
 | **util_tempo ↔ timebase parity** | `test_util_tempo_parity.py` on synthetic + all corpus fixtures | Medium–Strong |
 | **Monotonic time mapping** | `test_timebase_axioms.py`, `test_util_tempo_branches.py`, `test_util_tempo_parity.py` | Strong |
-| **Corpus metric stability** | `test_corpus.py` + `compare_all.py` (`num_events`, `events_per_second`, `rate_eps` ± tolerances) | Medium (3 scores only) |
+| **Corpus metric stability** | `test_corpus.py` + `compare_all.py` (`num_events` fused, `num_notes` raw, `events_per_second`, `rate_eps` ± tolerances) | Medium (3 scores only) |
 | **No raw `element.offset` in core timeline modules** | `test_offset_audit.py::test_core_modules_avoid_raw_element_offset` | Strong (static guard) |
 
 ---
@@ -143,7 +143,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 |--------|--------|
 | **Musical situation** | Single part, **60 BPM**, homophonic chordal attacks over 2 measures — sparse, synchronized texture. |
 | **Expected analytical behaviour** | Fused EPS global 0.75 (3 horizontal attacks / 4 s span at 60 BPM); raw note-matrix rate 9/4 = 2.25; Mustextu `rate_eps` ≈ 0.6. |
-| **Reference snapshot** | `num_events: 9`, `events_per_second: 0.75`, `rate_eps: 0.6` |
+| **Reference snapshot** | `num_events: 3`, `num_notes: 9`, `events_per_second: 0.75`, `rate_eps: 0.6` |
 | **Test usage** | **Strong** — dedicated `test_global_offsets_integration.py::test_sparse_homophony_fixture_span_and_rate`; export audit test; full corpus regression. |
 
 ### Cross-fixture observation

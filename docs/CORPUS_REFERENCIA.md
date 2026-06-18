@@ -10,11 +10,11 @@
 
 | Ficheiro | Descrição | Métricas guardadas |
 |----------|-----------|-------------------|
-| `sparse_homophony.musicxml` | 2 compassos, 60 BPM, acordes homofónicos | `num_events`, `events_per_second`, `rate_eps` (Mustextu) |
+| `sparse_homophony.musicxml` | 2 compassos, 60 BPM, acordes homofónicos | `num_events` (fused VD4), `num_notes` (raw), `events_per_second`, `rate_eps` (Mustextu) |
 | `layered_async.musicxml` | Camadas com desfasamento | idem |
 | `dense_onset_burst.musicxml` | Rajada de onsets | idem |
 
-As referências foram geradas com **offsets globais** (v1.0.4+). Valores antigos que assumiam offsets measure-local estão obsoletos. Desde **v1.0.7**, `events_per_second` em `global_event_rates` usa onsets **fundidos** (τ = 2 ms); ex.: `sparse_homophony` passou de **2.25** para **0.75** ev/s (3 tempos horizontais / 4 s), enquanto `rate_eps` Mustextu permanece ≈ 0.6.
+As referências foram geradas com **offsets globais** (v1.0.4+). Desde **v1.0.7**, `events_per_second` usa onsets **fundidos** (τ = 2 ms). Desde **v1.0.8**, `num_events` nas referências JSON = contagem VD4 fundida; `num_notes` = linhas da note matrix (ex.: `sparse_homophony`: `num_events: 3`, `num_notes: 9`, `events_per_second: 0.75`, `rate_eps: 0.6`).
 
 ## Executar comparação
 

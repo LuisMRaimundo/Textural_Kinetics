@@ -3,6 +3,7 @@
 ## 1.0.8
 
 - **Corpus harness:** `compare_all.py` and `compare_reference.py` freeze canonical VD4 fused `num_events` (`event_rates.global.num_events`); raw note count retained as `num_notes` for traceability. Golden references regenerated.
+- **Docs:** README, `CORPUS_REFERENCIA.md`, `TEST_QUALITY_AUDIT.md`, `current_rating.md` aligned to v1.0.8 harness semantics.
 
 ## 1.0.7
 

@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.7  
+**Version:** 1.0.8  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 

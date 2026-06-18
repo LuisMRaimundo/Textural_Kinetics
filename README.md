@@ -4,7 +4,7 @@
 
 Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), and three **pitch–time heatmaps** (basic, advanced, spectral). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.7 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.8 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, GUI) + `corpus/` (fixtures & regression).

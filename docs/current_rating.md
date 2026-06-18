@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.7 — evidence-based rating
+# Granular_v2 v1.0.8 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,10 @@
 | Heatmaps + GUI | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.8 (corpus harness)
+
+- **`compare_all` / `compare_reference`:** golden `num_events` = fused VD4 count; `num_notes` = raw note-matrix rows.
 
 ## v1.0.7 (VD4 fused-onset granularity)
 
