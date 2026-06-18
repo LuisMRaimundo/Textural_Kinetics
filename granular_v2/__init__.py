@@ -11,7 +11,7 @@ from .heatmaps import save_both_heatmaps
 from .loader import load_score_and_note_matrix
 from .pipeline import run_analysis, run_heatmap_analysis
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 __all__ = [
     "AnalysisConfig",

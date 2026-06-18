@@ -32,7 +32,8 @@ def main() -> int:
     if not ref_path.exists():
         ref_path.parent.mkdir(parents=True, exist_ok=True)
         snap = {
-            "num_events": r["num_events"],
+            "num_events": r["event_rates"]["global"]["num_events"],
+            "num_notes": r["num_events"],
             "events_per_second": r["event_rates"]["global"]["events_per_second"],
             "rate_eps": r.get("mustextu_summary", {}).get("rate_events_per_second"),
         }
@@ -41,7 +42,8 @@ def main() -> int:
         return 0
 
     ref = json.loads(ref_path.read_text(encoding="utf-8"))
-    assert r["num_events"] == ref["num_events"], (r["num_events"], ref["num_events"])
+    got_ne = r["event_rates"]["global"]["num_events"]
+    assert got_ne == ref["num_events"], (got_ne, ref["num_events"])
     eps = r["event_rates"]["global"]["events_per_second"]
     assert abs(eps - ref["events_per_second"]) < TOL, (eps, ref["events_per_second"])
     if "rate_eps" in ref and r.get("mustextu_summary"):

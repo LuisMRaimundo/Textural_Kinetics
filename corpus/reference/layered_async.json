@@ -1,5 +1,6 @@
 {
   "num_events": 16,
+  "num_notes": 16,
   "events_per_second": 8.767123287671232,
   "rate_eps": 8.0
 }

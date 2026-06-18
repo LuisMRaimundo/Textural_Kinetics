@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8
+
+- **Corpus harness:** `compare_all.py` and `compare_reference.py` freeze canonical VD4 fused `num_events` (`event_rates.global.num_events`); raw note count retained as `num_notes` for traceability. Golden references regenerated.
+
 ## 1.0.7
 
 - **Fix (VD4):** `granularity_metrics()` computes IOI CV, granularity index, and burstiness on **unique fused onsets** (τ = 2 ms anchor merge); raw diagnostics (`ioi_cv_raw`, `granularity_index_raw`, `sync_fraction`, `events_per_second_raw`) retained.

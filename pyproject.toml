@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "granular-v2"
-version = "1.0.7"
+version = "1.0.8"
 description = "Fused symbolic density: precise event rates, Mustextu, heatmaps, partitional option"
 readme = "README.md"
 requires-python = ">=3.10"

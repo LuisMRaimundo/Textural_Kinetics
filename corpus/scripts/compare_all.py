@@ -20,7 +20,8 @@ TOL_MUSTEXTU = 0.02
 
 def _snapshot(r):
     return {
-        "num_events": r["num_events"],
+        "num_events": r["event_rates"]["global"]["num_events"],
+        "num_notes": r["num_events"],
         "events_per_second": r["event_rates"]["global"]["events_per_second"],
         "rate_eps": r.get("mustextu_summary", {}).get("rate_events_per_second"),
     }
