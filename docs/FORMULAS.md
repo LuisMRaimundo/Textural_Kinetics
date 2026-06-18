@@ -4,12 +4,16 @@ Full derivations, algorithms, and tutorials: **[MANUAL_TECNICO.md](MANUAL_TECNIC
 One-page metric table: **[MANUAL_METRICAS.md](MANUAL_METRICAS.md)**.  
 Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
-## Global event rates
+## Global event rates (VD4 span diagnostic)
 
-- \(N\) = number of note-matrix events (one onset per row; tie merge may reduce rows earlier in the pipeline)
-- \(T_{\mathrm{span}} = t_{\mathrm{last\,onset}} - t_{\mathrm{first\,onset}}\) (seconds; forced to 1 s if degenerate) — **not** full notated duration
-- **events_per_second** = \(N / T_{\mathrm{span}}\)
+- \(N_{\mathrm{raw}}\) = note-matrix rows (one onset per event)
+- \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **τ = 2 ms**
+- \(T_{\mathrm{span}} = t_{\mathrm{last}} - t_{\mathrm{first}}\) on **fused** onsets (seconds; support = 1 s if degenerate) — **not** full notated duration
+- **events_per_second** = \(N_{\mathrm{unique}} / T_{\mathrm{span}}\) (span-referenced diagnostic)
+- **events_per_second_raw** = \(N_{\mathrm{raw}} / T_{\mathrm{span}}\)
 - **events_per_millisecond** = events_per_second / 1000
+- **sync_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\)
+- **Canonical VD4\_s rate:** Mustextu **rate_eps** (see Mustextu section)
 
 ## Per time bin (width \(\Delta\) seconds)
 
@@ -26,17 +30,21 @@ Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 - **events_per_second_in_bar** = onset_count / measure_duration_sec
 - **events_per_beat_in_bar** = onset_count / notated_beats_in_bar
 
-## IOI and granularity
+## IOI and granularity (VD4 — fused onsets)
 
-- \(\mathrm{IOI}_k = t_{k+1} - t_k\) on sorted **raw** event onsets (includes zero IOIs for simultaneous events)
-- **ioi_cv** = \(\sigma / \mu\) on those IOIs (not unique-onset IOIs unless derived separately)
+- Fuse sorted raw onsets within **τ = 2 ms** (anchor-based; `merge_coincident_onsets`)
+- \(\mathrm{IOI}_k = t^{\mathrm{fused}}_{k+1} - t^{\mathrm{fused}}_k\) — **no zero IOIs** from vertical simultaneity
+- **ioi_cv** = \(\sigma / \mu\) on those fused IOIs
 - **granularity_index** = \(1 / (1 + \mathrm{ioi\_cv})\)
-- **burstiness** = \((\sigma_c - \mu_c) / (\sigma_c + \mu_c)\) on 0.5 s onset bins
+- **burstiness** = \((\sigma_c - \mu_c) / (\sigma_c + \mu_c)\) on **fused-onset** counts in fixed **0.5 s** windows
+
+**Raw diagnostics:** `ioi_cv_raw`, `granularity_index_raw` from `diff(raw sorted onsets)` (includes zero IOIs). Plot helper `inter_onset_intervals()` keeps raw semantics.
 
 ## Mustextu
 
-- **rate_events_per_second** (composite key `rate_eps`) = unique merged onsets / (window_ms / 1000)
-- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of all layer onsets (default τ = 2 ms, adaptive optional)
+- **rate_events_per_second** (composite key `rate_eps`) = unique merged layer onsets / (window_ms / 1000) — **canonical VD4\_s**
+- **rate_eps_raw** = raw layer onsets / (window_ms / 1000)
+- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of **all layer** onsets (default τ = 2 ms, adaptive optional)
 - **granularity_score** = clip(rate_eps / gran_max_eps, 0, 1)
 - Regular layers: \(g^\* = \gcd(e_i)\), \(\mathrm{LCM}^\* = \mathrm{lcm}(e_i)\) — see manual §8.7
 

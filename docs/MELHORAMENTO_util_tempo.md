@@ -17,7 +17,7 @@ Andamento em degraus entre `MetronomeMark`; ver `docs/LIMITATIONS.md` e docstrin
 
 Mesmo erro de raiz em `timebase.build_tempo_segments` (`mm.offset`) e
 `note_extraction` (`el.offset`). Corrigido com `getOffsetInHierarchy`.
-Referência `sparse_homophony.json` regenerada (2.25 ev/s, não 4.5).
+Referência `sparse_homophony.json` regenerada (0.75 ev/s fused EPS global pós-VD4 v1.0.7; 2.25 ev/s = taxa raw note-matrix / span).
 
 ## Prioridade 3 — Cobertura
 

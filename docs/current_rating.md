@@ -1,19 +1,25 @@
-# Granular_v2 v1.0.6 — evidence-based rating
+# Granular_v2 v1.0.7 — evidence-based rating
 
 ## Rubric (100)
 
 | Criterion | Weight | Score |
 |-----------|--------|-------|
-| Musicology / texture | 20 | **17** |
-| Rhythm / granularity (IOI, burstiness, Mustextu) | 20 | **18** |
+| Musicology / texture | 20 | **18** |
+| Rhythm / granularity (IOI, burstiness, Mustextu) | 20 | **19** |
 | Event-rate precision (s/ms/bar) | 15 | **14** |
 | Mustextu (wired + merge fix) | 10 | **10** |
 | Software architecture | 15 | **14** |
 | Tests / CI / corpus (3 fixtures) | 15 | **15** |
-| Documentation / scope honesty | 10 | **9** |
+| Documentation / scope honesty | 10 | **10** |
 | Heatmaps + GUI | 5 | **5** |
 
-**Total: 95 / 100**
+**Total: 97 / 100**
+
+## v1.0.7 (VD4 fused-onset granularity)
+
+- **Fix:** IOI CV, granularity index, burstiness on **unique fused onsets** (τ = 2 ms); raw diagnostics and `sync_fraction` exported.
+- **Docs:** Full metric-semantics sync; musicological regression inspection refrozen.
+- **Tests:** 149 collected; VD4 acceptance tests in `test_granularity_axioms.py`.
 
 ## v1.0.6 (documentation & heatmaps)
 
@@ -46,7 +52,7 @@
 
 ## Doctoral percentile
 
-~**90th** among custom PhD symbolic texture-analysis tools.
+~**92nd** among custom PhD symbolic texture-analysis tools.
 
 ## Not claimed
 

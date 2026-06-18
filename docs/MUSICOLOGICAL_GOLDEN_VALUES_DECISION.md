@@ -39,7 +39,7 @@ Values below are taken from the current inspection report unless noted as derive
 | `tempo_change_mid_score` | Tempo segments | ≥ 2 (inspection: 4) | **PROMOTE** | Golden invariant is detection of **both** 60 BPM and 120 BPM sections; exact segment count (e.g. 4) may vary with MetronomeMark representation and is not required unless the fixture generator documents an exact target. |
 | `tempo_change_mid_score` | Events / unique onsets | 16 / 16 | **PROMOTE** | One note per beat across four measures; structurally exact. |
 | `tempo_change_mid_score` | EPS global | 1.3913 | **EXPLORE** | Depends on span and event-count policy; not primary tempo proof. |
-| `tempo_change_mid_score` | IOI CV | 0.3254 | **EXPLORE** | Useful diagnostic; clarify unique-onset vs raw-event basis before lock. |
+| `tempo_change_mid_score` | IOI CV | 0.3254 | **EXPLORE** | Fused-onset basis (v1.0.7); no simultaneities in fixture → equals raw. |
 | `transposing_instrument_score` | Written pitches | `[60, 64, 67]` | **PROMOTE** | B♭ clarinet written content; deterministic. |
 | `transposing_instrument_score` | Sounding pitches | `[58, 62, 65]` | **PROMOTE** | Major-second transposition; deterministic. |
 | `transposing_instrument_score` | Onset times written vs sounding | unchanged (report: 3 events, 3 unique onsets each) | **PROMOTE** | Transposition must not alter timing. |
@@ -52,12 +52,12 @@ Values below are taken from the current inspection report unless noted as derive
 | `dense_chordal_blocks` | Unique onsets | 3 | **PROMOTE** | Three chordal attack times (rests between blocks). |
 | `dense_chordal_blocks` | Max simultaneous pitches | 4 | **PROMOTE** | Four-note chords; direct vertical density. |
 | `dense_chordal_blocks` | Sync fraction | 0.000 | **CLARIFY** | Max simultaneous = 4 shows chordal simultaneity, but sync = 0 suggests inter-part/layer metric, not intra-chord density. Clarify Mustextu synchrony semantics before lock. |
-| `dense_chordal_blocks` | IOI CV | 2.1213 | **EXPLORE** | Reflects rest spacing; useful but secondary to structural counts. |
+| `dense_chordal_blocks` | IOI CV (fused) | 0.0 | **EXPLORE** | Fused horizontal spacing between blocks is regular; raw IOI CV ≈ 2.12 kept as diagnostic. |
 | `regular_homorhythm` | Events | 48 | **PROMOTE** | 3 parts × 16 beats. |
 | `regular_homorhythm` | Unique onsets | 16 | **PROMOTE** | One composite attack time per quarter across four measures. |
 | `regular_homorhythm` | Max simultaneous pitches | 3 | **PROMOTE** | Three parts attack together. |
 | `regular_homorhythm` | Sync fraction | 0.667 | **EXPLORE** | Useful homorhythm diagnostic; confirm layer labelling and coincidence tolerance before strict lock. |
-| `regular_homorhythm` | IOI CV | 1.4606 | **CLARIFY** | Counter-intuitive for “regular” homorhythm if read as unique-onset regularity; likely affected by simultaneous-event structure in granularity code. Clarify whether IOI CV uses raw events or unique onsets. |
+| `regular_homorhythm` | IOI CV (fused) | 0.0 | **PROMOTE** | Resolved v1.0.7: canonical VD4 IOI CV uses fused onsets (τ = 2 ms); regular 0.5 s grid → CV = 0. Raw `ioi_cv_raw` ≈ 1.46 remains diagnostic. |
 | `tied_sustained_texture` | Raw events | 6 | **PROMOTE** | Pre-merge tie components. |
 | `tied_sustained_texture` | Merged events | 4 | **PROMOTE** | Tie merge reduces spurious attacks. |
 | `tied_sustained_texture` | Unique onsets raw → merged | 3 → 2 | **PROMOTE** | Direct sustained-texture / tie-merge proof. |
@@ -172,7 +172,7 @@ Phase 2 should **begin with structural golden values**, not interpretively compl
 **Defer:**
 
 - All **EPS global** values (**EXPLORE**)  
-- **IOI CV** on `layered_async`, `tempo_change_mid_score`, and especially `regular_homorhythm` (**CLARIFY** / **EXPLORE**)  
+- **IOI CV** on `layered_async`, `tempo_change_mid_score` (**EXPLORE**); **`regular_homorhythm` fused IOI CV = 0** now **PROMOTE**-eligible (v1.0.7)  
 - **Sync fraction** where it conflicts with intuitive vertical density (**CLARIFY**)  
 - **`multi_voice_polyphony`** numeric locks (**EXPLORE**)  
 - **`empty_or_degenerate_score`** entirely (**CLARIFY** — defensive only)  

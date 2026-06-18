@@ -1,7 +1,7 @@
 [
   {
     "fixture": "dense_chordal_blocks",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\dense_chordal_blocks.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\dense_chordal_blocks.musicxml",
     "load_ok": true,
     "num_events": 12,
     "tempo_audit": {
@@ -16,16 +16,21 @@
     "max_simultaneous_pitches": 4,
     "unique_onsets": 3,
     "granularity": {
-      "num_events": 12,
+      "num_events": 3,
+      "num_events_raw": 12,
+      "sync_fraction": 0.75,
       "total_span_sec": 2.0,
-      "events_per_sec_global": 6.0,
-      "ioi_mean_sec": 0.18181818181818182,
-      "ioi_std_sec": 0.38569460791993493,
-      "ioi_cv": 2.121320343559642,
-      "granularity_index": 0.3203772410170408,
-      "burstiness": -0.10102051443364375
+      "events_per_sec_global": 1.5,
+      "events_per_sec_global_raw": 6.0,
+      "ioi_mean_sec": 1.0,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "ioi_cv_raw": 2.121320343559642,
+      "granularity_index_raw": 0.3203772410170408,
+      "burstiness": -0.26794919243112275
     },
-    "events_per_second": 6.0,
+    "events_per_second": 1.5,
     "mustextu": {
       "synchrony_fraction": 0.0,
       "rate_events_per_second": 1.0,
@@ -34,7 +39,7 @@
   },
   {
     "fixture": "empty_or_degenerate_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\empty_or_degenerate_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\empty_or_degenerate_score.musicxml",
     "load_ok": false,
     "num_events": 0,
     "tempo_audit": {
@@ -53,7 +58,7 @@
   },
   {
     "fixture": "grace_note_passage",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\grace_note_passage.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\grace_note_passage.musicxml",
     "load_ok": true,
     "num_events": 8,
     "tempo_audit": {
@@ -68,16 +73,21 @@
     "max_simultaneous_pitches": 2,
     "unique_onsets": 4,
     "granularity": {
-      "num_events": 8,
+      "num_events": 4,
+      "num_events_raw": 8,
+      "sync_fraction": 0.5,
       "total_span_sec": 1.5,
-      "events_per_sec_global": 5.333333333333333,
-      "ioi_mean_sec": 0.21428571428571427,
-      "ioi_std_sec": 0.24743582965269673,
-      "ioi_cv": 1.1547005383792515,
-      "granularity_index": 0.4641016151377546,
-      "burstiness": -1.0
+      "events_per_sec_global": 2.6666666666666665,
+      "events_per_sec_global_raw": 5.333333333333333,
+      "ioi_mean_sec": 0.5,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "ioi_cv_raw": 1.1547005383792515,
+      "granularity_index_raw": 0.4641016151377546,
+      "burstiness": -0.4775922500725171
     },
-    "events_per_second": 5.333333333333333,
+    "events_per_second": 2.6666666666666665,
     "mustextu": {
       "synchrony_fraction": 0.0,
       "rate_events_per_second": 2.0,
@@ -90,7 +100,7 @@
   },
   {
     "fixture": "layered_async",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\layered_async.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\layered_async.musicxml",
     "load_ok": true,
     "num_events": 12,
     "tempo_audit": {
@@ -106,13 +116,18 @@
     "unique_onsets": 12,
     "granularity": {
       "num_events": 12,
+      "num_events_raw": 12,
+      "sync_fraction": 0.0,
       "total_span_sec": 3.5,
       "events_per_sec_global": 3.4285714285714284,
+      "events_per_sec_global_raw": 3.4285714285714284,
       "ioi_mean_sec": 0.3181818181818182,
       "ioi_std_sec": 0.11134044285378082,
       "ioi_cv": 0.3499271061118826,
       "granularity_index": 0.7407807395469246,
-      "burstiness": -0.5
+      "ioi_cv_raw": 0.3499271061118826,
+      "granularity_index_raw": 0.7407807395469246,
+      "burstiness": -0.4202041028867287
     },
     "events_per_second": 3.4285714285714284,
     "mustextu": {
@@ -123,7 +138,7 @@
   },
   {
     "fixture": "multi_voice_polyphony",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\multi_voice_polyphony.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\multi_voice_polyphony.musicxml",
     "load_ok": true,
     "num_events": 5,
     "tempo_audit": {
@@ -139,13 +154,18 @@
     "unique_onsets": 5,
     "granularity": {
       "num_events": 5,
+      "num_events_raw": 5,
+      "sync_fraction": 0.0,
       "total_span_sec": 1.25,
       "events_per_sec_global": 4.0,
+      "events_per_sec_global_raw": 4.0,
       "ioi_mean_sec": 0.3125,
       "ioi_std_sec": 0.10825317547305482,
       "ioi_cv": 0.34641016151377546,
       "granularity_index": 0.742715725552528,
-      "burstiness": 0.10429692079309506
+      "ioi_cv_raw": 0.34641016151377546,
+      "granularity_index_raw": 0.742715725552528,
+      "burstiness": -0.5590375815769153
     },
     "events_per_second": 4.0,
     "mustextu": {
@@ -156,7 +176,7 @@
   },
   {
     "fixture": "regular_homorhythm",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\regular_homorhythm.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\regular_homorhythm.musicxml",
     "load_ok": true,
     "num_events": 48,
     "tempo_audit": {
@@ -171,16 +191,21 @@
     "max_simultaneous_pitches": 3,
     "unique_onsets": 16,
     "granularity": {
-      "num_events": 48,
+      "num_events": 16,
+      "num_events_raw": 48,
+      "sync_fraction": 0.6666666666666667,
       "total_span_sec": 7.5,
-      "events_per_sec_global": 6.4,
-      "ioi_mean_sec": 0.1595744680851064,
-      "ioi_std_sec": 0.23307342872560263,
-      "ioi_cv": 1.460593486680443,
-      "granularity_index": 0.4064060176592144,
-      "burstiness": -1.0
+      "events_per_sec_global": 2.1333333333333333,
+      "events_per_sec_global_raw": 6.4,
+      "ioi_mean_sec": 0.5,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "ioi_cv_raw": 1.460593486680443,
+      "granularity_index_raw": 0.4064060176592144,
+      "burstiness": -0.6209378662117102
     },
-    "events_per_second": 6.4,
+    "events_per_second": 2.1333333333333333,
     "mustextu": {
       "synchrony_fraction": 0.6666666666666667,
       "rate_events_per_second": 2.0,
@@ -189,7 +214,7 @@
   },
   {
     "fixture": "repeated_section",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\repeated_section.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\repeated_section.musicxml",
     "load_ok": true,
     "num_events": 2,
     "tempo_audit": {
@@ -205,13 +230,18 @@
     "unique_onsets": 2,
     "granularity": {
       "num_events": 2,
+      "num_events_raw": 2,
+      "sync_fraction": 0.0,
       "total_span_sec": 2.0,
       "events_per_sec_global": 1.0,
+      "events_per_sec_global_raw": 1.0,
       "ioi_mean_sec": 2.0,
       "ioi_std_sec": 0.0,
       "ioi_cv": 0.0,
       "granularity_index": 1.0,
-      "burstiness": 0.2679491924311227
+      "ioi_cv_raw": 0.0,
+      "granularity_index_raw": 1.0,
+      "burstiness": 0.0
     },
     "events_per_second": 1.0,
     "mustextu": {
@@ -226,7 +256,7 @@
   },
   {
     "fixture": "tempo_change_mid_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\tempo_change_mid_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\tempo_change_mid_score.musicxml",
     "load_ok": true,
     "num_events": 16,
     "tempo_audit": {
@@ -242,13 +272,18 @@
     "unique_onsets": 16,
     "granularity": {
       "num_events": 16,
+      "num_events_raw": 16,
+      "sync_fraction": 0.0,
       "total_span_sec": 11.5,
       "events_per_sec_global": 1.391304347826087,
+      "events_per_sec_global_raw": 1.391304347826087,
       "ioi_mean_sec": 0.7666666666666667,
       "ioi_std_sec": 0.2494438257849294,
       "ioi_cv": 0.32536151189338613,
       "granularity_index": 0.7545111209479888,
-      "burstiness": -0.17157287525380988
+      "ioi_cv_raw": 0.32536151189338613,
+      "granularity_index_raw": 0.7545111209479888,
+      "burstiness": -0.12006364408929467
     },
     "events_per_second": 1.391304347826087,
     "mustextu": {
@@ -276,7 +311,7 @@
   },
   {
     "fixture": "tied_sustained_texture",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\tied_sustained_texture.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\tied_sustained_texture.musicxml",
     "load_ok": true,
     "num_events": 4,
     "tempo_audit": {
@@ -291,16 +326,21 @@
     "max_simultaneous_pitches": 2,
     "unique_onsets": 2,
     "granularity": {
-      "num_events": 4,
+      "num_events": 2,
+      "num_events_raw": 4,
+      "sync_fraction": 0.5,
       "total_span_sec": 2.0,
-      "events_per_sec_global": 2.0,
-      "ioi_mean_sec": 0.6666666666666666,
-      "ioi_std_sec": 0.9428090415820634,
-      "ioi_cv": 1.4142135623730951,
-      "granularity_index": 0.4142135623730951,
-      "burstiness": 0.2679491924311227
+      "events_per_sec_global": 1.0,
+      "events_per_sec_global_raw": 2.0,
+      "ioi_mean_sec": 2.0,
+      "ioi_std_sec": 0.0,
+      "ioi_cv": 0.0,
+      "granularity_index": 1.0,
+      "ioi_cv_raw": 1.4142135623730951,
+      "granularity_index_raw": 0.4142135623730951,
+      "burstiness": 0.0
     },
-    "events_per_second": 2.0,
+    "events_per_second": 1.0,
     "mustextu": {
       "synchrony_fraction": 0.5,
       "rate_events_per_second": 0.75,
@@ -315,7 +355,7 @@
   },
   {
     "fixture": "transposing_instrument_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\Granularity-Analyser\\corpus\\fixtures\\musicological_regression\\transposing_instrument_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\transposing_instrument_score.musicxml",
     "load_ok": true,
     "num_events": 3,
     "tempo_audit": {
@@ -331,13 +371,18 @@
     "unique_onsets": 3,
     "granularity": {
       "num_events": 3,
+      "num_events_raw": 3,
+      "sync_fraction": 0.0,
       "total_span_sec": 1.0,
       "events_per_sec_global": 3.0,
+      "events_per_sec_global_raw": 3.0,
       "ioi_mean_sec": 0.5,
       "ioi_std_sec": 0.0,
       "ioi_cv": 0.0,
       "granularity_index": 1.0,
-      "burstiness": -1.0
+      "ioi_cv_raw": 0.0,
+      "granularity_index_raw": 1.0,
+      "burstiness": -0.5
     },
     "events_per_second": 3.0,
     "mustextu": {

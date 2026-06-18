@@ -28,7 +28,7 @@ python corpus/scripts/inspect_musicological_regression.py
 |--------|--------|
 | **Musical situation** | Three parts (Soprano, Alto, Tenor) in four measures; each part plays one pitch class per beat; all parts attack on the same quarter-note grid (120 BPM). |
 | **Analytical purpose** | Vertical alignment / homorhythmic coincidence; near-periodic IOIs on the composite onset train. |
-| **Expected behaviour** | High `max_simultaneous_pitches` (3); inspection reports synchrony fraction ≈ 0.67 (layer τ-merge, not pitch count alone). Unique-onset IOIs ~0.5 s at 120 BPM; raw-event IOI CV may be high — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4. |
+| **Expected behaviour** | High `max_simultaneous_pitches` (3); Mustextu synchrony fraction ≈ 0.67; **fused** IOI CV = 0 and granularity index = 1.0 on the 0.5 s quarter grid; `ioi_cv_raw` ≈ 1.46 (raw stream with chordal zero IOIs). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4. |
 
 ### `tied_sustained_texture`
 
@@ -44,7 +44,7 @@ python corpus/scripts/inspect_musicological_regression.py
 |--------|--------|
 | **Musical situation** | Single part; three four-note chords alternating with quarter rests. |
 | **Analytical purpose** | Vertical density per attack; temporal spacing between chord blocks. |
-| **Expected behaviour** | Up to four simultaneous pitches per onset; moderate global event rate due to rests. |
+| **Expected behaviour** | Up to four simultaneous pitches per onset; **fused** IOI CV = 0 between chord blocks; `ioi_cv_raw` ≈ 2.12 reflects raw stream spacing including zero IOIs within chords. |
 
 ### `layered_async`
 

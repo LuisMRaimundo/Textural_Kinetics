@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **147** |
+| Collected tests | **149** |
 | Test modules (excluding `conftest.py`) | **21** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -33,7 +33,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_event_rates.py` | 4 | Global, windowed, per-bar, and binned event-rate computations |
 | `test_fusion.py` | 2 | Partitional fusion layer and empty-matrix handling |
 | `test_global_offsets_integration.py` | 3 | Global QL through tempo segments, loader onsets, sparse_homophony span/rate |
-| `test_granularity_axioms.py` | 4 | IOI CV, burstiness, granularity index, global rate on synthetic onset trains |
+| `test_granularity_axioms.py` | 6 | VD4 fused IOI CV, burstiness, granularity index, raw/fused diagnostics, global rate |
 | `test_heatmaps.py` | 8 | Pitch–time matrices, spectral energy, plot smoke tests, heatmap pipeline |
 | `test_loader.py` | 5 | Single-parse loader, tempo fallback chain, MIDI branch, sounding pitch |
 | `test_mustextu.py` | 1 | Mustextu wiring through loader (smoke) |
@@ -66,7 +66,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Repeat expansion and tempo fallback** | **Strong** | Repeat expand/disable/safe-fail paths in branches + fallbacks; empty/exception boundaries and global BPM fallback with auditable `tempo_info`. |
 | **Event rates** | **Strong** | `test_event_rates.py` on synthetic matrices; `event_rates.py` at 100% coverage. |
 | **Fusion / coincidence** | **Medium** | `test_fusion.py` and `test_coincidence_merge.py` cover key behaviours; `horizontal_density` (Mustextu core) excluded from coverage metrics. Partitional layer tested on minimal fixture only. |
-| **Granularity axioms** | **Medium** | `test_granularity_axioms.py` validates textbook IOI/burstiness/granularity-index properties on synthetic trains; `activity_granularity.py` 96% (a few edge branches open). No corpus-backed granularity regression. |
+| **Granularity axioms** | **Strong** | `test_granularity_axioms.py` validates VD4 fused-onset IOI/burstiness/granularity-index on synthetic trains plus raw/fused parity; musicological inspection report refrozen (v1.0.7). |
 | **Corpus regression fixtures** | **Medium** | Three fixtures with JSON snapshots and `compare_all.py`; parametrized offset/Mustextu alignment. Limited musical diversity; no per-metric golden files beyond three scalars. |
 | **Heatmaps and plotting** | **Medium** | `test_heatmaps.py` strong on matrix shapes and smoke plots; `heatmaps.py` 87%. `plots.py` omitted from coverage; only one activity-plot smoke test. |
 | **Reports / export** | **Medium** | `reports.py` 100%; `test_pipeline.py` checks `analysis.json`; `test_offset_audit.py` checks `tempo_model` and `warnings` key. No deep schema/content regression for exports. |
@@ -89,7 +89,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Grace notes per `ignore_grace`** | `test_onset_extraction.py` (excluded when True, included when False) | Strong |
 | **Tempo fallback explicit and auditable** | `test_loader.py` (warning codes, `source`, `reason`); `test_util_tempo_fallbacks.py` (`tempo_info`); `test_offset_audit.py` (`tempo_model`, `warnings`) | Strong |
 | **Repeat expansion failure → safe fallback** | `test_util_tempo_branches.py`, `test_util_tempo_fallbacks.py` (RecursionError, RuntimeError, part-level failure) | Strong |
-| **Global QL (not measure-local collapse)** | `test_offset_audit.py` (span > 1.5 s for multi-measure corpus); `test_global_offsets_integration.py` (sparse_homophony span 4 s, rate 2.25) | Strong for 3 fixtures |
+| **Global QL (not measure-local collapse)** | `test_offset_audit.py` (span > 1.5 s for multi-measure corpus); `test_global_offsets_integration.py` (sparse_homophony span 4 s; raw note-matrix rate 2.25; fused EPS global 0.75 in corpus ref) | Strong for 3 fixtures |
 | **Mustextu onsets align with loader** | `test_offset_audit.py` (parametrized, ±50 ms) | Medium |
 | **util_tempo ↔ timebase parity** | `test_util_tempo_parity.py` on synthetic + all corpus fixtures | Medium–Strong |
 | **Monotonic time mapping** | `test_timebase_axioms.py`, `test_util_tempo_branches.py`, `test_util_tempo_parity.py` | Strong |
@@ -142,8 +142,8 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | Aspect | Detail |
 |--------|--------|
 | **Musical situation** | Single part, **60 BPM**, homophonic chordal attacks over 2 measures — sparse, synchronized texture. |
-| **Expected analytical behaviour** | Low rate (2.25 events/s); 4 s temporal span at 60 BPM (regression against measure-local collapse to ~2 s); Mustextu `rate_eps` ≈ 0.6. |
-| **Reference snapshot** | `num_events: 9`, `events_per_second: 2.25`, `rate_eps: 0.6` |
+| **Expected analytical behaviour** | Fused EPS global 0.75 (3 horizontal attacks / 4 s span at 60 BPM); raw note-matrix rate 9/4 = 2.25; Mustextu `rate_eps` ≈ 0.6. |
+| **Reference snapshot** | `num_events: 9`, `events_per_second: 0.75`, `rate_eps: 0.6` |
 | **Test usage** | **Strong** — dedicated `test_global_offsets_integration.py::test_sparse_homophony_fixture_span_and_rate`; export audit test; full corpus regression. |
 
 ### Cross-fixture observation
@@ -156,7 +156,7 @@ All three fixtures share the same regression shape (3 scalars). They validate **
 
 | Proposed fixture | Purpose | Priority |
 |------------------|---------|----------|
-| **`regular_homorhythm`** | Steady homorhythmic layers — structural counts + unique-onset IOIs; raw-event IOI CV may be high despite regular pulse ([METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4) | High (implemented in `musicological_regression/`) |
+| **`regular_homorhythm`** | Steady homorhythmic layers — fused IOI CV = 0 on regular grid; raw IOI CV elevated (chordal zeros) — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4 | High (implemented in `musicological_regression/`) |
 | **`tied_sustained_texture`** | Cross-measure tied notes — validate merged durations and onset counts | High |
 | **`tempo_change_mid_score`** | Mid-piece BPM change (e.g. 120→60) — anchor QL→seconds and rate denominators | High |
 | **`repeated_section`** | Start/end repeat or DC al coda — exercise `expand_repeats_if_requested` in pipeline + metric stability | High |
@@ -224,4 +224,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-10 (147 tests, 21 modules, 91.48% coverage). Detailed module table below is the 2026-06-06 audit snapshot; re-run `python -m pytest tests --collect-only -q` after adding tests.*
+*Summary refreshed 2026-06-18 (149 tests, VD4 granularity fix). Detailed module table below is the 2026-06-06 audit snapshot; re-run `python -m pytest tests --collect-only -q` after adding tests.*

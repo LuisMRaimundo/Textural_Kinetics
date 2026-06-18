@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: "Raimundo"
     given-names: "Luís"
-version: "1.0.6"
-date-released: "2026-05-31"
+version: "1.0.7"
+date-released: "2026-06-18"
 repository-code: "https://github.com/LuisMRaimundo/Granularity-Analyser"
 url: "https://github.com/LuisMRaimundo/Granularity-Analyser"
 abstract: "Fused symbolic MusicXML/MIDI analyzer: precise event rates (per second, millisecond, bar), activity granularity, Mustextu horizontal coincidence density, and basic/advanced/spectral heatmaps. Not audio analysis or general orchestration scoring."

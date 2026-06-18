@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.6  
+**Version:** 1.0.7  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -10,7 +10,7 @@ This manual documents purpose, architecture, **mathematical definitions**, and *
 
 ---
 
-> **Metric interpretive limits:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) (EPS span, raw-event IOI CV, synchrony vs vertical density).
+> **Metric interpretive limits:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) (VD4 fused-onset IOI/EPS, `sync_fraction` vs Mustextu synchrony).
 
 ## Table of contents
 
@@ -271,19 +271,23 @@ t_{\mathrm{start}} = t(q_0),\quad t_{\mathrm{end}} = t(q_0 + \Delta q)
 
 **Module:** `event_rates.py` (uses `granularity_metrics` for global span).
 
-### 5.1 Global rate
+### 5.1 Global rate (VD4 span diagnostic)
 
-Let \(N\) = number of events (rows in note matrix). Sorted onsets \(t_1 \le \cdots \le t_N\).
+Let \(N_{\mathrm{raw}}\) = note-matrix rows, \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **τ = 2 ms** (`merge_coincident_onsets`). Sorted fused onsets \(t^{\mathrm{fused}}_1 \le \cdots \le t^{\mathrm{fused}}_{N_{\mathrm{unique}}}\).
 
 \[
-T_{\mathrm{span}} = t_N - t_1 \quad (\text{or } 1\text{s if single onset})
+T_{\mathrm{span}} = t^{\mathrm{fused}}_{N_{\mathrm{unique}}} - t^{\mathrm{fused}}_1 \quad (\text{support } 1\text{s if degenerate})
 \]
 
 \[
-R_{\mathrm{global}} = \frac{N}{T_{\mathrm{span}}} \quad [\mathrm{s}^{-1}]
+R_{\mathrm{global}} = \frac{N_{\mathrm{unique}}}{T_{\mathrm{span}}} \quad [\mathrm{s}^{-1}]
 \]
 
-\(T_{\mathrm{span}}\) is **first-to-last onset** only (1 s if degenerate), not full score length — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §3.
+\[
+R_{\mathrm{global,raw}} = \frac{N_{\mathrm{raw}}}{T_{\mathrm{span}}}
+\]
+
+\(T_{\mathrm{span}}\) is **first-to-last fused onset** only — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §3. **Canonical thesis rate:** Mustextu `rate_eps` (§8), not necessarily \(R_{\mathrm{global}}\).
 
 \[
 R_{\mathrm{ms}} = \frac{R_{\mathrm{global}}}{1000} \quad [\mathrm{ms}^{-1}]
@@ -320,19 +324,24 @@ where \(B_m\) = notated beats in bar (quarterLength sum).
 
 ---
 
-## 6. Activity granularity and IOI
+## 6. Activity granularity and IOI (VD4)
 
-**Module:** `activity_granularity.py`
+**Module:** `activity_granularity.py`  
+**Constants:** `COINCIDENCE_TOL_SEC = 0.002`, `BURST_WINDOW_SEC = 0.5`
 
-### 6.1 Inter-onset intervals (IOI)
+### 6.1 Coincidence merge (fused onsets)
+
+Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anchor = first onset of group; no transitive chaining). Fused time = mean of group members.
+
+### 6.2 Inter-onset intervals (IOI) — canonical
 
 \[
-\mathrm{IOI}_k = t_{k+1} - t_k,\quad k = 1,\ldots,N-1
+\mathrm{IOI}_k = t^{\mathrm{fused}}_{k+1} - t^{\mathrm{fused}}_k,\quad k = 1,\ldots,N_{\mathrm{unique}}-1
 \]
 
-Onsets \(t_k\) are **one per note-matrix row**, sorted, **not** deduplicated — simultaneous events yield **zero** IOIs. See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4.
+**No zero IOIs** from vertical simultaneity on the fused series. Raw IOIs (with zeros) available as `inter_onset_intervals()` for plots only — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4.
 
-### 6.2 IOI statistics
+### 6.3 IOI statistics
 
 \[
 \mu_{\mathrm{IOI}} = \mathrm{mean}(\mathrm{IOI}),\quad
@@ -343,17 +352,19 @@ Onsets \(t_k\) are **one per note-matrix row**, sorted, **not** deduplicated —
 \mathrm{ioi\_cv} = \frac{\sigma_{\mathrm{IOI}}}{\mu_{\mathrm{IOI}}}
 \]
 
-### 6.3 Granularity index
+Raw diagnostics: `ioi_cv_raw`, `granularity_index_raw` from pre-fusion IOIs.
+
+### 6.4 Granularity index
 
 \[
 G_{\mathrm{index}} = \frac{1}{1 + \mathrm{ioi\_cv}}
 \]
 
-High \(G_{\mathrm{index}}\) → lower IOI CV on the **raw event stream** (regularity of extracted attacks, not necessarily unique-onset pulse).
+High \(G_{\mathrm{index}}\) → lower IOI CV on the **fused horizontal pulse** (Annex VD4).
 
-### 6.4 Burstiness (binned)
+### 6.5 Burstiness (VD4\_burst)
 
-Onset counts per bin width 0.5 s: \(c_0,\ldots,c_{K-1}\).
+Fused-onset counts in fixed **0.5 s** windows anchored at \(\min(\mathrm{fused})\): \(c_0,\ldots,c_{K-1}\).
 
 \[
 \mu_c = \mathrm{mean}(c_k),\quad \sigma_c = \mathrm{std}(c_k)
@@ -365,7 +376,7 @@ B = \frac{\sigma_c - \mu_c}{\sigma_c + \mu_c}
 
 (Burstiness-style asymmetry; positive → bursty.)
 
-### 6.5 Activity rate (sliding window)
+### 6.6 Activity rate (sliding window)
 
 Window length \(W\), step \(\delta\). Centres \(t_c\). Count onsets in \([t_c - W/2, t_c + W/2)\):
 

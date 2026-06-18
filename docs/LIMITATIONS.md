@@ -8,7 +8,7 @@
 
 Heatmaps and “spectral” grids are **notation-based** (pitch × time, velocity-weighted). They do not represent measured audio spectra or psychoacoustic loudness.
 
-Scalar metrics (EPS global, IOI CV, synchrony fraction, burstiness) are likewise **score-derived model outputs**, not perceptual measures. See **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
+Scalar metrics (EPS global, IOI CV, synchrony fraction, burstiness) are likewise **score-derived model outputs**, not perceptual measures. VD4 IOI CV / granularity index / burstiness use **fused onsets** (τ = 2 ms); raw diagnostics and Mustextu rates are documented separately. See **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Mustextu coincidence merge
 

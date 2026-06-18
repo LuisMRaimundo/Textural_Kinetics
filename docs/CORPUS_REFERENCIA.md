@@ -14,7 +14,7 @@
 | `layered_async.musicxml` | Camadas com desfasamento | idem |
 | `dense_onset_burst.musicxml` | Rajada de onsets | idem |
 
-As referências foram geradas com **offsets globais** (v1.0.4+). Valores antigos que assumiam offsets measure-local estão obsoletos (ex.: `sparse_homophony` passou de 4.5 para **2.25** ev/s).
+As referências foram geradas com **offsets globais** (v1.0.4+). Valores antigos que assumiam offsets measure-local estão obsoletos. Desde **v1.0.7**, `events_per_second` em `global_event_rates` usa onsets **fundidos** (τ = 2 ms); ex.: `sparse_homophony` passou de **2.25** para **0.75** ev/s (3 tempos horizontais / 4 s), enquanto `rate_eps` Mustextu permanece ≈ 0.6.
 
 ## Executar comparação
 
@@ -24,7 +24,7 @@ python corpus/scripts/compare_all.py
 
 Tolerâncias: `events_per_second` ±1e-5; Mustextu `rate_eps` ±0.02.
 
-**Semântica:** `events_per_second` usa o intervalo entre primeiro e último onset (não a duração total da peça); `rate_eps` usa a janela Mustextu e onsets fundidos. Ver **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
+**Semântica:** `events_per_second` = onsets únicos fundidos (2 ms) / intervalo entre primeiro e último onset fundido (diagnóstico de span); **`rate_eps`** Mustextu = taxa canónica VD4\_s. Ver **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Regenerar referências
 

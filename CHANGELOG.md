@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.7
+
+- **Fix (VD4):** `granularity_metrics()` computes IOI CV, granularity index, and burstiness on **unique fused onsets** (τ = 2 ms anchor merge); raw diagnostics (`ioi_cv_raw`, `granularity_index_raw`, `sync_fraction`, `events_per_second_raw`) retained.
+- **Export:** `global_event_rates()` exposes VD4 diagnostic keys and per-field `definition` strings.
+- **Tests:** VD4 acceptance tests (doubled grid, no-simultaneity parity); `test_granularity_axioms.py` extended (6 tests).
+- **Corpus:** Refrozen `musicological_regression_inspection` report; `sparse_homophony.json` `events_per_second` → 0.75.
+- **Docs:** Full sync — `METRIC_SEMANTICS.md`, `FORMULAS.md`, `MANUAL_METRICAS.md`, `MANUAL_TECNICO.md` §5–6, `CORPUS_REFERENCIA.md`, golden-values decision, regression fixtures catalogue, `TEST_QUALITY_AUDIT.md`.
+
 ## 1.0.6
 
 - **Docs:** `docs/MANUAL_TECNICO.md` (tutorial + full formulas & algorithms), `MANUAL_METRICAS.md`, `CORPUS_REFERENCIA.md`, docs index.

@@ -7,6 +7,37 @@ import numpy as np
 from .note_types import NoteMatrix
 from .temporal_density import TemporalDensityAnalyzer
 
+# VD4 normative reading: granularity is horizontal, computed on unique *fused* onsets.
+COINCIDENCE_TOL_SEC = 0.002  # tau = 2 ms (annex VD4 default)
+BURST_WINDOW_SEC = 0.5       # fixed 0.5 s window for VD4_burst
+
+
+def merge_coincident_onsets(onsets, tol_sec=COINCIDENCE_TOL_SEC):
+    """Fuse onsets within tol_sec of the GROUP ANCHOR (first onset of the group, not
+    the previous onset, to avoid transitive chaining). Returns (merged_times, multiplicities)."""
+    arr = np.sort(np.asarray(onsets, dtype=float))
+    if arr.size == 0:
+        return np.array([], dtype=float), np.array([], dtype=int)
+    merged, mult = [], []
+    group = [float(arr[0])]; anchor = float(arr[0])
+    for t in arr[1:]:
+        t = float(t)
+        if (t - anchor) <= tol_sec:
+            group.append(t)
+        else:
+            merged.append(sum(group)/len(group)); mult.append(len(group))
+            group = [t]; anchor = t
+    merged.append(sum(group)/len(group)); mult.append(len(group))
+    return np.array(merged, dtype=float), np.array(mult, dtype=int)
+
+
+def unique_inter_onset_intervals(note_matrix, tol_sec=COINCIDENCE_TOL_SEC):
+    """IOIs over unique fused onsets (no zero IOIs from vertical simultaneities)."""
+    merged, _ = merge_coincident_onsets(get_onsets_sorted(note_matrix), tol_sec)
+    if merged.size < 2:
+        return np.array([])
+    return np.diff(merged)
+
 
 def _onset_end(row: Dict[str, Any]) -> Tuple[float, float]:
     onset = float(row.get("onset_sec", row.get("onset_beats", 0)))
@@ -66,37 +97,51 @@ def density_by_bins(note_matrix: NoteMatrix, bin_sec: float) -> Dict[str, Any]:
     }
 
 
-def granularity_metrics(note_matrix: NoteMatrix) -> Dict[str, float]:
-    onsets = get_onsets_sorted(note_matrix)
-    n_events = len(onsets)
-    total_span = float(np.ptp(onsets)) if n_events >= 2 else 0.0
-    if total_span <= 0:
-        total_span = 1.0
+def granularity_metrics(note_matrix: NoteMatrix, tol_sec: float = COINCIDENCE_TOL_SEC) -> Dict[str, float]:
+    """Horizontal granularity on UNIQUE FUSED onsets (annex VD4). Raw counterparts
+    kept as *_raw diagnostics; sync_fraction records onsets absorbed by fusion. The
+    canonical VD4_s rate remains the Mustextu rate_eps; events_per_sec_global here is
+    a span-referenced diagnostic on the unique series."""
+    raw_onsets = get_onsets_sorted(note_matrix)
+    n_raw = int(raw_onsets.size)
+    merged, _ = merge_coincident_onsets(raw_onsets, tol_sec)
+    n_unique = int(merged.size)
+    total_span = float(np.ptp(merged)) if n_unique >= 2 else 0.0
+    support = total_span if total_span > 0 else 1.0
     out = {
-        "num_events": n_events,
+        "num_events": n_unique,
+        "num_events_raw": n_raw,
+        "sync_fraction": (1.0 - n_unique / n_raw) if n_raw > 0 else 0.0,
         "total_span_sec": total_span,
-        "events_per_sec_global": n_events / total_span if total_span > 0 else 0.0,
-        "ioi_mean_sec": np.nan,
-        "ioi_std_sec": np.nan,
-        "ioi_cv": np.nan,
-        "granularity_index": np.nan,
+        "events_per_sec_global": n_unique / support,
+        "events_per_sec_global_raw": n_raw / support,
+        "ioi_mean_sec": np.nan, "ioi_std_sec": np.nan,
+        "ioi_cv": np.nan, "granularity_index": np.nan,
+        "ioi_cv_raw": np.nan, "granularity_index_raw": np.nan,
         "burstiness": np.nan,
     }
-    iois = inter_onset_intervals(note_matrix)
-    if len(iois) == 0:
+    raw_iois = np.diff(raw_onsets) if n_raw >= 2 else np.array([])
+    if raw_iois.size > 0:
+        rmean = float(np.mean(raw_iois)); rstd = float(np.std(raw_iois))
+        out["ioi_cv_raw"] = (rstd / rmean) if rmean > 0 else np.nan
+        out["granularity_index_raw"] = (1.0/(1.0+out["ioi_cv_raw"])
+                                        if np.isfinite(out["ioi_cv_raw"]) else 0.5)
+    iois = np.diff(merged) if n_unique >= 2 else np.array([])
+    if iois.size == 0:
         return out
-    ioi_mean = float(np.mean(iois))
-    ioi_std = float(np.std(iois))
-    out["ioi_mean_sec"] = ioi_mean
-    out["ioi_std_sec"] = ioi_std
-    out["ioi_cv"] = (ioi_std / ioi_mean) if ioi_mean > 0 else np.nan
-    out["granularity_index"] = 1.0 / (1.0 + out["ioi_cv"]) if np.isfinite(out["ioi_cv"]) else 0.5
-    d = density_by_bins(note_matrix, bin_sec=0.5)
-    counts = d["onset_density"]
-    if len(counts) >= 2:
-        mu = float(np.mean(counts))
-        sig = float(np.std(counts))
-        out["burstiness"] = (sig - mu) / (sig + mu) if (sig + mu) > 0 else 0.0
+    imean = float(np.mean(iois)); istd = float(np.std(iois))
+    out["ioi_mean_sec"] = imean; out["ioi_std_sec"] = istd
+    out["ioi_cv"] = (istd / imean) if imean > 0 else np.nan
+    out["granularity_index"] = (1.0/(1.0+out["ioi_cv"])
+                                if np.isfinite(out["ioi_cv"]) else 0.5)
+    if total_span > 0:
+        n_bins = max(1, int(np.ceil(total_span / BURST_WINDOW_SEC)))
+        edges = float(merged.min()) + BURST_WINDOW_SEC * np.arange(n_bins + 1)
+        edges[-1] = max(edges[-1], float(merged.max()) + 1e-9)
+        counts, _ = np.histogram(merged, bins=edges)
+        if counts.size >= 2:
+            mu = float(np.mean(counts)); sig = float(np.std(counts))
+            out["burstiness"] = (sig - mu)/(sig + mu) if (sig + mu) > 0 else 0.0
     return out
 
 

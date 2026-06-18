@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from .activity_granularity import activity_rate_per_window, get_onsets_sorted, granularity_metrics
+from .activity_granularity import activity_rate_per_window, granularity_metrics
 from .measures import MeasureInfo, per_bar_event_rates
 from .note_types import NoteMatrix
 from .temporal_density import TemporalDensityAnalyzer
@@ -34,24 +34,43 @@ def global_event_rates(note_matrix: NoteMatrix) -> Dict[str, Any]:
     """Global rates with explicit unit definitions."""
     g = granularity_metrics(note_matrix)
     eps = float(g["events_per_sec_global"])
-    onsets = get_onsets_sorted(note_matrix)
     span_sec = float(g["total_span_sec"])
     span_ms = span_sec * 1000.0
     n = int(g["num_events"])
+    eps_raw = float(g["events_per_sec_global_raw"])
     return _nan_to_none({
         "num_events": n,
+        "num_events_raw": int(g["num_events_raw"]),
+        "sync_fraction": g.get("sync_fraction"),
         "span_sec": span_sec,
         "span_ms": span_ms,
         "events_per_second": eps,
+        "events_per_second_raw": eps_raw,
         "events_per_millisecond": eps / 1000.0,
         "mean_ioi_sec": g.get("ioi_mean_sec"),
         "mean_ioi_ms": float(g["ioi_mean_sec"]) * 1000.0 if np.isfinite(g.get("ioi_mean_sec", np.nan)) else None,
         "ioi_cv": g.get("ioi_cv"),
+        "ioi_cv_raw": g.get("ioi_cv_raw"),
         "granularity_index": g.get("granularity_index"),
+        "granularity_index_raw": g.get("granularity_index_raw"),
         "burstiness": g.get("burstiness"),
         "definition": {
-            "events_per_second": "N / (t_last_onset - t_first_onset) in seconds",
+            "num_events": "count of unique fused onsets (coincident within 2 ms merged)",
+            "num_events_raw": "count of raw onsets before fusion",
+            "sync_fraction": "1 - num_events / num_events_raw (onsets absorbed by fusion)",
+            "events_per_second": (
+                "unique fused onsets / (t_last - t_first); span-referenced diagnostic; "
+                "canonical VD4_s is Mustextu rate_eps"
+            ),
+            "events_per_second_raw": "raw onsets / (t_last - t_first) on fused span support",
             "events_per_millisecond": "events_per_second / 1000",
+            "ioi_cv": "std/mean of IOIs over unique fused onsets",
+            "ioi_cv_raw": "std/mean of IOIs over raw onsets (pre-fusion)",
+            "granularity_index": "1 / (1 + ioi_cv) on unique fused onsets",
+            "granularity_index_raw": "1 / (1 + ioi_cv_raw) on raw onsets",
+            "burstiness": (
+                "(sigma - mu) / (sigma + mu) of fused-onset counts in fixed 0.5 s windows"
+            ),
         },
     })
 
