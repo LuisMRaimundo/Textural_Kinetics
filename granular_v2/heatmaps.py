@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from collections import defaultdict
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 
@@ -34,6 +35,46 @@ from .note_types import NoteMatrix
 log = logging.getLogger(__name__)
 
 _MIDI_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+
+# Deterministic part/line colours for registral-trajectory note-map overlays (display only).
+PART_LINE_PALETTE = (
+    "#e11d48",
+    "#2563eb",
+    "#16a34a",
+    "#ca8a04",
+    "#9333ea",
+    "#0891b2",
+    "#ea580c",
+    "#4f46e5",
+    "#059669",
+    "#be123c",
+    "#0d9488",
+    "#7c3aed",
+)
+
+
+def extract_part_label(note: Dict[str, Any]) -> str:
+    """Return the MusicXML part/layer label carried in the note matrix."""
+    part = note.get("part")
+    if part is None or part == "":
+        return "Unknown"
+    return str(part)
+
+
+def part_color_map(part_labels: Sequence[str]) -> Dict[str, str]:
+    """Stable part label → colour mapping (sorted labels, cyclic palette)."""
+    unique = sorted(set(part_labels))
+    return {
+        label: PART_LINE_PALETTE[index % len(PART_LINE_PALETTE)]
+        for index, label in enumerate(unique)
+    }
+
+
+def note_part_overlay_colors(note_matrix: NoteMatrix) -> List[str]:
+    """Per-note overlay colours following ``part_color_map``."""
+    labels = [extract_part_label(n) for n in note_matrix]
+    mapping = part_color_map(labels)
+    return [mapping[label] for label in labels]
 
 
 def midi_to_note_name(midi: float) -> str:
@@ -283,6 +324,48 @@ def _draw_measure_lines(ax, measure_starts: List[float], time_units: str) -> Non
         )
 
 
+def _draw_note_overlay_by_part(
+    ax: Any,
+    note_matrix: NoteMatrix,
+    cfg: HeatmapConfig,
+) -> None:
+    """Scatter note centres on the heatmap, one colour per extracted XML part/layer."""
+    groups: dict[str, list[tuple[float, float]]] = defaultdict(list)
+    for note in note_matrix:
+        label = extract_part_label(note)
+        t_mid = float(note.get("onset_sec", 0)) + float(note.get("duration_sec", 0)) / 2
+        pitch = float(note.get("pitch", 60))
+        groups[label].append((t_mid, pitch))
+
+    colors = part_color_map(groups.keys())
+    multi_part = len(groups) > 1
+    for part_label in sorted(groups.keys()):
+        points = groups[part_label]
+        xs = np.array([point[0] for point in points])
+        ys = np.array([point[1] for point in points])
+        xs_plot, _ = _time_scale(xs, cfg.time_units)
+        ax.scatter(
+            xs_plot,
+            ys,
+            s=8.0,
+            c=colors[part_label],
+            edgecolors="#1e293b",
+            linewidths=0.3,
+            alpha=0.75,
+            zorder=6,
+            label=part_label if multi_part else None,
+        )
+    if multi_part:
+        ax.legend(
+            loc="upper right",
+            fontsize=7,
+            framealpha=0.9,
+            title="Part",
+            borderpad=0.4,
+            labelspacing=0.35,
+        )
+
+
 def plot_heatmap_basic(
     note_matrix: NoteMatrix,
     cfg: Optional[HeatmapConfig] = None,
@@ -425,24 +508,7 @@ def plot_heatmap_advanced(
     add_professional_colorbar(fig, im, ax, "Relative intensity", extend=extend)
 
     if cfg.overlay_points and note_matrix:
-        xs = np.array(
-            [
-                float(n.get("onset_sec", 0)) + float(n.get("duration_sec", 0)) / 2
-                for n in note_matrix
-            ]
-        )
-        ys = np.array([float(n.get("pitch", 60)) for n in note_matrix])
-        xs_plot, _ = _time_scale(xs, cfg.time_units)
-        ax.scatter(
-            xs_plot,
-            ys,
-            s=6.0,
-            c="#f8fafc",
-            edgecolors="#1e293b",
-            linewidths=0.25,
-            alpha=0.35,
-            zorder=6,
-        )
+        _draw_note_overlay_by_part(ax, note_matrix, cfg)
 
     plt.tight_layout(pad=1.2)
     return fig
