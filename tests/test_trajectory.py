@@ -6,6 +6,7 @@ import pytest
 from granular_v2.trajectory import (
     TrajectoryCalibrationError,
     TrajectoryError,
+    compute_block_relations,
     compute_vd10,
     describe_axis_calibration,
     export_vd10_json,
@@ -198,3 +199,32 @@ def test_export_vd10_json(tmp_path: Path):
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data["metric"] == "VD10"
     assert data["aggregates"]["net_displacement"] == 6.0
+
+
+def test_block_relations_converging_same_direction():
+    """Both blocks ascend; lower rises faster — inter-centre gap shrinks."""
+    blocks = [
+        {
+            "name": "Lower",
+            "samples": [
+                {"time_s": 0.0, "low": 60, "high": 60},
+                {"time_s": 2.0, "low": 68, "high": 68},
+            ],
+        },
+        {
+            "name": "Upper",
+            "samples": [
+                {"time_s": 0.0, "low": 80, "high": 80},
+                {"time_s": 2.0, "low": 84, "high": 84},
+            ],
+        },
+    ]
+    rel = compute_block_relations(blocks)
+    assert rel["metric"] == "VD10_block_relations"
+    assert len(rel["pairs"]) == 1
+    pair = rel["pairs"][0]
+    assert pair["relation"] == "converging"
+    assert pair["direction"] == "same_direction"
+    assert pair["distance_start_st"] == 20.0
+    assert pair["distance_end_st"] == 16.0
+    assert pair["mean_inter_distance_rate_st_per_s"] < 0.0
