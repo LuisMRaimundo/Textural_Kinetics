@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.9  
+**Version:** 1.0.10  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -651,7 +651,11 @@ L = \sum_i |\mathrm{centre}_{i+1} - \mathrm{centre}_i|,\quad
 
 ### 10.5 Export (`export_vd10_json`)
 
-Top-level keys: `metric` (`"VD10"`), `label`, `units`, `samples`, `segments`, `aggregates`, `labels`, `summary`. Separate from `analysis.json`.
+Top-level keys: `metric` (`"VD10"`), `label`, `units`, `eps`, `min_dt_recommended_s` (0.1 s), `samples`, `segments` (each with `dt_s`, `speed_centre`, `speed_width`), `aggregates` (includes `median_speed`, `min_segment_dt_s`), `labels`, `summary`, `sampling_warnings`, `descriptor_roles`. Separate from `analysis.json`.
+
+**Robust aggregates (thesis):** `net_speed`, `net_displacement`, `straightness`, `total_path`, `inflections`.
+
+**Sampling-dependent:** `mean_speed`, `median_speed`, `max_speed`, `segments[].speed_centre` — always inspect `dt_s`.
 
 **API:** `compute_vd10`, `normalize_sample`, `format_vd10_summary`, `export_vd10_json`.
 

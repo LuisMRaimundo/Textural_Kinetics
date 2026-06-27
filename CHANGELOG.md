@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.10
+
+- **VD10 sampling discipline:** `median_speed`, `min_segment_dt_s`, `sampling_warnings`, `descriptor_roles` (robust vs sampling-dependent); GUI lists segment `dt_s` and warns when Δt < 0.1 s.
+- **VD10 GUI fix:** re-pick at same heatmap x replaces existing sample (avoids duplicate-time errors).
+- **Tests:** `tests/test_trajectory.py` (13 tests); suite **162** collected; coverage ~92%.
+- **Docs:** robust vs sampling-dependent VD10 interpretation across `METRIC_SEMANTICS.md`, `MANUAL_METRICAS.md`, `MANUAL_TECNICO.md` §10, `FORMULAS.md`, `LIMITATIONS.md`; README and audit docs aligned.
+
 ## 1.0.9
 
 - **Feature:** VD10 registral trajectory — `granular_v2/trajectory.py` (pure computation), GUI tab **Registral trajectory** (`gui_trajectory.py`), interactive picking on the advanced pitch×time heatmap, JSON export via `export_vd10_json`.

@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.8 — evidence-based rating
+# Granular_v2 v1.0.10 — evidence-based rating
 
 ## Rubric (100)
 
@@ -11,9 +11,19 @@
 | Software architecture | 15 | **14** |
 | Tests / CI / corpus (3 fixtures) | 15 | **15** |
 | Documentation / scope honesty | 10 | **10** |
-| Heatmaps + GUI | 5 | **5** |
+| Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.10 (VD10 sampling discipline)
+
+- **VD10:** registral trajectory tab; robust descriptors (`net_speed`, `straightness`) documented vs sampling-dependent segment speeds; `sampling_warnings` when Δt < 0.1 s.
+- **Tests:** 162 collected; `test_trajectory.py` (13 tests, incl. tiny-Δt artefact regression).
+
+## v1.0.9 (VD10 feature)
+
+- **Feature:** `trajectory.py`, GUI tab **Registral trajectory**, JSON export.
+- **Docs:** manual §10, metric semantics, formulas, limitations.
 
 ## v1.0.8 (corpus harness)
 
