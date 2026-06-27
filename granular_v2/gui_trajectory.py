@@ -18,6 +18,9 @@ except ImportError:
     HAS_MPL = False
 
 
+TIME_MATCH_TOL_S = 0.001
+
+
 class TrajectoryTab:
     """Registral trajectory (VD10) tab: pick spans on the advanced heatmap."""
 
@@ -218,6 +221,12 @@ class TrajectoryTab:
             f"Re-pick sample #{idx + 1}: drag or two-click a vertical span on the heatmap."
         )
 
+    def _find_sample_at_time(self, time_s: float) -> Optional[int]:
+        for i, s in enumerate(self.samples):
+            if abs(float(s["time_s"]) - time_s) <= TIME_MATCH_TOL_S:
+                return i
+        return None
+
     def _add_sample(self, time_s: float, low: int, high: int) -> None:
         from .trajectory import snap_semitone
 
@@ -225,17 +234,35 @@ class TrajectoryTab:
         hi = snap_semitone(high)
         if lo > hi:
             lo, hi = hi, lo
-        self._push_undo()
         sample = {"time_s": float(time_s), "low": float(lo), "high": float(hi)}
+
         if self._edit_index is not None:
+            for i, s in enumerate(self.samples):
+                if i != self._edit_index and abs(float(s["time_s"]) - time_s) <= TIME_MATCH_TOL_S:
+                    messagebox.showwarning(
+                        "VD10",
+                        f"Another sample already exists at t={time_s:.3f}s.\n"
+                        "Pick a different time, or delete the other sample first.",
+                    )
+                    return
+            self._push_undo()
             self.samples[self._edit_index] = sample
             self._edit_index = None
+            action = "Updated"
         else:
-            self.samples.append(sample)
+            existing = self._find_sample_at_time(time_s)
+            self._push_undo()
+            if existing is not None:
+                self.samples[existing] = sample
+                action = "Updated"
+            else:
+                self.samples.append(sample)
+                action = "Added"
+
         self._result = None
         self._refresh_sample_list()
         self._redraw_overlays()
-        self._status_var.set(f"Sample at t={time_s:.3f}s, band {lo}–{hi} st.")
+        self._status_var.set(f"{action} sample at t={time_s:.3f}s, band {lo}–{hi} st.")
 
     def _event_to_data(self, event) -> Tuple[float, int]:
         assert self._ax is not None
@@ -417,7 +444,8 @@ class TrajectoryTab:
         self._redraw_overlays()
         fp = self._get_file_path()
         self._status_var.set(
-            f"Heatmap ready{f' — {fp}' if fp else ''}. Enable Pick mode to mark registral spans."
+            f"Heatmap ready{f' — {fp}' if fp else ''}. "
+            "Enable Pick mode — one sample per time (re-pick replaces same x)."
         )
 
     def _compute(self) -> None:

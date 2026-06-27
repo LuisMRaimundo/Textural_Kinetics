@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Sequence, TypedDict
 
 DEFAULT_EPS = 0.01
+DEFAULT_TIME_TOL_S = 0.001
 
 
 class TrajectoryInput(TypedDict):
@@ -187,6 +188,12 @@ def compute_vd10(
         t1 = samples[i + 1]["time_s"]
         dt = t1 - t0
         if dt <= 0.0:
+            if abs(t1 - t0) <= max(eps, DEFAULT_TIME_TOL_S):
+                raise TrajectoryError(
+                    f"Two samples share the same time (t={t0:.3f}s). "
+                    "Each pick must be at a distinct time on the heatmap; "
+                    "delete the duplicate in the sample list or re-pick at a different x."
+                )
             raise TrajectoryError(
                 f"Sample times must strictly increase (got t[{i}]={t0}, t[{i + 1}]={t1})."
             )

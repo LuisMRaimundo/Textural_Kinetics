@@ -116,12 +116,13 @@ def test_requires_two_samples():
         compute_vd10([{"time_s": 0.0, "low": 60, "high": 64}])
 
 
-def test_rejects_non_increasing_times():
-    with pytest.raises(TrajectoryError, match="strictly increase"):
+def test_rejects_duplicate_times():
+    with pytest.raises(TrajectoryError, match="same time"):
         compute_vd10(
             [
                 {"time_s": 0.0, "low": 60, "high": 64},
-                {"time_s": 0.0, "low": 68, "high": 72},
+                {"time_s": 1.0, "low": 62, "high": 66},
+                {"time_s": 1.0, "low": 68, "high": 72},
             ]
         )
 
