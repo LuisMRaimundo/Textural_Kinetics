@@ -450,3 +450,47 @@ def test_vd10_session_propagates_trajectory_error():
     assert block["vd10"] is None
     assert block["vd10_error"] is not None
     assert "same time" in block["vd10_error"]
+
+
+def test_block_relations_static_direction_labels():
+    both_static = compute_block_relations(
+        [
+            {
+                "name": "A",
+                "samples": [
+                    {"time_s": 0.0, "low": 60, "high": 60},
+                    {"time_s": 2.0, "low": 60, "high": 60},
+                ],
+            },
+            {
+                "name": "B",
+                "samples": [
+                    {"time_s": 0.0, "low": 72, "high": 72},
+                    {"time_s": 2.0, "low": 72, "high": 72},
+                ],
+            },
+        ]
+    )["pairs"][0]
+    assert both_static["direction"] == "both_static"
+    assert both_static["relation"] == "parallel"
+
+    one_static = compute_block_relations(
+        [
+            {
+                "name": "Static",
+                "samples": [
+                    {"time_s": 0.0, "low": 60, "high": 60},
+                    {"time_s": 2.0, "low": 60, "high": 60},
+                ],
+            },
+            {
+                "name": "Moving",
+                "samples": [
+                    {"time_s": 0.0, "low": 72, "high": 72},
+                    {"time_s": 2.0, "low": 76, "high": 76},
+                ],
+            },
+        ]
+    )["pairs"][0]
+    assert one_static["direction"] == "one_static"
+    assert one_static["relation"] == "diverging"

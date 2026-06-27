@@ -27,6 +27,7 @@ Suite: **173** tests; `trajectory.py` coverage **~96%** (Tier-1 VD10 multi-block
 - `test_describe_axis_calibration_rejects_equal_pixels` — serialisable calibration rejects coincident reference pixels.
 - `test_unsorted_samples_sorted_before_compute` — out-of-order picks sorted silently before VD10.
 - `test_vd10_session_propagates_trajectory_error` — duplicate-time block surfaces `vd10_error`.
+- `test_block_relations_static_direction_labels` — `both_static` and `one_static` pair directions.
 
 ## 1.0.11
 

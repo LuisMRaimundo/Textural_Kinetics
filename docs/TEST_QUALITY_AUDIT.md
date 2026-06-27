@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **176** |
+| Collected tests | **177** |
 | Test modules (excluding `conftest.py`) | **22** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -44,7 +44,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_pipeline.py` | 2 | Full `run_analysis` with/without heatmaps and JSON export |
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
-| `test_trajectory.py` | 27 | VD10 core, relations, session, interpolation, export, edge cases |
+| `test_trajectory.py` | 28 | VD10 core, relations, session, interpolation, export, edge cases |
 | `test_util_tempo_branches.py` | 11 | Repeat detection/expansion, `build_seconds_map` multi-segment behaviour |
 | `test_util_tempo_fallbacks.py` | 8 | Repeat-expansion and metronome-boundary fallback paths (monkeypatch/fakes) |
 | `test_util_tempo_parity.py` | 4 | Parity between `util_tempo` and `timebase` on synthetic + corpus scores |
