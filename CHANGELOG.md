@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.14
+
+- **Tests:** expanded `test_auto_pick.py` from 7 → **16** — empty pitch list, MIDI 127 clamp, empty matrix stats, unordered onsets, strictly increasing times, unknown-part grouping, stable block IDs, dense-sample warning, direct `compute_vd10` compatibility (plus existing chord merge, session, determinism).
+- **Docs:** README, `MANUAL_TECNICO.md` §14, `TEST_QUALITY_AUDIT.md`, `current_rating.md`; version **1.0.14**.
+
+Suite: **242** tests; coverage ~**93%** on `granular_v2`; corpus `compare_all` **3/3** OK.
+
 ## 1.0.13
 
 - **VD10 auto-pick from score:** toolbar button builds **one block per MusicXML part** from the loaded note matrix (one sample per onset; chord tones in the same part merge to a min–max band); confirms before replacing blocks; recomputes VD10 immediately; manual edit/undo unchanged.

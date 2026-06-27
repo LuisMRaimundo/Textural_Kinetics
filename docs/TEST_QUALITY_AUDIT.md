@@ -1,6 +1,6 @@
 # Test Quality Audit — Granularity-Analyser
 
-**Date:** 2026-06-27 (summary refreshed for v1.0.13)  
+**Date:** 2026-06-27 (summary refreshed for v1.0.14)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
 **Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
 **Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **233** |
+| Collected tests | **242** |
 | Test modules (excluding `conftest.py`) | **26** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -45,7 +45,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
 | `test_trajectory.py` | 30 | VD10 full API incl. relations, session, interpolation, edge cases |
-| `test_auto_pick.py` | 7 | VD10 auto-pick from note matrix (part blocks, chord merge) |
+| `test_auto_pick.py` | 16 | VD10 auto-pick from note matrix (part blocks, chord merge, edge cases, VD10 compat) |
 | `test_registral_trajectory_note_map_colours.py` | 8 | Part-coloured registral lines on advanced heatmap |
 | `test_input_layer_regression.py` | 16 | MusicXML/MIDI input layer, ties, repeats, errors |
 | `test_tier2_analytical_regression.py` | 23 | Corpus invariants, cross-fixture ordering, export schema |
@@ -229,4 +229,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (233 tests; VD10 auto-pick + regression layers; coverage ~93%).*
+*Summary refreshed 2026-06-27 (242 tests; expanded auto-pick suite; coverage ~93%).*

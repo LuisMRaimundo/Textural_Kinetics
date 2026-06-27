@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: "Raimundo"
     given-names: "Luís"
-version: "1.0.13"
+version: "1.0.14"
 date-released: "2026-06-27"
 repository-code: "https://github.com/LuisMRaimundo/Granularity-Analyser"
 url: "https://github.com/LuisMRaimundo/Granularity-Analyser"

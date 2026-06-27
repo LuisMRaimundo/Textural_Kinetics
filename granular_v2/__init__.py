@@ -21,7 +21,7 @@ from .trajectory import (
     make_axis_calibration,
 )
 
-__version__ = "1.0.13"
+__version__ = "1.0.14"
 
 __all__ = [
     "AnalysisConfig",
