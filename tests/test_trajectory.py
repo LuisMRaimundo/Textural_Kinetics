@@ -430,3 +430,23 @@ def test_unsorted_samples_sorted_before_compute():
     )
     assert r["aggregates"]["net_displacement"] == 8.0
     assert r["labels"]["direction"] == "ascending"
+
+
+def test_vd10_session_propagates_trajectory_error():
+    session = compute_vd10_session(
+        [
+            {
+                "id": "dup",
+                "name": "Duplicate times",
+                "samples": [
+                    {"time_s": 0.0, "low": 60, "high": 64},
+                    {"time_s": 1.0, "low": 66, "high": 70},
+                    {"time_s": 1.0, "low": 68, "high": 72},
+                ],
+            }
+        ]
+    )
+    block = session["blocks"][0]
+    assert block["vd10"] is None
+    assert block["vd10_error"] is not None
+    assert "same time" in block["vd10_error"]
