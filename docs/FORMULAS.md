@@ -63,7 +63,7 @@ t(q) = s_0^{(i)} + \frac{60}{b_i}(q - q_0^{(i)})\quad \text{for the first segmen
 
 ## Registral trajectory (VD10)
 
-User picks ≥2 samples \((t, \mathrm{low}, \mathrm{high})\) in **integer semitones** on the pitch×time heatmap (time from `timebase` / `onset_sec` axis).
+User picks ≥2 samples \((t, \mathrm{low}, \mathrm{high})\) in **integer semitones** on the pitch×time heatmap (time from `timebase` / `onset_sec` axis), or via **Auto-pick from score** (one block per XML part; one sample per onset; chord tones merged to min–max band).
 
 Per sample: \(\mathrm{centre}=(\mathrm{low}+\mathrm{high})/2\), \(\mathrm{width}=\mathrm{high}-\mathrm{low}\).
 
@@ -92,7 +92,11 @@ Aggregates:
 - **relation:** converging / diverging / parallel from rate vs ε
 - **direction:** pairwise net centre motion labels (not VD8)
 
-**Not** event-rate granularity (VD4). Block detection is user-defined; no automatic voice separation.
+**Not** event-rate granularity (VD4). Block detection is user-defined by default; **Auto-pick from score** proposes blocks from XML part labels (optional, editable).
+
+## Auto-pick (optional GUI / API)
+
+One block per note-matrix `part`; sample at each distinct onset; chord in same part → \(\mathrm{low}=\min\mathrm{pitch}\), \(\mathrm{high}=\max\mathrm{pitch}\); single pitch → band width 1 st. **API:** `auto_pick_blocks_from_note_matrix` → feed to `compute_vd10_session`. Does not alter VD10 formulas.
 
 ## Image axis calibration (VD10 image tab)
 

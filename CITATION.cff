@@ -5,11 +5,11 @@ type: software
 authors:
   - family-names: "Raimundo"
     given-names: "Luís"
-version: "1.0.12"
+version: "1.0.13"
 date-released: "2026-06-27"
 repository-code: "https://github.com/LuisMRaimundo/Granularity-Analyser"
 url: "https://github.com/LuisMRaimundo/Granularity-Analyser"
-abstract: "Fused symbolic MusicXML/MIDI analyzer: precise event rates (per second, millisecond, bar), activity granularity, Mustextu horizontal coincidence density, basic/advanced/spectral heatmaps, and VD10 registral trajectory (heatmap and calibrated image picking, editable multi-block samples, pairwise block relations). Not audio analysis or general orchestration scoring."
+abstract: "Fused symbolic MusicXML/MIDI analyzer: precise event rates (per second, millisecond, bar), activity granularity, Mustextu horizontal coincidence density, basic/advanced/spectral heatmaps, and VD10 registral trajectory (heatmap and calibrated image picking, part-coloured note map, auto-pick from score, editable multi-block samples, pairwise block relations). Not audio analysis or general orchestration scoring."
 keywords:
   - musicxml
   - music notation

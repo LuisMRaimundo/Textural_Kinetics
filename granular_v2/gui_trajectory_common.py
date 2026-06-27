@@ -117,6 +117,9 @@ class TrajectorySessionBase(ABC):
             top, text="Pick mode (new samples)", variable=self._pick_mode, command=self._on_pick_toggle
         ).pack(side=tk.LEFT, padx=4)
         tk.Checkbutton(top, text="Two-click span", variable=self._two_click).pack(side=tk.LEFT, padx=4)
+        tk.Button(top, text="Auto-pick from score", command=self._auto_pick_from_score, width=18).pack(
+            side=tk.LEFT, padx=4
+        )
         tk.Button(top, text="Undo", command=self._undo, width=8).pack(side=tk.LEFT, padx=4)
         tk.Button(top, text="Clear block", command=self._clear_active_block, width=10).pack(
             side=tk.LEFT, padx=4
@@ -225,6 +228,65 @@ class TrajectorySessionBase(ABC):
     @abstractmethod
     def _redraw_overlays(self) -> None:
         ...
+
+    def _note_matrix_for_auto_pick(self) -> Any:
+        """Return loaded note matrix for auto-pick, or None if unavailable."""
+        return None
+
+    def _auto_pick_from_score(self) -> None:
+        from .trajectory import AUTO_PICK_DENSE_SAMPLE_WARN, auto_pick_blocks_from_note_matrix
+
+        note_matrix = self._note_matrix_for_auto_pick()
+        if not note_matrix:
+            messagebox.showwarning(
+                "Auto-pick from score",
+                "Load a MusicXML/MIDI file on the Analysis tab first.",
+            )
+            return
+
+        preview = auto_pick_blocks_from_note_matrix(note_matrix)
+        blocks = preview["blocks"]
+        stats = preview["stats"]
+        if not blocks:
+            messagebox.showinfo("Auto-pick from score", "No notes found in the loaded score.")
+            return
+
+        lines = [
+            f"Create {stats['num_parts']} block(s) with {stats['total_samples']} samples",
+            f"({stats['computable_parts']} part(s) will compute VD10 immediately).",
+            "",
+            "This replaces all current blocks. You can edit picks afterward.",
+        ]
+        if stats.get("dense_sample_warning"):
+            lines.append(
+                f"\nWarning: {stats['total_samples']} samples (> {AUTO_PICK_DENSE_SAMPLE_WARN}). "
+                "Segment speeds may be sampling-sensitive; inspect dt_s in Results."
+            )
+        few = stats.get("parts_with_few_samples") or []
+        if few:
+            shown = ", ".join(few[:10])
+            if len(few) > 10:
+                shown += f", … (+{len(few) - 10} more)"
+            lines.append(f"\nParts with <2 onsets (no VD10 until edited): {shown}")
+
+        if not messagebox.askyesno("Auto-pick from score", "\n".join(lines)):
+            return
+
+        self._push_undo()
+        self.blocks = copy.deepcopy(blocks)
+        self._active_block_idx = 0
+        self._next_block_num = len(self.blocks) + 1
+        self._selected_sample_idx = None
+        self._pick_mode.set(False)
+        self._refresh_block_list()
+        self._refresh_sample_list()
+        self._redraw_overlays()
+        self._recompute_live()
+        if self._status_var is not None:
+            self._status_var.set(
+                f"Auto-picked {stats['total_samples']} samples across "
+                f"{stats['num_parts']} part(s); {stats['computable_parts']} with VD10 metrics."
+            )
 
     def _preview_time_width(self) -> float:
         return 0.05

@@ -39,7 +39,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, Sequence, TypedDict
+from collections import defaultdict
+from typing import Any, Callable, Dict, List, Mapping, Sequence, Tuple, TypedDict
 
 DEFAULT_EPS = 0.01
 DEFAULT_TIME_TOL_S = 0.001
@@ -652,4 +653,107 @@ def describe_axis_calibration(
         "p1_val": float(p1_val),
         "slope": slope,
         "intercept": intercept,
+    }
+
+
+AUTO_PICK_DENSE_SAMPLE_WARN = 150
+
+
+def part_label_from_note(note: Mapping[str, Any]) -> str:
+    """MusicXML part/layer label from a note-matrix row."""
+    part = note.get("part")
+    if part is None or str(part).strip() == "":
+        return "Unknown"
+    return str(part).strip()
+
+
+def band_from_pitches(pitches: Sequence[float | int]) -> Tuple[int, int]:
+    """Registral band (low, high) for one onset; single pitch gets 1-semitone width."""
+    if not pitches:
+        raise TrajectoryError("Cannot build registral band from empty pitch list.")
+    snapped = [snap_semitone(p) for p in pitches]
+    lo = min(snapped)
+    hi = max(snapped)
+    if lo == hi:
+        hi = min(127, lo + 1)
+    return lo, hi
+
+
+def auto_pick_samples_for_part(notes: Sequence[Mapping[str, Any]]) -> List[Dict[str, float]]:
+    """
+    Build VD10 samples for one part: one pick per distinct onset.
+
+    Simultaneous chord tones in the same part merge to min–max pitch band.
+    """
+    by_onset: dict[float, list[int]] = defaultdict(list)
+    for note in notes:
+        onset = round(float(note.get("onset_sec", 0)), 9)
+        by_onset[onset].append(snap_semitone(float(note.get("pitch", 60))))
+    samples: List[Dict[str, float]] = []
+    for onset in sorted(by_onset.keys()):
+        lo, hi = band_from_pitches(by_onset[onset])
+        samples.append({"time_s": float(onset), "low": float(lo), "high": float(hi)})
+    return samples
+
+
+def _auto_pick_block_id(part_label: str, index: int) -> str:
+    slug = "".join(ch if ch.isalnum() else "_" for ch in part_label.lower()).strip("_")
+    slug = (slug[:36] or "part").rstrip("_")
+    return f"block_{index}_{slug}"
+
+
+def auto_pick_blocks_from_note_matrix(
+    note_matrix: Sequence[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """
+    One VD10 block per extracted XML part, samples at each onset (chords merged).
+
+    Returns ``blocks`` ready for ``compute_vd10_session`` plus summary ``stats``.
+    Parts with fewer than two onsets are included but will not compute VD10 until edited.
+    """
+    if not note_matrix:
+        return {
+            "blocks": [],
+            "stats": {
+                "num_parts": 0,
+                "total_samples": 0,
+                "computable_parts": 0,
+                "parts_with_few_samples": [],
+                "dense_sample_warning": False,
+            },
+        }
+
+    by_part: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for note in note_matrix:
+        by_part[part_label_from_note(note)].append(note)
+
+    part_order = sorted(
+        by_part.keys(),
+        key=lambda label: min(float(n.get("onset_sec", 0)) for n in by_part[label]),
+    )
+
+    blocks: List[Dict[str, Any]] = []
+    for index, part_name in enumerate(part_order, start=1):
+        samples = auto_pick_samples_for_part(by_part[part_name])
+        blocks.append(
+            {
+                "id": _auto_pick_block_id(part_name, index),
+                "name": part_name,
+                "samples": samples,
+            }
+        )
+
+    total_samples = sum(len(block["samples"]) for block in blocks)
+    few = [block["name"] for block in blocks if len(block["samples"]) < 2]
+    computable = len(blocks) - len(few)
+
+    return {
+        "blocks": blocks,
+        "stats": {
+            "num_parts": len(blocks),
+            "total_samples": total_samples,
+            "computable_parts": computable,
+            "parts_with_few_samples": few,
+            "dense_sample_warning": total_samples > AUTO_PICK_DENSE_SAMPLE_WARN,
+        },
     }

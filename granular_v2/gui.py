@@ -61,7 +61,10 @@ class GranularGUI:
         notebook.add(trajectory_image_frame, text="Registral trajectory (image)")
         from .gui_trajectory_image import TrajectoryImageTab
 
-        self.trajectory_image_tab = TrajectoryImageTab(trajectory_image_frame)
+        self.trajectory_image_tab = TrajectoryImageTab(
+            trajectory_image_frame,
+            get_note_matrix=lambda: self.note_matrix,
+        )
 
         tk.Label(self.root, textvariable=self.status_var, fg="blue").pack(pady=4)
 

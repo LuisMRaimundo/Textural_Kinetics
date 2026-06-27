@@ -56,6 +56,9 @@ class TrajectoryTab(TrajectorySessionBase):
     def _canvas_ready_for_pick(self) -> bool:
         return self._ax is not None
 
+    def _note_matrix_for_auto_pick(self) -> Any:
+        return self._get_note_matrix()
+
     def _is_calibrated(self) -> bool:
         return True
 

@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.12 — evidence-based rating
+# Granular_v2 v1.0.13 — evidence-based rating
 
 ## Rubric (100)
 
@@ -15,12 +15,18 @@
 
 **Total: 97 / 100**
 
+## v1.0.13 (VD10 auto-pick, note-map colours, regression layers)
+
+- **GUI:** **Auto-pick from score** — one VD10 block per XML part; immediate recompute; manual edit unchanged. Registral note map: connected part-coloured lines + legend on VD10 heatmap.
+- **API:** `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_part`, `band_from_pitches`, `part_label_from_note`.
+- **Tests:** **233** collected; new modules `test_auto_pick.py`, `test_registral_trajectory_note_map_colours.py`, `test_input_layer_regression.py`, `test_tier2_analytical_regression.py`; `trajectory.py` high coverage.
+- **Docs:** README, manual §10.1/§10.6/§10.7.1, metrics, formulas, limitations, semantics, audit docs synced to v1.0.13.
+
 ## v1.0.12 (VD10 image picking)
 
 - **GUI:** tab **Registral trajectory (image)** — PNG/JPG load, pitch/time calibration, shared pick/edit/multi-block via `gui_trajectory_common.py`.
 - **API:** `make_axis_calibration`, `describe_axis_calibration`, `TrajectoryCalibrationError`; image session export metadata (`source`, `image_calibration`).
 - **Tests:** 178 collected; `test_trajectory.py` (29 tests); `trajectory.py` ~98% line coverage.
-- **Docs:** README, manual §10.9, metrics, formulas, limitations, audit docs synced to v1.0.12.
 
 ## v1.0.11 (VD10 editable multi-block)
 
