@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +22,7 @@ class GranularGUI:
         configure_logging()
         self.root = root
         root.title("Granular_v2 — temporal density & heatmaps")
-        root.geometry("820x480")
+        root.geometry("1200x720")
         self.path_var = tk.StringVar(value="(no file)")
         self.status_var = tk.StringVar(value="Open a MusicXML/MIDI file.")
         self.results = None
@@ -31,13 +30,38 @@ class GranularGUI:
         self.score = None
         self.file_path = None
         self.tempo_audit = {}
+        self.trajectory_tab = None
         self._build()
 
     def _build(self):
-        tk.Button(self.root, text="Open file", command=self._open).pack(pady=6)
-        tk.Label(self.root, textvariable=self.path_var, fg="gray").pack()
-        frm = tk.Frame(self.root)
-        frm.pack(pady=8)
+        header = tk.Frame(self.root)
+        header.pack(fill=tk.X, padx=6, pady=4)
+        tk.Button(header, text="Open file", command=self._open).pack(side=tk.LEFT, padx=4)
+        tk.Label(header, textvariable=self.path_var, fg="gray").pack(side=tk.LEFT, padx=8)
+
+        notebook = ttk.Notebook(self.root)
+        notebook.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
+
+        analysis_frame = tk.Frame(notebook)
+        notebook.add(analysis_frame, text="Analysis")
+        self._build_analysis_tab(analysis_frame)
+
+        trajectory_frame = tk.Frame(notebook)
+        notebook.add(trajectory_frame, text="Registral trajectory")
+        from .gui_trajectory import TrajectoryTab
+
+        self.trajectory_tab = TrajectoryTab(
+            trajectory_frame,
+            get_note_matrix=lambda: self.note_matrix,
+            get_score=lambda: self.score,
+            get_file_path=lambda: self.file_path,
+        )
+
+        tk.Label(self.root, textvariable=self.status_var, fg="blue").pack(pady=4)
+
+    def _build_analysis_tab(self, parent: tk.Frame) -> None:
+        frm = tk.Frame(parent)
+        frm.pack(pady=12)
         for i, (txt, cmd) in enumerate([
             ("Run analysis", self._run),
             ("Plots", self._plots),
@@ -47,7 +71,6 @@ class GranularGUI:
             ("Heatmap spectral", lambda: self._heatmap("spectral")),
         ]):
             tk.Button(frm, text=txt, command=cmd, width=14).grid(row=i // 3, column=i % 3, padx=4, pady=3)
-        tk.Label(self.root, textvariable=self.status_var, fg="blue").pack(pady=6)
 
     def _open(self):
         fp = filedialog.askopenfilename(
@@ -62,6 +85,8 @@ class GranularGUI:
             self.results = None
             self.path_var.set(Path(fp).name)
             self.status_var.set(f"Loaded {len(self.note_matrix)} events. Run analysis.")
+            if self.trajectory_tab is not None:
+                self.trajectory_tab.on_score_loaded()
         except Exception as e:
             log.exception("load failed")
             messagebox.showerror("Error", str(e))
