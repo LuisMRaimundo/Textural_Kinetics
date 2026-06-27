@@ -19,8 +19,7 @@
 
 - **GUI:** tab **Registral trajectory (image)** — PNG/JPG load, pitch/time calibration, shared pick/edit/multi-block via `gui_trajectory_common.py`.
 - **API:** `make_axis_calibration`, `describe_axis_calibration`, `TrajectoryCalibrationError`; image session export metadata (`source`, `image_calibration`).
-- **Tests:** 166 collected; `test_trajectory.py` (17 tests, incl. calibration mappers).
-- **Tests (post Tier-1):** 173 collected; `test_trajectory.py` (24 tests); `trajectory.py` ~96% line coverage.
+- **Tests:** 178 collected; `test_trajectory.py` (29 tests); `trajectory.py` ~98% line coverage.
 - **Docs:** README, manual §10.9, metrics, formulas, limitations, audit docs synced to v1.0.12.
 
 ## v1.0.11 (VD10 editable multi-block)

@@ -494,3 +494,11 @@ def test_block_relations_static_direction_labels():
     )["pairs"][0]
     assert one_static["direction"] == "one_static"
     assert one_static["relation"] == "diverging"
+
+
+def test_interpolate_band_empty_samples():
+    empty = interpolate_band_at_time([], 1.5)
+    assert empty["time_s"] == 1.5
+    assert empty["low"] == 60
+    assert empty["high"] == 60
+    assert empty["centre"] == 60.0

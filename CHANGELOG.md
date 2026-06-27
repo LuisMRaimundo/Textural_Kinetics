@@ -28,6 +28,9 @@ Suite: **173** tests; `trajectory.py` coverage **~96%** (Tier-1 VD10 multi-block
 - `test_unsorted_samples_sorted_before_compute` — out-of-order picks sorted silently before VD10.
 - `test_vd10_session_propagates_trajectory_error` — duplicate-time block surfaces `vd10_error`.
 - `test_block_relations_static_direction_labels` — `both_static` and `one_static` pair directions.
+- `test_interpolate_band_empty_samples` — empty pick list defaults to MIDI 60.
+
+Suite: **178** tests; `trajectory.py` **~98%** line coverage (VD10 edge cases complete).
 
 ## 1.0.11
 

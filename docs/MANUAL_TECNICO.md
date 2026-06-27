@@ -845,7 +845,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 | Mechanism | Command / file |
 |-----------|----------------|
-| Unit + integration tests | `pytest tests -q` (**173** tests) |
+| Unit + integration tests | `pytest tests -q` (**178** tests) |
 | Coverage gate | ≥72% on `granular_v2` (~**92%** typical) |
 | Corpus regression | `python corpus/scripts/compare_all.py` |
 | Offset audit tests | `tests/test_offset_audit.py` |
