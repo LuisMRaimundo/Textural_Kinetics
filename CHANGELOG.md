@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.16
+
+- **Tests:** `test_audit_merge.py` (**24** tests) — `merge_audits` warning concatenation, scalar metadata override, shallow nested-dict replace, malformed warning structures, loader-shaped integration smoke, JSON serialisability; `audit.py` **~92%** line coverage.
+- **Docs:** README, `MANUAL_TECNICO.md` §14, `TEST_QUALITY_AUDIT.md`, `current_rating.md`; version **1.0.16**.
+
+Suite: **273** tests; coverage ~**94%** on `granular_v2`; corpus `compare_all` **3/3** OK.
+
 ## 1.0.15
 
 - **VD10 group parts into one block:** multi-select part labels in the trajectory tab side panel; **Group selected into one block** builds envelope samples via `auto_pick_samples_for_group` (min–max pitch across selected parts at each onset); appends block without replacing existing ones; VD10 and block relations unchanged.

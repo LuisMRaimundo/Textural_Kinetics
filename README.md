@@ -4,12 +4,12 @@
 
 Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap or on a calibrated score image). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.15 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.16 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions + CircleCI — **249** tests, coverage ≥72% (~**93%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions + CircleCI — **273** tests, coverage ≥72% (~**94%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
 ## Documentation
 
