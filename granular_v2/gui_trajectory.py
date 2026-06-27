@@ -112,6 +112,7 @@ class TrajectoryTab(TrajectorySessionBase):
         NavigationToolbar2Tk(self._canvas, self._heatmap_frame)
         self._connect_pickers()
         self._redraw_overlays()
+        self._refresh_part_group_list()
         fp = self._get_file_path()
         if self._status_var is not None:
             self._status_var.set(

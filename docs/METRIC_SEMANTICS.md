@@ -1,7 +1,7 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.14).  
+**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.15).  
 **Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–10.
 
 ---
@@ -248,7 +248,7 @@ Displacement of a **user-enclosed registral band** (lower/upper boundary per sam
 ### What VD10 does **not** measure
 
 - **Not granularity / event rate (VD4):** many attacks per second does not imply registral motion; sparse textures can move quickly in register.
-- **Not automatic voice or layer detection by default:** the analyst defines blocks manually; optional **Auto-pick from score** proposes one block per XML `part` from the note matrix (same VD10 computation after confirmation).
+- **Not automatic voice or layer detection by default:** the analyst defines blocks manually; optional **Auto-pick from score** proposes one block per XML `part`; optional **Group selected parts** merges several parts into one envelope block (same VD10 computation after confirmation).
 - **Not total-path speed as headline metric:** a block that ascends then returns yields **net_speed ≈ 0**; `total_path` and `inflections` describe oscillation, not directional displacement.
 
 ### Canonical speed

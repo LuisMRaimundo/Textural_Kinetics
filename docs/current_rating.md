@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.14 — evidence-based rating
+# Granular_v2 v1.0.15 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,12 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.15 (VD10 group parts into one block)
+
+- **GUI:** multi-select parts + **Group selected into one block** — envelope band (min/max across lines at each onset); coexists with per-part auto-pick and manual picks.
+- **API:** `auto_pick_samples_for_group`, `distinct_part_labels_from_note_matrix`, `group_block_default_name`.
+- **Tests:** **249** collected; `test_auto_pick.py` **23** tests.
 
 ## v1.0.14 (expanded auto-pick tests)
 
