@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.13  
+**Version:** 1.0.14  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -860,7 +860,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 | Mechanism | Command / file |
 |-----------|----------------|
-| Unit + integration tests | `pytest tests -q` (**233** tests) |
+| Unit + integration tests | `pytest tests -q` (**242** tests) |
 | Coverage gate | ≥72% on `granular_v2` (~**93%** typical) |
 | Corpus regression | `python corpus/scripts/compare_all.py` |
 | Offset audit tests | `tests/test_offset_audit.py` |

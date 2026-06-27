@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.13 — evidence-based rating
+# Granular_v2 v1.0.14 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,11 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.14 (expanded auto-pick tests)
+
+- **Tests:** `test_auto_pick.py` **16** tests — pitch clamp, empty inputs, ordering, unknown parts, dense-sample warning, `compute_vd10` compatibility.
+- **Suite:** **242** collected; coverage ~**93%**; corpus `compare_all` **3/3** OK.
 
 ## v1.0.13 (VD10 auto-pick, note-map colours, regression layers)
 
