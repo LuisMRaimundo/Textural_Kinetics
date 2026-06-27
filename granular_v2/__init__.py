@@ -14,12 +14,14 @@ from .trajectory import (
     compute_block_relations,
     compute_vd10,
     compute_vd10_session,
+    describe_axis_calibration,
     export_vd10_json,
     export_vd10_session_json,
     format_vd10_summary,
+    make_axis_calibration,
 )
 
-__version__ = "1.0.11"
+__version__ = "1.0.12"
 
 __all__ = [
     "AnalysisConfig",
@@ -38,4 +40,6 @@ __all__ = [
     "export_vd10_json",
     "export_vd10_session_json",
     "format_vd10_summary",
+    "make_axis_calibration",
+    "describe_axis_calibration",
 ]

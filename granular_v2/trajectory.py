@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Sequence, TypedDict
+from typing import Any, Callable, Dict, List, Mapping, Sequence, TypedDict
 
 DEFAULT_EPS = 0.01
 DEFAULT_TIME_TOL_S = 0.001
@@ -89,6 +89,10 @@ class TrajectoryAggregates(TypedDict):
 
 class TrajectoryError(ValueError):
     """Invalid VD10 sample series or non-monotonic time."""
+
+
+class TrajectoryCalibrationError(TrajectoryError):
+    """Invalid axis calibration for image-based VD10 picking."""
 
 
 def snap_semitone(pitch: float) -> int:
@@ -575,3 +579,76 @@ def export_vd10_session_json(session: Mapping[str, Any], path: Path | str) -> No
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(dict(session), f, indent=2, ensure_ascii=False)
+
+
+def make_axis_calibration(
+    p0_px: float,
+    p0_val: float,
+    p1_px: float,
+    p1_val: float,
+) -> Callable[[float], float]:
+    """
+    Build a linear pixel → axis-value map for image-based VD10 picking.
+
+    Assumes **linear** correspondence between image position and musical pitch
+    (vertical axis, semitones/MIDI) or time (horizontal axis, seconds). Valid for
+    proportional graphic / spatial scores; **not** for conventional non-spatial
+    symbolic notation where layout does not encode pitch or duration.
+
+    Parameters
+    ----------
+    p0_px, p1_px
+        Reference pixel positions along the image axis (must differ).
+    p0_val, p1_val
+        Musical values at those pixels (semitones or seconds).
+
+    Returns
+    -------
+    callable
+        ``map_px(px) -> value``, extrapolating linearly beyond the reference span.
+
+    Raises
+    ------
+    TrajectoryCalibrationError
+        If ``p0_px`` and ``p1_px`` are equal.
+    """
+    dp = float(p1_px) - float(p0_px)
+    if abs(dp) < 1e-12:
+        raise TrajectoryCalibrationError(
+            "Calibration reference points must differ in pixel position."
+        )
+    slope = (float(p1_val) - float(p0_val)) / dp
+    intercept = float(p0_val) - slope * float(p0_px)
+
+    def map_px(px: float) -> float:
+        return slope * float(px) + intercept
+
+    return map_px
+
+
+def describe_axis_calibration(
+    p0_px: float,
+    p0_val: float,
+    p1_px: float,
+    p1_val: float,
+) -> Dict[str, float]:
+    """
+    Serialisable axis calibration record (reference points plus slope/intercept).
+
+    Same linear assumption as :func:`make_axis_calibration`.
+    """
+    dp = float(p1_px) - float(p0_px)
+    if abs(dp) < 1e-12:
+        raise TrajectoryCalibrationError(
+            "Calibration reference points must differ in pixel position."
+        )
+    slope = (float(p1_val) - float(p0_val)) / dp
+    intercept = float(p0_val) - slope * float(p0_px)
+    return {
+        "p0_px": float(p0_px),
+        "p0_val": float(p0_val),
+        "p1_px": float(p1_px),
+        "p1_val": float(p1_val),
+        "slope": slope,
+        "intercept": intercept,
+    }

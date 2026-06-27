@@ -57,6 +57,12 @@ class GranularGUI:
             get_file_path=lambda: self.file_path,
         )
 
+        trajectory_image_frame = tk.Frame(notebook)
+        notebook.add(trajectory_image_frame, text="Registral trajectory (image)")
+        from .gui_trajectory_image import TrajectoryImageTab
+
+        self.trajectory_image_tab = TrajectoryImageTab(trajectory_image_frame)
+
         tk.Label(self.root, textvariable=self.status_var, fg="blue").pack(pady=4)
 
     def _build_analysis_tab(self, parent: tk.Frame) -> None:

@@ -4,10 +4,13 @@ from pathlib import Path
 import pytest
 
 from granular_v2.trajectory import (
+    TrajectoryCalibrationError,
     TrajectoryError,
     compute_vd10,
+    describe_axis_calibration,
     export_vd10_json,
     format_vd10_summary,
+    make_axis_calibration,
     normalize_sample,
     normalize_samples,
     snap_semitone,
@@ -155,6 +158,32 @@ def test_tiny_dt_inflates_max_not_net():
     assert agg["max_speed"] > agg["median_speed"] * 5
     assert r["sampling_warnings"]
     assert any(w["segment_index"] == 1 for w in r["sampling_warnings"])
+
+
+def test_make_axis_calibration_linear():
+    map_px = make_axis_calibration(0.0, 48.0, 100.0, 72.0)
+    assert abs(map_px(0.0) - 48.0) < 1e-9
+    assert abs(map_px(100.0) - 72.0) < 1e-9
+    assert abs(map_px(50.0) - 60.0) < 1e-9
+
+
+def test_make_axis_calibration_time_axis():
+    map_time = make_axis_calibration(10.0, 0.0, 210.0, 12.5)
+    assert abs(map_time(10.0)) < 1e-9
+    assert abs(map_time(210.0) - 12.5) < 1e-9
+    assert abs(map_time(110.0) - 6.25) < 1e-9
+
+
+def test_describe_axis_calibration_matches_mapper():
+    desc = describe_axis_calibration(0.0, 60.0, 200.0, 80.0)
+    map_px = make_axis_calibration(0.0, 60.0, 200.0, 80.0)
+    assert abs(desc["slope"] - 0.1) < 1e-9
+    assert abs(map_px(100.0) - (desc["intercept"] + desc["slope"] * 100.0)) < 1e-9
+
+
+def test_calibration_rejects_equal_pixels():
+    with pytest.raises(TrajectoryCalibrationError, match="differ"):
+        make_axis_calibration(5.0, 0.0, 5.0, 10.0)
 
 
 def test_export_vd10_json(tmp_path: Path):

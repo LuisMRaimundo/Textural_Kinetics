@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "granular-v2"
-version = "1.0.11"
+version = "1.0.12"
 description = "Fused symbolic density: precise event rates, Mustextu, heatmaps, partitional option"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -35,6 +35,8 @@ omit = [
   "granular_v2/__main__.py",
   "granular_v2/gui.py",
   "granular_v2/gui_trajectory.py",
+  "granular_v2/gui_trajectory_common.py",
+  "granular_v2/gui_trajectory_image.py",
   "granular_v2/plots.py",
   "granular_v2/logging_config.py",
 ]
@@ -55,5 +57,7 @@ exclude = [
   "granular_v2/mustextu/horizontal_density.py",
   "granular_v2/gui.py",
   "granular_v2/gui_trajectory.py",
+  "granular_v2/gui_trajectory_common.py",
+  "granular_v2/gui_trajectory_image.py",
   "granular_v2/plots.py",
 ]
