@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.12  
+**Version:** 1.0.13  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -692,6 +692,8 @@ Without enabling Pick mode, click an existing sample marker or list row to **sel
 
 After any edit, samples are re-sorted by time and VD10 is **recomputed live** for all blocks. Duplicate times at the same `time_s` are rejected.
 
+**Auto-pick from score** (toolbar): builds **one block per MusicXML part** from the loaded note matrix — one sample per onset (chord tones in the same part merge to a min–max band). Replaces all blocks after confirmation, then recomputes VD10 immediately for parts with ≥2 onsets. Manual edit gestures still apply afterward. Dense scores (>150 samples) show a sampling warning.
+
 ### 10.7 Multi-block trajectories
 
 Each **block** has its own sample list, colour overlay, and VD10 result. The **active** block (▶ in Blocks panel) receives new picks in Pick mode and accepts edit gestures.
@@ -704,6 +706,19 @@ Each **block** has its own sample list, colour overlay, and VD10 result. The **a
 | `relations` | output of `compute_block_relations` |
 
 Single-block sessions behave as before: one default block named **Block 1**.
+
+### 10.7.1 Auto-pick API (`trajectory.py`)
+
+Display-only **proposal** of picks from the note matrix; **VD10 formulas unchanged** after picks are accepted.
+
+| Function | Role |
+|----------|------|
+| `auto_pick_blocks_from_note_matrix(note_matrix)` | One block per XML `part`; returns `{blocks, stats}` |
+| `auto_pick_samples_for_part(notes)` | One sample per distinct onset in a part |
+| `band_from_pitches(pitches)` | Registral band; single pitch → 1 semitone width |
+| `part_label_from_note(note)` | Part name from note-matrix row |
+
+**Stats:** `num_parts`, `total_samples`, `computable_parts`, `parts_with_few_samples`, `dense_sample_warning` (>150 samples).
 
 ### 10.8 Block relations (`compute_block_relations`)
 
@@ -845,8 +860,8 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 | Mechanism | Command / file |
 |-----------|----------------|
-| Unit + integration tests | `pytest tests -q` (**178** tests) |
-| Coverage gate | ≥72% on `granular_v2` (~**92%** typical) |
+| Unit + integration tests | `pytest tests -q` (**233** tests) |
+| Coverage gate | ≥72% on `granular_v2` (~**93%** typical) |
 | Corpus regression | `python corpus/scripts/compare_all.py` |
 | Offset audit tests | `tests/test_offset_audit.py` |
 | Global offset integration | `tests/test_global_offsets_integration.py` |

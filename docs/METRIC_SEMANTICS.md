@@ -1,7 +1,7 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.12).  
+**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.13).  
 **Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–10.
 
 ---
@@ -248,7 +248,7 @@ Displacement of a **user-enclosed registral band** (lower/upper boundary per sam
 ### What VD10 does **not** measure
 
 - **Not granularity / event rate (VD4):** many attacks per second does not imply registral motion; sparse textures can move quickly in register.
-- **Not automatic voice or layer detection:** the block is whatever the analyst marks.
+- **Not automatic voice or layer detection by default:** the analyst defines blocks manually; optional **Auto-pick from score** proposes one block per XML `part` from the note matrix (same VD10 computation after confirmation).
 - **Not total-path speed as headline metric:** a block that ascends then returns yields **net_speed ≈ 0**; `total_path` and `inflections` describe oscillation, not directional displacement.
 
 ### Canonical speed
@@ -330,6 +330,7 @@ Centres are linearly interpolated between picks; inter-centre distance \(d(t)\) 
 | VD10 registral trajectory | `granular_v2/trajectory.py` → `compute_vd10`, `export_vd10_json` |
 | VD10 multi-block session | `granular_v2/trajectory.py` → `compute_vd10_session`, `export_vd10_session_json` |
 | VD10 block relations | `granular_v2/trajectory.py` → `compute_block_relations`, `interpolate_centre_at_times` |
+| VD10 auto-pick (proposal) | `granular_v2/trajectory.py` → `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_part` |
 | VD10 image calibration | `granular_v2/trajectory.py` → `make_axis_calibration`, `describe_axis_calibration` |
 
 No formula in this document should be read as overriding the code; if they diverge, **the code wins** and this file should be updated.

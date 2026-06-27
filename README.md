@@ -4,12 +4,12 @@
 
 Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap or on a calibrated score image). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.12 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.13 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions + CircleCI — **178** tests, coverage ≥72% (~**92%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions + CircleCI — **233** tests, coverage ≥72% (~**93%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
 ## Documentation
 
@@ -66,6 +66,16 @@ print(session["relations"]["pairs"])
 export_vd10_session_json(session, "out/vd10_session.json")
 ```
 
+**Auto-pick from note matrix** (one VD10 block per XML part; chord onsets merged):
+
+```python
+from granular_v2.trajectory import auto_pick_blocks_from_note_matrix, compute_vd10_session
+
+picked = auto_pick_blocks_from_note_matrix(note_matrix)
+session = compute_vd10_session(picked["blocks"])
+print(picked["stats"])  # num_parts, total_samples, computable_parts, …
+```
+
 **Image-based picking** (proportional graphic scores — linear pixel↔pitch/time calibration):
 
 ```python
@@ -114,8 +124,8 @@ python -m granular_v2.gui
 Tabs:
 
 - **Analysis** — event rates, heatmap pop-outs, JSON export.
-- **Registral trajectory** — VD10 on the embedded advanced heatmap (editable multi-block picking; drag/edit/insert; live recompute; block relations; session JSON).
-- **Registral trajectory (image)** — VD10 on a PNG/JPG excerpt with two-axis calibration (pitch + time); same pick/edit/multi-block workflow as the heatmap tab.
+- **Registral trajectory** — VD10 on the embedded advanced heatmap (part-coloured registral lines; **Auto-pick from score**; editable multi-block picking; drag/edit/insert; live recompute; block relations; session JSON).
+- **Registral trajectory (image)** — VD10 on a PNG/JPG excerpt with two-axis calibration (pitch + time); same pick/edit/multi-block workflow; auto-pick when a score is loaded on Analysis.
 
 Standalone image picker (no score required):
 

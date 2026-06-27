@@ -1,6 +1,6 @@
 # Test Quality Audit — Granularity-Analyser
 
-**Date:** 2026-06-10 (summary refreshed; module table below reflects 2026-06-06 audit unless noted)  
+**Date:** 2026-06-27 (summary refreshed for v1.0.13)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
 **Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
 **Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
@@ -13,12 +13,12 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **178** |
-| Test modules (excluding `conftest.py`) | **22** |
+| Collected tests | **233** |
+| Test modules (excluding `conftest.py`) | **26** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
 | Corpus reference JSON snapshots | 3 (matching fixture stems) |
-| `granular_v2` line coverage (full suite) | **~87%** (threshold: 72%) |
+| `granular_v2` line coverage (full suite) | **~93%** (threshold: 72%) |
 | External regression script | `corpus/scripts/compare_all.py` (invoked by `tests/test_corpus.py`) |
 
 Source of truth for individual test names: `test_inventory.txt` (may lag; prefer `pytest --collect-only` for current count).
@@ -44,7 +44,11 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_pipeline.py` | 2 | Full `run_analysis` with/without heatmaps and JSON export |
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
-| `test_trajectory.py` | 29 | VD10 full API incl. relations, session, interpolation, edge cases | VD10 core, relations, session, interpolation, export, edge cases |
+| `test_trajectory.py` | 30 | VD10 full API incl. relations, session, interpolation, edge cases |
+| `test_auto_pick.py` | 7 | VD10 auto-pick from note matrix (part blocks, chord merge) |
+| `test_registral_trajectory_note_map_colours.py` | 8 | Part-coloured registral lines on advanced heatmap |
+| `test_input_layer_regression.py` | 16 | MusicXML/MIDI input layer, ties, repeats, errors |
+| `test_tier2_analytical_regression.py` | 23 | Corpus invariants, cross-fixture ordering, export schema |
 | `test_util_tempo_branches.py` | 11 | Repeat detection/expansion, `build_seconds_map` multi-segment behaviour |
 | `test_util_tempo_fallbacks.py` | 8 | Repeat-expansion and metronome-boundary fallback paths (monkeypatch/fakes) |
 | `test_util_tempo_parity.py` | 4 | Parity between `util_tempo` and `timebase` on synthetic + corpus scores |
@@ -225,4 +229,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (178 tests; VD10 `trajectory.py` ~98% — Tier-1 + edge cases complete).*
+*Summary refreshed 2026-06-27 (233 tests; VD10 auto-pick + regression layers; coverage ~93%).*

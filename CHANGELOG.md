@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.13
+
+- **VD10 auto-pick from score:** toolbar button builds **one block per MusicXML part** from the loaded note matrix (one sample per onset; chord tones in the same part merge to a min–max band); confirms before replacing blocks; recomputes VD10 immediately; manual edit/undo unchanged.
+- **API:** `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_part`, `part_label_from_note`, `band_from_pitches` in `trajectory.py` (pure, unit-tested).
+- **Registral note map (heatmap tab):** each extracted XML part drawn as a **connected registral line** in a deterministic colour with a **Part** legend (`heatmaps.py`; `overlay_points` on VD10 heatmap).
+- **Regression layers:** Tier-2 analytical/corpus invariants (`test_tier2_analytical_regression.py`); input-layer loading (`test_input_layer_regression.py`); note-map colours (`test_registral_trajectory_note_map_colours.py`); auto-pick (`test_auto_pick.py`).
+- **VD10 fix (1.0.13 baseline):** `shape_hint` uses \|straightness\| for descending trajectories (merged earlier on main).
+- **Docs:** README, `MANUAL_TECNICO.md` §10.1/§10.6/§14, `MANUAL_METRICAS.md`, `METRIC_SEMANTICS.md`, `FORMULAS.md`, `LIMITATIONS.md`, `current_rating.md`, `TEST_QUALITY_AUDIT.md`, `CITATION.cff`; version **1.0.13**.
+
+### Tests
+
+- `test_auto_pick.py` (7) — part grouping, chord merge, session compute, determinism.
+- `test_registral_trajectory_note_map_colours.py` (8) — per-part line colours and legend.
+- `test_input_layer_regression.py` (16) — MusicXML/MIDI load, ties, repeats, errors.
+- `test_tier2_analytical_regression.py` (23) — corpus invariants and cross-fixture ordering.
+
+Suite: **233** tests; coverage ~**93%** on `granular_v2`; corpus `compare_all` **3/3** OK.
+
 ## 1.0.12
 
 - **VD10 image picking:** new tab **Registral trajectory (image)** (`gui_trajectory_image.py`) — load PNG/JPG excerpt, two-axis calibration (pitch + time), same multi-block pick/edit/compute/export as heatmap tab.

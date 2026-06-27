@@ -76,8 +76,14 @@ class TrajectoryImageTab(TrajectorySessionBase):
 
     _require_calibration = True
 
-    def __init__(self, parent: tk.Widget) -> None:
+    def __init__(
+        self,
+        parent: tk.Widget,
+        *,
+        get_note_matrix=None,
+    ) -> None:
         super().__init__()
+        self._get_note_matrix = get_note_matrix
         self._fig: Optional[Figure] = None
         self._image_frame: Optional[tk.Frame] = None
         self._image_path: Optional[str] = None
@@ -125,6 +131,11 @@ class TrajectoryImageTab(TrajectorySessionBase):
 
     def _canvas_ready_for_pick(self) -> bool:
         return self._ax is not None and self._image_array is not None
+
+    def _note_matrix_for_auto_pick(self) -> Any:
+        if self._get_note_matrix is None:
+            return None
+        return self._get_note_matrix()
 
     def _is_calibrated(self) -> bool:
         return (
