@@ -331,3 +331,29 @@ def test_vd10_session_two_blocks():
     assert abs(session["blocks"][0]["vd10"]["aggregates"]["net_speed"] - 4.0) < 1e-9
     assert len(session["relations"]["pairs"]) == 1
     assert session["relations"]["pairs"][0]["relation"] == "converging"
+
+
+def test_vd10_session_single_sample_block_error():
+    session = compute_vd10_session(
+        [
+            {
+                "id": "incomplete",
+                "name": "Incomplete",
+                "samples": [{"time_s": 0.0, "low": 60, "high": 64}],
+            },
+            {
+                "id": "ok",
+                "name": "Complete",
+                "samples": [
+                    {"time_s": 0.0, "low": 72, "high": 72},
+                    {"time_s": 1.0, "low": 76, "high": 76},
+                ],
+            },
+        ]
+    )
+    bad = session["blocks"][0]
+    assert bad["vd10"] is None
+    assert bad["vd10_error"] == "VD10 requires at least two samples."
+    assert session["blocks"][1]["vd10"] is not None
+    assert session["relations"]["pairs"] == []
+    assert "At least two blocks" in session["relations"]["note"]
