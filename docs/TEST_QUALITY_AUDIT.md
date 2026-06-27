@@ -1,6 +1,6 @@
 # Test Quality Audit — Granularity-Analyser
 
-**Date:** 2026-06-27 (summary refreshed for v1.0.15)  
+**Date:** 2026-06-27 (summary refreshed for v1.0.16)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
 **Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
 **Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
@@ -13,12 +13,12 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **249** |
-| Test modules (excluding `conftest.py`) | **26** |
+| Collected tests | **273** |
+| Test modules (excluding `conftest.py`) | **27** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
 | Corpus reference JSON snapshots | 3 (matching fixture stems) |
-| `granular_v2` line coverage (full suite) | **~93%** (threshold: 72%) |
+| `granular_v2` line coverage (full suite) | **~94%** (threshold: 72%) |
 | External regression script | `corpus/scripts/compare_all.py` (invoked by `tests/test_corpus.py`) |
 
 Source of truth for individual test names: `test_inventory.txt` (may lag; prefer `pytest --collect-only` for current count).
@@ -46,6 +46,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
 | `test_trajectory.py` | 30 | VD10 full API incl. relations, session, interpolation, edge cases |
 | `test_auto_pick.py` | 23 | VD10 auto-pick + group envelope (part blocks, chord merge, diverge/converge) |
+| `test_audit_merge.py` | 24 | `merge_audits` warning/metadata merge, JSON serialisability |
 | `test_registral_trajectory_note_map_colours.py` | 8 | Part-coloured registral lines on advanced heatmap |
 | `test_input_layer_regression.py` | 16 | MusicXML/MIDI input layer, ties, repeats, errors |
 | `test_tier2_analytical_regression.py` | 23 | Corpus invariants, cross-fixture ordering, export schema |
@@ -75,7 +76,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Corpus regression fixtures** | **Medium** | Three fixtures with JSON snapshots and `compare_all.py`; parametrized offset/Mustextu alignment. Limited musical diversity; no per-metric golden files beyond three scalars. |
 | **Heatmaps and plotting** | **Medium** | `test_heatmaps.py` strong on matrix shapes and smoke plots; `heatmaps.py` 87%. `plots.py` omitted from coverage; only one activity-plot smoke test. |
 | **Reports / export** | **Medium** | `reports.py` 100%; `test_pipeline.py` checks `analysis.json`; `test_offset_audit.py` checks `tempo_model` and `warnings` key. No deep schema/content regression for exports. |
-| **Audit metadata** | **Medium** | Loader tempo-fallback warnings tested; export includes audit keys. `audit.py` itself lightly exercised (33% coverage) — `merge_audits` largely untested. |
+| **Audit metadata** | **Medium–Strong** | Loader tempo-fallback warnings tested; export includes audit keys. `audit.py` **~92%** coverage; `merge_audits` covered by `test_audit_merge.py` (utility not yet used in loader path). |
 | **Configuration validation** | **Weak** | Only invalid `pitch_domain` and heatmap mode; most `AnalysisConfig` fields and edge cases untested. |
 
 ---
@@ -115,7 +116,6 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Malformed / incomplete score data** | Good defensive unit tests (fakes/monkeypatch); few real corrupt MusicXML files | Production failures on user uploads |
 | **Numerical metric regression** | Only 3 scalar snapshots per fixture; no golden IOI distributions, burstiness, heatmap hashes, or per-bar rates | Silent analytical drift in thesis-facing metrics; interpret scalars per [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) before locking |
 | **Negative / zero duration prohibition at pipeline level** | Asserted in unit tests, not as a global post-condition on every corpus run | Rare corruption could slip through integration |
-| **`merge_audits` and multi-warning export** | `audit.py` mostly untested | Incomplete warning propagation in combined exports |
 | **`input_layer` direct paths** | Omitted from coverage; loader tests partially subsume | MIDI/MusicXML divergence between layers |
 | **Partitional / fusion on real polyphony** | Single minimal `sample.musicxml` smoke test | Layer fusion untested on layered_async fixture |
 | **GUI and CLI entry points** | Not tested | User-facing regressions undetected |
@@ -189,8 +189,7 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 6. **`grace_note_passage`** fixture through pipeline; assert onset count with default `ignore_grace=True`.
 7. **`transposing_instrument_score`** with written vs sounding config and pitch assertions.
 8. Broaden **`AnalysisConfig`** validation tests (window sizes, bin widths, invalid combinations).
-9. Test **`audit.merge_audits`** warning concatenation.
-10. Increase **heatmap** regression (matrix sum or hash) on one corpus fixture.
+9. Increase **heatmap** regression (matrix sum or hash) on one corpus fixture.
 
 ### Low priority
 
@@ -229,4 +228,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (249 tests; VD10 group-parts envelope; coverage ~93%).*
+*Summary refreshed 2026-06-27 (273 tests; audit.merge_audits covered; coverage ~94%).*

@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.15 — evidence-based rating
+# Granular_v2 v1.0.16 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,11 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.16 (audit.merge_audits tests)
+
+- **Tests:** `test_audit_merge.py` **24** tests; `audit.py` **~92%** coverage; `merge_audits` semantics locked (utility not yet wired in loader).
+- **Suite:** **273** collected; coverage ~**94%**; corpus `compare_all` **3/3** OK.
 
 ## v1.0.15 (VD10 group parts into one block)
 
