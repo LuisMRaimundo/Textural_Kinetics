@@ -11,6 +11,7 @@ from granular_v2.trajectory import (
     compute_vd10_session,
     describe_axis_calibration,
     export_vd10_json,
+    export_vd10_session_json,
     format_vd10_summary,
     interpolate_band_at_time,
     make_axis_calibration,
@@ -382,3 +383,33 @@ def test_interpolate_band_midpoint_and_clamp():
     lone = interpolate_band_at_time([{"time_s": 0.0, "low": 55, "high": 57}], 3.0)
     assert lone["low"] == 55
     assert lone["high"] == 57
+
+
+def test_export_vd10_session_json(tmp_path: Path):
+    session = compute_vd10_session(
+        [
+            {
+                "id": "a",
+                "name": "A",
+                "samples": [
+                    {"time_s": 0.0, "low": 60, "high": 60},
+                    {"time_s": 1.0, "low": 64, "high": 64},
+                ],
+            },
+            {
+                "id": "b",
+                "name": "B",
+                "samples": [
+                    {"time_s": 0.0, "low": 72, "high": 72},
+                    {"time_s": 1.0, "low": 76, "high": 76},
+                ],
+            },
+        ]
+    )
+    out = tmp_path / "nested" / "vd10_session.json"
+    export_vd10_session_json(session, out)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["metric"] == "VD10_session"
+    assert len(data["blocks"]) == 2
+    assert data["blocks"][0]["vd10"]["metric"] == "VD10"
+    assert len(data["relations"]["pairs"]) == 1

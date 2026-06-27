@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **172** |
+| Collected tests | **173** |
 | Test modules (excluding `conftest.py`) | **22** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -44,7 +44,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_pipeline.py` | 2 | Full `run_analysis` with/without heatmaps and JSON export |
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
-| `test_trajectory.py` | 23 | VD10 core + relations + session + `interpolate_band_at_time` |
+| `test_trajectory.py` | 24 | VD10 core, block relations, session, interpolation, session JSON export |
 | `test_util_tempo_branches.py` | 11 | Repeat detection/expansion, `build_seconds_map` multi-segment behaviour |
 | `test_util_tempo_fallbacks.py` | 8 | Repeat-expansion and metronome-boundary fallback paths (monkeypatch/fakes) |
 | `test_util_tempo_parity.py` | 4 | Parity between `util_tempo` and `timebase` on synthetic + corpus scores |
@@ -225,4 +225,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (170 tests; `compute_vd10_session` started — interpolate/export tests pending).*
+*Summary refreshed 2026-06-27 (173 tests; Tier-1 VD10 multi-block API tests complete — `trajectory.py` ~96% coverage).*

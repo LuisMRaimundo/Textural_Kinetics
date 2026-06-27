@@ -18,6 +18,9 @@
 - `test_vd10_session_two_blocks` — per-block VD10 + relations in one session.
 - `test_vd10_session_single_sample_block_error` — incomplete block yields `vd10_error`, no relations.
 - `test_interpolate_band_midpoint_and_clamp` — linear midpoint + edge clamp + single-sample hold.
+- `test_export_vd10_session_json` — multi-block session JSON round-trip.
+
+Suite: **173** tests; `trajectory.py` coverage **~96%** (Tier-1 VD10 multi-block API complete).
 
 ## 1.0.11
 
