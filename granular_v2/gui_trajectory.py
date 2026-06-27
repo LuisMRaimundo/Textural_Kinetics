@@ -93,7 +93,7 @@ class TrajectoryTab(TrajectorySessionBase):
         from .config import HeatmapConfig
         from .heatmaps import extract_measure_starts_from_score, plot_heatmap_advanced
 
-        cfg = HeatmapConfig(time_units="s")
+        cfg = HeatmapConfig(time_units="s", overlay_points=True)
         score = self._get_score()
         mstarts = extract_measure_starts_from_score(score) if score else []
         self._fig = plot_heatmap_advanced(

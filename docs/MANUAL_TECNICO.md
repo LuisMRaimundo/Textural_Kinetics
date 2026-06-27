@@ -619,7 +619,7 @@ VD10 measures **where a user-defined textural block moves in register** and how 
 ### 10.1 Interaction
 
 1. Load score (shared with Analysis tab).
-2. Refresh embedded **advanced** heatmap (seconds × MIDI semitones).
+2. Refresh embedded **advanced** heatmap (seconds × MIDI semitones). Each MusicXML part/layer (`part` field) is drawn as a **connected registral line** in a distinct colour, with markers at note centres; colours are visual aids only and do not affect metrics or VD10 computation. A compact **Part** legend appears when multiple parts are present.
 3. Enable **Pick mode**; at each sample time, mark **low** and **high** registral boundary:
    - vertical **click-and-drag**, or
    - **two-click** mode (bottom then top; time fixed from first click).
