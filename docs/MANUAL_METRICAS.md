@@ -68,3 +68,25 @@ Raw IOI list for plots: `inter_onset_intervals()` / `run_activity_granularity.io
 | Spectral | velocity-weighted energy grid \(E_{p,t}\) |
 
 Not measured audio spectra.
+
+## Registral trajectory (VD10)
+
+**Module:** `trajectory.py` · **GUI:** tab *Registral trajectory* (`gui_trajectory.py`)
+
+Separate from event-rate **granularity** (VD4): VD10 measures **movement of a user-defined registral band** over time, not attack density.
+
+| Metric | Unit | Formula |
+|--------|------|---------|
+| `centre` | semitones (MIDI int.) | \((\mathrm{low}+\mathrm{high})/2\) per sample |
+| `width` | semitones | \(\mathrm{high}-\mathrm{low}\) |
+| `speed_centre` | st/s | \((\mathrm{centre}_{i+1}-\mathrm{centre}_i)/\Delta t\) (signed) |
+| `speed_width` | st/s | \((\mathrm{width}_{i+1}-\mathrm{width}_i)/\Delta t\) (signed) |
+| `net_displacement` | semitones | \(\mathrm{centre}_{\mathrm{last}}-\mathrm{centre}_{\mathrm{first}}\) |
+| `net_speed` | st/s | `net_displacement` / total elapsed time — **headline speed** |
+| `total_path` | semitones | \(\sum_i \|\mathrm{centre}_{i+1}-\mathrm{centre}_i\|\) (descriptive) |
+| `straightness` | — | `net_displacement` / `total_path` (0 if path = 0) |
+| `inflections` | count | sign changes in centre deltas |
+| `mean_speed` | st/s | mean of \(\|\mathrm{speed\_centre}\|\) over segments |
+| `max_speed` | st/s | max of \(\|\mathrm{speed\_centre}\|\) over segments |
+
+Labels: `direction` (ascending / descending / static), `band_behaviour` (diverging / converging / stable width), `shape_hint` (unidirectional / mixed / undulating). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.

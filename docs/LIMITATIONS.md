@@ -17,3 +17,10 @@ Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids tra
 ## Partitional layer
 
 Optional partition indices are simplified (channel-based); not a complete partitional formalism.
+
+## VD10 registral trajectory
+
+- **User-defined block:** the tool does not auto-detect voices or textural layers; spans are manual picks on the heatmap.
+- **Separate from granularity:** high event rate does not imply registral motion; a registral round-trip can yield **net_speed ≈ 0** while `total_path` is large.
+- **Semitone resolution:** picks snap to integer MIDI pitch; no quarter-tone precision.
+- **GUI-only workflow** for picking; computation is pure Python (`compute_vd10`) and exportable to JSON.

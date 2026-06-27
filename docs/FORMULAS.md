@@ -60,3 +60,25 @@ t(q) = s_0^{(i)} + \frac{60}{b_i}(q - q_0^{(i)})\quad \text{for the first segmen
 
 - Occupancy: bin counts \(H_{p,t}\); display often \(\log(1+H)\)
 - Spectral grid: velocity-weighted sum per cell (not audio FFT)
+
+## Registral trajectory (VD10)
+
+User picks ≥2 samples \((t, \mathrm{low}, \mathrm{high})\) in **integer semitones** on the pitch×time heatmap (time from `timebase` / `onset_sec` axis).
+
+Per sample: \(\mathrm{centre}=(\mathrm{low}+\mathrm{high})/2\), \(\mathrm{width}=\mathrm{high}-\mathrm{low}\).
+
+Between consecutive samples (\(\Delta t>0\)):
+
+- **speed_centre** = \((\mathrm{centre}_{i+1}-\mathrm{centre}_i)/\Delta t\) (signed: + up, − down)
+- **speed_width** = \((\mathrm{width}_{i+1}-\mathrm{width}_i)/\Delta t\) (signed: + diverging, − converging)
+
+Aggregates:
+
+- **net_displacement** = \(\mathrm{centre}_{\mathrm{last}}-\mathrm{centre}_{\mathrm{first}}\)
+- **net_speed** = net_displacement / \((t_{\mathrm{last}}-t_{\mathrm{first}})\) — **canonical headline speed** (not total_path / time)
+- **total_path** = \(\sum_i \|\mathrm{centre}_{i+1}-\mathrm{centre}_i\|\)
+- **straightness** = net_displacement / total_path (0 if total_path = 0)
+- **inflections** = sign changes in centre deltas
+- **mean_speed**, **max_speed** = mean / max of \(\|\mathrm{speed\_centre}\|\)
+
+**Not** event-rate granularity (VD4). Block detection is user-defined; no automatic voice separation.

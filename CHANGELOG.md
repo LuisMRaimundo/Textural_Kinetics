@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.9
+
+- **Feature:** VD10 registral trajectory — `granular_v2/trajectory.py` (pure computation), GUI tab **Registral trajectory** (`gui_trajectory.py`), interactive picking on the advanced pitch×time heatmap, JSON export via `export_vd10_json`.
+- **Docs:** README, `MANUAL_TECNICO.md` §9.6, `MANUAL_METRICAS.md`, `FORMULAS.md`, `METRIC_SEMANTICS.md`, `LIMITATIONS.md`, docs index; `CITATION.cff` keywords/abstract; export scope strings in `reports.py`.
+
 ## 1.0.8
 
 - **Corpus harness:** `compare_all.py` and `compare_reference.py` freeze canonical VD4 fused `num_events` (`event_rates.global.num_events`); raw note count retained as `num_notes` for traceability. Golden references regenerated.

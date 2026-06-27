@@ -12,6 +12,7 @@ SCOPE = [
     "Symbolic MusicXML/MIDI analysis only",
     "Event rates: per second, per millisecond, per bar, Mustextu rate_eps",
     "Heatmaps: symbolic pitch-time (not measured audio)",
+    "VD10 registral trajectory: user-defined registral band displacement (semitones/s)",
 ]
 
 NOT_CLAIMED = [

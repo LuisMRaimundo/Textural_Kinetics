@@ -2,12 +2,12 @@
 
 **Fused symbolic temporal-density analyzer** for **MusicXML** and **MIDI** scores.
 
-Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), and three **pitch–time heatmaps** (basic, advanced, spectral). It is symbolic notation analysis — not audio, perception, or harmonic function.
+Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.8 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.9 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
-**Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, GUI) + `corpus/` (fixtures & regression).
+**Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
 **CI:** GitHub Actions — **149** tests, coverage ≥72% (~**91%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
@@ -36,6 +36,20 @@ result = run_analysis("score.musicxml", default_analysis_config(), output_dir="o
 print(result["event_rates"]["global"]["events_per_second"])
 print(result["mustextu_summary"]["rate_events_per_second"])
 print(result["tempo_audit"])
+```
+
+**VD10 registral trajectory** (user-defined textural block on the heatmap):
+
+```python
+from granular_v2.trajectory import compute_vd10, export_vd10_json
+
+samples = [
+    {"time_s": 0.0, "low": 60, "high": 64},
+    {"time_s": 2.0, "low": 68, "high": 72},
+]
+vd10 = compute_vd10(samples)
+print(vd10["summary"])  # net speed in semitones/s — separate from event-rate granularity
+export_vd10_json(vd10, "out/vd10_registral_trajectory.json")
 ```
 
 ## One-click install (no Python knowledge required)
@@ -70,6 +84,8 @@ python -m granular_v2.run score.musicxml -o out --no-heatmaps --partitional
 ```bash
 python -m granular_v2.gui
 ```
+
+Tabs: **Analysis** (event rates, heatmap pop-outs, JSON export) and **Registral trajectory** (VD10 — pick registral spans on the embedded advanced heatmap, compute net displacement speed, export JSON).
 
 Windows: `run_gui.bat` or **START-Granularity.bat** (after installer).
 

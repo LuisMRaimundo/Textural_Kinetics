@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.8  
+**Version:** 1.0.9  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -10,7 +10,7 @@ This manual documents purpose, architecture, **mathematical definitions**, and *
 
 ---
 
-> **Metric interpretive limits:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) (VD4 fused-onset IOI/EPS, `sync_fraction` vs Mustextu synchrony).
+> **Metric interpretive limits:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) (VD4 fused-onset IOI/EPS, Mustextu synchrony, **VD10 registral trajectory vs granularity**).
 
 ## Table of contents
 
@@ -23,11 +23,12 @@ This manual documents purpose, architecture, **mathematical definitions**, and *
 7. [Temporal density](#7-temporal-density)
 8. [Mustextu horizontal density](#8-mustextu-horizontal-density)
 9. [Heatmaps](#9-heatmaps)
-10. [Partitional layer (optional)](#10-partitional-layer-optional)
-11. [Exported JSON schema](#11-exported-json-schema)
-12. [Configuration reference](#12-configuration-reference)
-13. [Validation and quality assurance](#13-validation-and-quality-assurance)
-14. [External dependencies (out of scope)](#14-external-dependencies-out-of-scope)
+10. [Registral trajectory (VD10)](#10-registral-trajectory-vd10)
+11. [Partitional layer (optional)](#11-partitional-layer-optional)
+12. [Exported JSON schema](#12-exported-json-schema)
+13. [Configuration reference](#13-configuration-reference)
+14. [Validation and quality assurance](#14-validation-and-quality-assurance)
+15. [External dependencies (out of scope)](#15-external-dependencies-out-of-scope)
 
 ---
 
@@ -40,7 +41,8 @@ Granularity Analyser is a **symbolic** analyser for MusicXML and MIDI scores. It
 - **Temporal event rates** at multiple scales (global, sliding windows, per bar);
 - **Activity granularity** (inter-onset intervals, coefficient of variation, burstiness);
 - **Mustextu** horizontal coincidence density (multi-layer onset synchrony via tolerance merging; GCD/LCM analytics in the regular case);
-- **Three pitch–time heatmaps** (basic occupancy, advanced smoothed view, velocity-weighted “spectral” grid).
+- **Three pitch–time heatmaps** (basic occupancy, advanced smoothed view, velocity-weighted “spectral” grid);
+- **VD10 registral trajectory** (optional interactive measurement of user-defined registral band displacement on the heatmap — separate from event-rate granularity).
 
 ### 1.2 What it is not
 
@@ -55,6 +57,7 @@ Granularity Analyser is a **symbolic** analyser for MusicXML and MIDI scores. It
 | Time | seconds (`onset_sec`, `duration_sec`) |
 | Pitch | MIDI note number (0–127) |
 | Rate | events per second (s⁻¹); also ms⁻¹ where stated |
+| Registral speed (VD10) | semitones per second (st/s) |
 | Mustextu window | milliseconds internally; rates reported in s⁻¹ |
 
 ---
@@ -90,6 +93,7 @@ pytest tests -q
 4. **Export JSON** — save `analysis.json`.
 5. **Heatmap basic / advanced / spectral** — opens matplotlib window (requires file loaded).
 6. **Plots** — activity/granularity curves (after analysis).
+7. **Registral trajectory** tab — embedded advanced heatmap; enable **Pick mode** to mark vertical registral spans at sample times; **Compute VD10**; **Export JSON** (`vd10_registral_trajectory.json`).
 
 ### 2.4 CLI workflow
 
@@ -125,6 +129,18 @@ Lower-level load only:
 from granular_v2.loader import load_score_and_note_matrix
 
 score, note_matrix, tempo_audit = load_score_and_note_matrix("piece.musicxml")
+```
+
+**VD10** (after manual picks or scripted samples):
+
+```python
+from granular_v2.trajectory import compute_vd10, export_vd10_json
+
+vd10 = compute_vd10([
+    {"time_s": 0.0, "low": 60, "high": 64},
+    {"time_s": 2.0, "low": 68, "high": 72},
+])
+export_vd10_json(vd10, "out/vd10_registral_trajectory.json")
 ```
 
 ### 2.6 Corpus regression
@@ -576,7 +592,72 @@ Vertical lines at measure start times \(t_m\) (seconds), from score or `measure_
 
 ---
 
-## 10. Partitional layer (optional)
+## 10. Registral trajectory (VD10)
+
+**Module:** `trajectory.py` (pure functions, no Tkinter)  
+**GUI:** `gui_trajectory.py` — tab *Registral trajectory*; reuses `plot_heatmap_advanced` and `FigureCanvasTkAgg`.
+
+VD10 measures **where a user-defined textural block moves in register** and how fast — **not** how many events occur (VD4 granularity). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.
+
+### 10.1 Interaction
+
+1. Load score (shared with Analysis tab).
+2. Refresh embedded **advanced** heatmap (seconds × MIDI semitones).
+3. Enable **Pick mode**; at each sample time, mark **low** and **high** registral boundary:
+   - vertical **click-and-drag**, or
+   - **two-click** mode (bottom then top; time fixed from first click).
+4. Picks snap to **integer semitones** (`snap_semitone`).
+5. Samples sorted by `time_s`; require strictly increasing times for computation.
+6. Overlays: band rectangles, centre trajectory polyline (after compute).
+
+### 10.2 Sample and segment formulas
+
+Per sample \(i\): \(\mathrm{centre}_i = (\mathrm{low}_i + \mathrm{high}_i)/2\), \(\mathrm{width}_i = \mathrm{high}_i - \mathrm{low}_i\).
+
+Segment \(i \to i+1\) with \(\Delta t = t_{i+1} - t_i > 0\):
+
+\[
+v^{\mathrm{centre}}_i = \frac{\mathrm{centre}_{i+1} - \mathrm{centre}_i}{\Delta t},\quad
+v^{\mathrm{width}}_i = \frac{\mathrm{width}_{i+1} - \mathrm{width}_i}{\Delta t}
+\]
+
+(signed: centre + = upward register; width + = diverging band.)
+
+### 10.3 Aggregates and headline speed
+
+\[
+\Delta_{\mathrm{net}} = \mathrm{centre}_{N-1} - \mathrm{centre}_0,\quad
+T = t_{N-1} - t_0
+\]
+
+**net_speed** \(= \Delta_{\mathrm{net}} / T\) when \(T > 0\) — **canonical directional speed** (never `total_path / T`).
+
+\[
+L = \sum_i |\mathrm{centre}_{i+1} - \mathrm{centre}_i|,\quad
+\mathrm{straightness} = \begin{cases} \Delta_{\mathrm{net}} / L & L > 0 \\ 0 & \text{else} \end{cases}
+\]
+
+**inflections** = sign changes in \((\mathrm{centre}_{i+1}-\mathrm{centre}_i)\) above tolerance ε (default 0.01 st).
+
+**mean_speed**, **max_speed** = mean / max of \(|v^{\mathrm{centre}}_i|\).
+
+### 10.4 Derived labels
+
+| Key | Condition (ε = 0.01) |
+|-----|----------------------|
+| `direction` | ascending if \(\Delta_{\mathrm{net}} > \varepsilon\); descending if \(< -\varepsilon\); else static |
+| `band_behaviour` | diverging / converging / stable width from \(\mathrm{width}_{N-1}-\mathrm{width}_0\) |
+| `shape_hint` | straightness > 0.8 → unidirectional; < 0.4 → undulating; else mixed |
+
+### 10.5 Export (`export_vd10_json`)
+
+Top-level keys: `metric` (`"VD10"`), `label`, `units`, `samples`, `segments`, `aggregates`, `labels`, `summary`. Separate from `analysis.json`.
+
+**API:** `compute_vd10`, `normalize_sample`, `format_vd10_summary`, `export_vd10_json`.
+
+---
+
+## 11. Partitional layer (optional)
 
 **Module:** `partition_state.py`  
 Enable: `AnalysisConfig.include_partitional = True`
@@ -603,7 +684,7 @@ Simplified channel-based proxy — not a complete partitional formalism (see [LI
 
 ---
 
-## 11. Exported JSON schema
+## 12. Exported JSON schema
 
 Top-level keys from `run_full_analysis` / `run_analysis`:
 
@@ -621,11 +702,13 @@ Top-level keys from `run_full_analysis` / `run_analysis`:
 
 Event-rate unit definitions are documented inside `event_rates.global.definition` and `event_rates.by_ms_window.<W>.definition`.
 
+**VD10 export** (standalone file via GUI or `export_vd10_json`): see §10.5; not included in default `run_analysis` output.
+
 ---
 
-## 12. Configuration reference
+## 13. Configuration reference
 
-### 12.1 `AnalysisConfig`
+### 13.1 `AnalysisConfig`
 
 | Field | Default | Role |
 |-------|---------|------|
@@ -637,7 +720,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 | `enable_heatmaps` | true | PNG export in CLI |
 | `include_partitional` | false | Partition series |
 
-### 12.2 `HeatmapConfig`
+### 13.2 `HeatmapConfig`
 
 | Field | Default | Role |
 |-------|---------|------|
@@ -648,7 +731,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 | `contrast_*_percentile` | 3 / 97.5 | Color limits |
 | `save_dpi` | 200 | PNG resolution |
 
-### 12.3 `MustextuConfig`
+### 13.3 `MustextuConfig`
 
 | Field | Default | Role |
 |-------|---------|------|
@@ -659,7 +742,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 ---
 
-## 13. Validation and quality assurance
+## 14. Validation and quality assurance
 
 | Mechanism | Command / file |
 |-----------|----------------|
@@ -672,7 +755,7 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 ---
 
-## 14. External dependencies (out of scope)
+## 15. External dependencies (out of scope)
 
 | Library | Used for | Not documented here |
 |---------|----------|---------------------|

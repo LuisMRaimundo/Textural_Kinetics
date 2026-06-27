@@ -1,8 +1,8 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, v1.0.7+).  
-**Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–8.
+**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.9+).  
+**Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–9.
 
 ---
 
@@ -236,6 +236,43 @@ Values marked **EXPLORE** for EPS global or Mustextu synchrony on specific fixtu
 
 ---
 
+## VD10 — Registral trajectory
+
+**Module:** `granular_v2/trajectory.py` → `compute_vd10`  
+**GUI:** tab *Registral trajectory* — picks on `plot_heatmap_advanced` axes (seconds × MIDI semitones).
+
+### What VD10 measures
+
+Displacement of a **user-enclosed registral band** (lower/upper boundary per sample time). Units: **semitones** (integer MIDI); speeds in **semitones per second**. Time comes from the same seconds axis as the note matrix (`loader` + `timebase`).
+
+### What VD10 does **not** measure
+
+- **Not granularity / event rate (VD4):** many attacks per second does not imply registral motion; sparse textures can move quickly in register.
+- **Not automatic voice or layer detection:** the block is whatever the analyst marks.
+- **Not total-path speed as headline metric:** a block that ascends then returns yields **net_speed ≈ 0**; `total_path` and `inflections` describe oscillation, not directional displacement.
+
+### Canonical speed
+
+**net_speed** = \((\mathrm{centre}_{\mathrm{last}} - \mathrm{centre}_{\mathrm{first}}) / (t_{\mathrm{last}} - t_{\mathrm{first}})\).
+
+Per-segment **speed_centre** values are descriptive; **mean_speed** and **max_speed** summarise \(|\mathrm{speed\_centre}|\) over segments. Do not report `total_path / total_time` as “the” registral speed.
+
+### Labels (heuristic)
+
+| Label | Rule (default ε = 0.01 st) |
+|-------|----------------------------|
+| `direction` | ascending / descending / static from `net_displacement` |
+| `band_behaviour` | diverging / converging / stable width from Δwidth end−start |
+| `shape_hint` | straightness > 0.8 → unidirectional; < 0.4 → undulating; else mixed |
+
+Internal coherence / orientation of the block (e.g. anisotropy / VD8) is **out of scope** for VD10.
+
+### Export
+
+Separate JSON via `export_vd10_json` (not merged into `analysis.json` from `run_analysis`). Keys: `metric` = `"VD10"`, `samples`, `segments`, `aggregates`, `labels`, `summary`.
+
+---
+
 ## 12. Documentation map
 
 | Document | Role |
@@ -259,5 +296,6 @@ Values marked **EXPLORE** for EPS global or Mustextu synchrony on specific fixtu
 | Global export wrapper | `granular_v2/event_rates.py` → `global_event_rates` |
 | Mustextu synchrony, `rate_eps` | `granular_v2/mustextu/horizontal_density.py` → `compute_horizontal_density_from_onsets` |
 | Mustextu summary export | `granular_v2/granularity_mustextu.py` |
+| VD10 registral trajectory | `granular_v2/trajectory.py` → `compute_vd10`, `export_vd10_json` |
 
 No formula in this document should be read as overriding the code; if they diverge, **the code wins** and this file should be updated.

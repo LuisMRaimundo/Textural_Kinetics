@@ -9,7 +9,7 @@
 | **[MUSICOLOGICAL_REGRESSION_FIXTURES.md](MUSICOLOGICAL_REGRESSION_FIXTURES.md)** | QA / musicology | Phase-1 controlled fixtures |
 | **[MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md](MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md)** | Analyst gate | PROMOTE / EXPLORE / CLARIFY before golden lock |
 | **[TEST_QUALITY_AUDIT.md](TEST_QUALITY_AUDIT.md)** | Engineering | Test suite audit |
-| **[LIMITATIONS.md](LIMITATIONS.md)** | Everyone | Scope, tempo model, symbolic-only heatmaps |
+| **[LIMITATIONS.md](LIMITATIONS.md)** | Everyone | Scope, tempo model, symbolic-only heatmaps, VD10 user picks |
 | **[OFFSET_AUDIT.md](OFFSET_AUDIT.md)** | Maintainers | Global-offset audit manifest |
 | **[CORPUS_REFERENCIA.md](CORPUS_REFERENCIA.md)** | QA / regression | Fixture corpus & `compare_all.py` |
 | **[ENGINEERING_95.md](ENGINEERING_95.md)** | Engineering | Quality rubric & roadmap |
