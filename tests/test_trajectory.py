@@ -413,3 +413,8 @@ def test_export_vd10_session_json(tmp_path: Path):
     assert len(data["blocks"]) == 2
     assert data["blocks"][0]["vd10"]["metric"] == "VD10"
     assert len(data["relations"]["pairs"]) == 1
+
+
+def test_describe_axis_calibration_rejects_equal_pixels():
+    with pytest.raises(TrajectoryCalibrationError, match="differ"):
+        describe_axis_calibration(5.0, 0.0, 5.0, 10.0)

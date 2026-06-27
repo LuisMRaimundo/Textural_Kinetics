@@ -22,6 +22,10 @@
 
 Suite: **173** tests; `trajectory.py` coverage **~96%** (Tier-1 VD10 multi-block API complete).
 
+### Tests (VD10 edge cases)
+
+- `test_describe_axis_calibration_rejects_equal_pixels` — serialisable calibration rejects coincident reference pixels.
+
 ## 1.0.11
 
 - **VD10 GUI — editable picks:** select samples on heatmap or list; drag band (vertical), top/bottom handles, or time axis; double-click row for numeric edit; insert between samples or right-click centre line; undo/delete; live recompute.
