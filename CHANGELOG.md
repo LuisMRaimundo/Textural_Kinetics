@@ -13,6 +13,7 @@
 ### Tests (VD10 multi-block API)
 
 - `test_block_relations_converging_same_direction` — pairwise converging + same_direction labels.
+- `test_block_relations_diverging_opposite_direction` — pairwise diverging + opposite_direction labels.
 
 ## 1.0.11
 

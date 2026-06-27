@@ -228,3 +228,30 @@ def test_block_relations_converging_same_direction():
     assert pair["distance_start_st"] == 20.0
     assert pair["distance_end_st"] == 16.0
     assert pair["mean_inter_distance_rate_st_per_s"] < 0.0
+
+
+def test_block_relations_diverging_opposite_direction():
+    """Lower block descends while upper ascends — inter-centre gap widens."""
+    blocks = [
+        {
+            "name": "Lower",
+            "samples": [
+                {"time_s": 0.0, "low": 60, "high": 60},
+                {"time_s": 2.0, "low": 56, "high": 56},
+            ],
+        },
+        {
+            "name": "Upper",
+            "samples": [
+                {"time_s": 0.0, "low": 72, "high": 72},
+                {"time_s": 2.0, "low": 80, "high": 80},
+            ],
+        },
+    ]
+    rel = compute_block_relations(blocks)
+    pair = rel["pairs"][0]
+    assert pair["relation"] == "diverging"
+    assert pair["direction"] == "opposite_direction"
+    assert pair["distance_start_st"] == 12.0
+    assert pair["distance_end_st"] == 24.0
+    assert pair["mean_inter_distance_rate_st_per_s"] > 0.0
