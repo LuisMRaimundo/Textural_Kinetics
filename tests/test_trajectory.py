@@ -8,6 +8,7 @@ from granular_v2.trajectory import (
     TrajectoryError,
     compute_block_relations,
     compute_vd10,
+    compute_vd10_session,
     describe_axis_calibration,
     export_vd10_json,
     format_vd10_summary,
@@ -300,3 +301,33 @@ def test_block_relations_parallel_and_no_overlap():
     assert disjoint["relation"] == "no_overlap"
     assert disjoint["direction"] == "n/a"
     assert disjoint["distance_start_st"] is None
+
+
+def test_vd10_session_two_blocks():
+    blocks = [
+        {
+            "id": "block_a",
+            "name": "Lower",
+            "samples": [
+                {"time_s": 0.0, "low": 60, "high": 60},
+                {"time_s": 2.0, "low": 68, "high": 68},
+            ],
+        },
+        {
+            "id": "block_b",
+            "name": "Upper",
+            "samples": [
+                {"time_s": 0.0, "low": 80, "high": 80},
+                {"time_s": 2.0, "low": 84, "high": 84},
+            ],
+        },
+    ]
+    session = compute_vd10_session(blocks)
+    assert session["metric"] == "VD10_session"
+    assert len(session["blocks"]) == 2
+    assert session["blocks"][0]["vd10"] is not None
+    assert session["blocks"][1]["vd10"] is not None
+    assert session["blocks"][0]["vd10_error"] is None
+    assert abs(session["blocks"][0]["vd10"]["aggregates"]["net_speed"] - 4.0) < 1e-9
+    assert len(session["relations"]["pairs"]) == 1
+    assert session["relations"]["pairs"][0]["relation"] == "converging"

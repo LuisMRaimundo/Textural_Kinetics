@@ -15,6 +15,7 @@
 - `test_block_relations_converging_same_direction` — pairwise converging + same_direction labels.
 - `test_block_relations_diverging_opposite_direction` — pairwise diverging + opposite_direction labels.
 - `test_block_relations_parallel_and_no_overlap` — constant separation + disjoint time spans.
+- `test_vd10_session_two_blocks` — per-block VD10 + relations in one session.
 
 ## 1.0.11
 
