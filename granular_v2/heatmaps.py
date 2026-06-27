@@ -77,6 +77,26 @@ def note_part_overlay_colors(note_matrix: NoteMatrix) -> List[str]:
     return [mapping[label] for label in labels]
 
 
+def part_note_sequences(note_matrix: NoteMatrix) -> Dict[str, List[Tuple[float, float]]]:
+    """
+    Per-part note paths as (time_mid, pitch) sorted by onset then pitch.
+
+    Used to draw connected registral lines — one colour per extracted XML part.
+    """
+    buckets: dict[str, list[tuple[float, float, float]]] = defaultdict(list)
+    for note in note_matrix:
+        label = extract_part_label(note)
+        onset = float(note.get("onset_sec", 0))
+        t_mid = onset + float(note.get("duration_sec", 0)) / 2
+        pitch = float(note.get("pitch", 60))
+        buckets[label].append((onset, t_mid, pitch))
+    sequences: Dict[str, List[Tuple[float, float]]] = {}
+    for label, rows in buckets.items():
+        rows.sort(key=lambda row: (row[0], row[2]))
+        sequences[label] = [(row[1], row[2]) for row in rows]
+    return sequences
+
+
 def midi_to_note_name(midi: float) -> str:
     try:
         from music21 import pitch
@@ -329,31 +349,37 @@ def _draw_note_overlay_by_part(
     note_matrix: NoteMatrix,
     cfg: HeatmapConfig,
 ) -> None:
-    """Scatter note centres on the heatmap, one colour per extracted XML part/layer."""
-    groups: dict[str, list[tuple[float, float]]] = defaultdict(list)
-    for note in note_matrix:
-        label = extract_part_label(note)
-        t_mid = float(note.get("onset_sec", 0)) + float(note.get("duration_sec", 0)) / 2
-        pitch = float(note.get("pitch", 60))
-        groups[label].append((t_mid, pitch))
-
-    colors = part_color_map(groups.keys())
-    multi_part = len(groups) > 1
-    for part_label in sorted(groups.keys()):
-        points = groups[part_label]
+    """Draw one connected registral line per extracted XML part/layer."""
+    sequences = part_note_sequences(note_matrix)
+    colors = part_color_map(sequences.keys())
+    multi_part = len(sequences) > 1
+    for part_label in sorted(sequences.keys()):
+        points = sequences[part_label]
+        if not points:
+            continue
         xs = np.array([point[0] for point in points])
         ys = np.array([point[1] for point in points])
         xs_plot, _ = _time_scale(xs, cfg.time_units)
+        color = colors[part_label]
+        ax.plot(
+            xs_plot,
+            ys,
+            color=color,
+            linewidth=1.6,
+            alpha=0.9,
+            solid_capstyle="round",
+            zorder=5,
+            label=part_label if multi_part else None,
+        )
         ax.scatter(
             xs_plot,
             ys,
-            s=8.0,
-            c=colors[part_label],
+            s=14.0,
+            c=color,
             edgecolors="#1e293b",
-            linewidths=0.3,
-            alpha=0.75,
+            linewidths=0.35,
+            alpha=0.95,
             zorder=6,
-            label=part_label if multi_part else None,
         )
     if multi_part:
         ax.legend(
