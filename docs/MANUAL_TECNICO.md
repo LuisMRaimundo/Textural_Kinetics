@@ -664,7 +664,7 @@ L = \sum_i |\mathrm{centre}_{i+1} - \mathrm{centre}_i|,\quad
 |-----|----------------------|
 | `direction` | ascending if \(\Delta_{\mathrm{net}} > \varepsilon\); descending if \(< -\varepsilon\); else static |
 | `band_behaviour` | diverging / converging / stable width from \(\mathrm{width}_{N-1}-\mathrm{width}_0\) |
-| `shape_hint` | straightness > 0.8 → unidirectional; < 0.4 → undulating; else mixed |
+| `shape_hint` | \|straightness\| > 0.8 → unidirectional; \|straightness\| < 0.4 → undulating; else mixed (`straightness` in export remains **signed**) |
 
 ### 10.5 Export (`export_vd10_json`)
 

@@ -163,9 +163,10 @@ def _label_band_behaviour(width_first: float, width_last: float, eps: float) -> 
 
 
 def _label_shape_hint(straightness: float) -> str:
-    if straightness > 0.8:
+    magnitude = abs(straightness)
+    if magnitude > 0.8:
         return "unidirectional"
-    if straightness < 0.4:
+    if magnitude < 0.4:
         return "undulating"
     return "mixed"
 
