@@ -9,7 +9,7 @@ Granularity Analyser combines precise **event rates** (per second, millisecond, 
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions — **149** tests, coverage ≥72% (~**91%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions — **161** tests, coverage ≥72% (~**92%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
 ## Documentation
 

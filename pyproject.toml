@@ -34,6 +34,7 @@ omit = [
   "granular_v2/run.py",
   "granular_v2/__main__.py",
   "granular_v2/gui.py",
+  "granular_v2/gui_trajectory.py",
   "granular_v2/plots.py",
   "granular_v2/logging_config.py",
 ]
@@ -53,5 +54,6 @@ check_untyped_defs = true
 exclude = [
   "granular_v2/mustextu/horizontal_density.py",
   "granular_v2/gui.py",
+  "granular_v2/gui_trajectory.py",
   "granular_v2/plots.py",
 ]
