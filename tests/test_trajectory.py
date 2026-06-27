@@ -418,3 +418,15 @@ def test_export_vd10_session_json(tmp_path: Path):
 def test_describe_axis_calibration_rejects_equal_pixels():
     with pytest.raises(TrajectoryCalibrationError, match="differ"):
         describe_axis_calibration(5.0, 0.0, 5.0, 10.0)
+
+
+def test_unsorted_samples_sorted_before_compute():
+    """Out-of-order picks are sorted by time_s before VD10 (no error)."""
+    r = compute_vd10(
+        [
+            {"time_s": 2.0, "low": 68, "high": 72},
+            {"time_s": 0.0, "low": 60, "high": 64},
+        ]
+    )
+    assert r["aggregates"]["net_displacement"] == 8.0
+    assert r["labels"]["direction"] == "ascending"

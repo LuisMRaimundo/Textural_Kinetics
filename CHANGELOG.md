@@ -25,6 +25,7 @@ Suite: **173** tests; `trajectory.py` coverage **~96%** (Tier-1 VD10 multi-block
 ### Tests (VD10 edge cases)
 
 - `test_describe_axis_calibration_rejects_equal_pixels` — serialisable calibration rejects coincident reference pixels.
+- `test_unsorted_samples_sorted_before_compute` — out-of-order picks sorted silently before VD10.
 
 ## 1.0.11
 
