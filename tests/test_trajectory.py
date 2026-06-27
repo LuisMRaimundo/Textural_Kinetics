@@ -255,3 +255,48 @@ def test_block_relations_diverging_opposite_direction():
     assert pair["distance_start_st"] == 12.0
     assert pair["distance_end_st"] == 24.0
     assert pair["mean_inter_distance_rate_st_per_s"] > 0.0
+
+
+def test_block_relations_parallel_and_no_overlap():
+    parallel_blocks = [
+        {
+            "name": "A",
+            "samples": [
+                {"time_s": 0.0, "low": 60, "high": 60},
+                {"time_s": 2.0, "low": 64, "high": 64},
+            ],
+        },
+        {
+            "name": "B",
+            "samples": [
+                {"time_s": 0.0, "low": 72, "high": 72},
+                {"time_s": 2.0, "low": 76, "high": 76},
+            ],
+        },
+    ]
+    parallel = compute_block_relations(parallel_blocks)["pairs"][0]
+    assert parallel["relation"] == "parallel"
+    assert parallel["direction"] == "same_direction"
+    assert parallel["distance_start_st"] == parallel["distance_end_st"] == 12.0
+    assert abs(parallel["mean_inter_distance_rate_st_per_s"]) < 1e-9
+
+    disjoint_blocks = [
+        {
+            "name": "Early",
+            "samples": [
+                {"time_s": 0.0, "low": 60, "high": 60},
+                {"time_s": 2.0, "low": 64, "high": 64},
+            ],
+        },
+        {
+            "name": "Late",
+            "samples": [
+                {"time_s": 5.0, "low": 72, "high": 72},
+                {"time_s": 7.0, "low": 76, "high": 76},
+            ],
+        },
+    ]
+    disjoint = compute_block_relations(disjoint_blocks)["pairs"][0]
+    assert disjoint["relation"] == "no_overlap"
+    assert disjoint["direction"] == "n/a"
+    assert disjoint["distance_start_st"] is None

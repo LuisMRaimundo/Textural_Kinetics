@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **168** |
+| Collected tests | **169** |
 | Test modules (excluding `conftest.py`) | **22** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -44,7 +44,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_pipeline.py` | 2 | Full `run_analysis` with/without heatmaps and JSON export |
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
-| `test_trajectory.py` | 19 | VD10 normalization, net_speed, sampling warnings, axis calibration, JSON export, block relations (converging, diverging/opposite) |
+| `test_trajectory.py` | 20 | VD10 core + block relations (converging, diverging, parallel, no_overlap) |
 | `test_util_tempo_branches.py` | 11 | Repeat detection/expansion, `build_seconds_map` multi-segment behaviour |
 | `test_util_tempo_fallbacks.py` | 8 | Repeat-expansion and metronome-boundary fallback paths (monkeypatch/fakes) |
 | `test_util_tempo_parity.py` | 4 | Parity between `util_tempo` and `timebase` on synthetic + corpus scores |
@@ -225,4 +225,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (167 tests; VD10 `compute_block_relations` coverage started — session/interpolate/export tests pending).*
+*Summary refreshed 2026-06-27 (169 tests; `compute_block_relations` covered — session/interpolate/export tests pending).*
