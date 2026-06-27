@@ -12,6 +12,7 @@ from granular_v2.trajectory import (
     describe_axis_calibration,
     export_vd10_json,
     format_vd10_summary,
+    interpolate_band_at_time,
     make_axis_calibration,
     normalize_sample,
     normalize_samples,
@@ -357,3 +358,27 @@ def test_vd10_session_single_sample_block_error():
     assert session["blocks"][1]["vd10"] is not None
     assert session["relations"]["pairs"] == []
     assert "At least two blocks" in session["relations"]["note"]
+
+
+def test_interpolate_band_midpoint_and_clamp():
+    samples = [
+        {"time_s": 0.0, "low": 60, "high": 64},
+        {"time_s": 2.0, "low": 68, "high": 72},
+    ]
+    mid = interpolate_band_at_time(samples, 1.0)
+    assert mid["time_s"] == 1.0
+    assert mid["low"] == 64
+    assert mid["high"] == 68
+    assert mid["centre"] == 66.0
+
+    before = interpolate_band_at_time(samples, -1.0)
+    assert before["low"] == 60
+    assert before["high"] == 64
+
+    after = interpolate_band_at_time(samples, 10.0)
+    assert after["low"] == 68
+    assert after["high"] == 72
+
+    lone = interpolate_band_at_time([{"time_s": 0.0, "low": 55, "high": 57}], 3.0)
+    assert lone["low"] == 55
+    assert lone["high"] == 57

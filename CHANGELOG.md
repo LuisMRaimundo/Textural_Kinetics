@@ -17,6 +17,7 @@
 - `test_block_relations_parallel_and_no_overlap` — constant separation + disjoint time spans.
 - `test_vd10_session_two_blocks` — per-block VD10 + relations in one session.
 - `test_vd10_session_single_sample_block_error` — incomplete block yields `vd10_error`, no relations.
+- `test_interpolate_band_midpoint_and_clamp` — linear midpoint + edge clamp + single-sample hold.
 
 ## 1.0.11
 
