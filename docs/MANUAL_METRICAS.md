@@ -93,7 +93,7 @@ Separate from event-rate **granularity** (VD4): VD10 measures **movement of a us
 
 Labels: `direction` (ascending / descending / static), `band_behaviour` (diverging / converging / stable width), `shape_hint` (unidirectional / mixed / undulating). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.
 
-**Auto-pick (GUI / API):** `auto_pick_blocks_from_note_matrix` — one block per XML `part`, one sample per onset (chord merge). Toolbar **Auto-pick from score** on both trajectory tabs when note matrix is available.
+**Auto-pick (GUI / API):** `auto_pick_blocks_from_note_matrix` — one block per XML `part`, one sample per onset (chord merge). **Group parts:** `auto_pick_samples_for_group` — envelope of selected parts at each onset. Toolbar **Auto-pick from score** and side-panel **Group selected into one block** on trajectory tabs when note matrix is available.
 
 ## Block relations (multi-block VD10)
 

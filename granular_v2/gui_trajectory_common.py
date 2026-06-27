@@ -95,6 +95,7 @@ class TrajectorySessionBase(ABC):
         self._agg_text: Optional[tk.Text] = None
         self._block_list: Optional[tk.Listbox] = None
         self._sample_list: Optional[tk.Listbox] = None
+        self._part_group_list: Optional[tk.Listbox] = None
 
     @property
     def samples(self) -> List[Dict[str, float]]:
@@ -138,6 +139,28 @@ class TrajectorySessionBase(ABC):
         tk.Button(blk_btns, text="Add", command=self._add_block, width=7).pack(pady=1)
         tk.Button(blk_btns, text="Rename", command=self._rename_block, width=7).pack(pady=1)
         tk.Button(blk_btns, text="Delete", command=self._delete_block, width=7).pack(pady=1)
+
+        tk.Label(side, text="Group parts (multi-select)", anchor="w").pack(
+            fill=tk.X, padx=4, pady=(6, 0)
+        )
+        part_frm = tk.Frame(side)
+        part_frm.pack(fill=tk.X, padx=4, pady=2)
+        part_scroll = tk.Scrollbar(part_frm, orient=tk.VERTICAL)
+        part_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self._part_group_list = tk.Listbox(
+            part_frm,
+            height=5,
+            exportselection=False,
+            selectmode=tk.MULTIPLE,
+            yscrollcommand=part_scroll.set,
+        )
+        self._part_group_list.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        part_scroll.config(command=self._part_group_list.yview)
+        tk.Button(
+            side,
+            text="Group selected into one block",
+            command=self._group_selected_parts_into_block,
+        ).pack(fill=tk.X, padx=4, pady=(2, 4))
 
         tk.Label(side, text="Samples (active block, sorted display)", anchor="w").pack(
             fill=tk.X, padx=4, pady=(6, 0)
@@ -212,6 +235,7 @@ class TrajectorySessionBase(ABC):
         self._set_agg_text("")
         self._refresh_block_list()
         self._refresh_sample_list()
+        self._refresh_part_group_list()
 
     @abstractmethod
     def _canvas_ready_for_pick(self) -> bool:
@@ -286,6 +310,69 @@ class TrajectorySessionBase(ABC):
             self._status_var.set(
                 f"Auto-picked {stats['total_samples']} samples across "
                 f"{stats['num_parts']} part(s); {stats['computable_parts']} with VD10 metrics."
+            )
+
+    def _refresh_part_group_list(self) -> None:
+        if self._part_group_list is None:
+            return
+        from .trajectory import distinct_part_labels_from_note_matrix
+
+        self._part_group_list.delete(0, tk.END)
+        note_matrix = self._note_matrix_for_auto_pick()
+        if not note_matrix:
+            return
+        for label in distinct_part_labels_from_note_matrix(note_matrix):
+            self._part_group_list.insert(tk.END, label)
+
+    def _group_selected_parts_into_block(self) -> None:
+        from .trajectory import auto_pick_samples_for_group, group_block_default_name
+
+        note_matrix = self._note_matrix_for_auto_pick()
+        if not note_matrix:
+            messagebox.showwarning(
+                "Group parts",
+                "Load a MusicXML/MIDI file on the Analysis tab first.",
+            )
+            return
+        assert self._part_group_list is not None
+        sel = self._part_group_list.curselection()
+        if not sel:
+            messagebox.showwarning("Group parts", "Select at least one part to group.")
+            return
+        labels = [self._part_group_list.get(int(i)) for i in sel]
+        samples = auto_pick_samples_for_group(note_matrix, labels)
+        if not samples:
+            messagebox.showinfo("Group parts", "No notes found for the selected parts.")
+            return
+        default_name = group_block_default_name(labels)
+        name = simpledialog.askstring(
+            "Group parts into one block",
+            f"Block name ({len(samples)} sample(s) from envelope of selected parts):",
+            initialvalue=default_name,
+        )
+        if name is None:
+            return
+        block_name = name.strip() or default_name
+        self._push_undo()
+        block_id = f"block_{self._next_block_num}_group"
+        self._next_block_num += 1
+        self.blocks.append(
+            {"id": block_id, "name": block_name, "samples": copy.deepcopy(samples)}
+        )
+        self._active_block_idx = len(self.blocks) - 1
+        self._selected_sample_idx = None
+        self._pick_mode.set(False)
+        self._refresh_block_list()
+        self._refresh_sample_list()
+        self._redraw_overlays()
+        self._recompute_live()
+        if self._status_var is not None:
+            vd10_note = ""
+            if len(samples) < 2:
+                vd10_note = " (<2 samples — edit or add picks for VD10)"
+            self._status_var.set(
+                f"Grouped {len(labels)} part(s) into “{block_name}” "
+                f"({len(samples)} envelope sample(s)){vd10_note}."
             )
 
     def _preview_time_width(self) -> float:

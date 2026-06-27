@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.15
+
+- **VD10 group parts into one block:** multi-select part labels in the trajectory tab side panel; **Group selected into one block** builds envelope samples via `auto_pick_samples_for_group` (min–max pitch across selected parts at each onset); appends block without replacing existing ones; VD10 and block relations unchanged.
+- **API:** `auto_pick_samples_for_group`, `distinct_part_labels_from_note_matrix`, `group_block_default_name` in `trajectory.py`.
+- **Tests:** `test_auto_pick.py` **23** tests (+7 group envelope cases).
+- **Docs:** README, manuals, audit docs; version **1.0.15**.
+
+Suite: **249** tests; coverage ~**93%** on `granular_v2`; corpus `compare_all` **3/3** OK.
+
 ## 1.0.14
 
 - **Tests:** expanded `test_auto_pick.py` from 7 → **16** — empty pitch list, MIDI 127 clamp, empty matrix stats, unordered onsets, strictly increasing times, unknown-part grouping, stable block IDs, dense-sample warning, direct `compute_vd10` compatibility (plus existing chord merge, session, determinism).

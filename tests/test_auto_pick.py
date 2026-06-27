@@ -8,10 +8,12 @@ from granular_v2.trajectory import (
     AUTO_PICK_DENSE_SAMPLE_WARN,
     TrajectoryError,
     auto_pick_blocks_from_note_matrix,
+    auto_pick_samples_for_group,
     auto_pick_samples_for_part,
     band_from_pitches,
     compute_vd10,
     compute_vd10_session,
+    group_block_default_name,
     part_label_from_note,
 )
 
@@ -179,3 +181,88 @@ def test_auto_pick_is_deterministic() -> None:
     first = auto_pick_blocks_from_note_matrix(note_matrix)
     second = auto_pick_blocks_from_note_matrix(note_matrix)
     assert first == second
+
+
+def test_group_pick_two_parts_same_onset_uses_min_max_envelope() -> None:
+    note_matrix = [
+        _note(1.0, 60, "fl"),
+        _note(1.0, 72, "ob"),
+    ]
+    samples = auto_pick_samples_for_group(note_matrix, ["fl", "ob"])
+    assert len(samples) == 1
+    assert samples[0]["time_s"] == 1.0
+    assert samples[0]["low"] == 60.0
+    assert samples[0]["high"] == 72.0
+
+
+def test_group_pick_divergent_lines_envelope_width_grows() -> None:
+    note_matrix = [
+        _note(0.0, 60, "A"),
+        _note(0.0, 72, "B"),
+        _note(1.0, 60, "A"),
+        _note(1.0, 84, "B"),
+    ]
+    samples = auto_pick_samples_for_group(note_matrix, ["A", "B"])
+    assert samples[0]["high"] - samples[0]["low"] == pytest.approx(12.0)
+    assert samples[1]["high"] - samples[1]["low"] == pytest.approx(24.0)
+    vd10 = compute_vd10(samples)
+    assert vd10["segments"][0]["speed_width"] > 0.0
+
+
+def test_group_pick_convergent_lines_envelope_width_shrinks() -> None:
+    note_matrix = [
+        _note(0.0, 60, "A"),
+        _note(0.0, 84, "B"),
+        _note(1.0, 72, "A"),
+        _note(1.0, 72, "B"),
+    ]
+    samples = auto_pick_samples_for_group(note_matrix, ["A", "B"])
+    assert samples[0]["high"] - samples[0]["low"] == pytest.approx(24.0)
+    assert samples[1]["high"] - samples[1]["low"] == pytest.approx(1.0)
+    vd10 = compute_vd10(samples)
+    assert vd10["segments"][0]["speed_width"] < 0.0
+
+
+def test_group_pick_single_part_matches_per_part_auto_pick() -> None:
+    note_matrix = [
+        _note(0.0, 60, "fl"),
+        _note(1.0, 64, "fl"),
+        _note(1.0, 67, "fl"),
+    ]
+    per_part = auto_pick_samples_for_part([n for n in note_matrix if n["part"] == "fl"])
+    grouped = auto_pick_samples_for_group(note_matrix, ["fl"])
+    assert grouped == per_part
+
+
+def test_group_pick_includes_onsets_from_only_one_selected_part() -> None:
+    note_matrix = [
+        _note(0.0, 60, "fl"),
+        _note(1.0, 64, "ob"),
+    ]
+    samples = auto_pick_samples_for_group(note_matrix, ["fl", "ob"])
+    assert [s["time_s"] for s in samples] == [0.0, 1.0]
+    assert samples[0]["low"] == 60.0
+    assert samples[1]["low"] == 64.0
+
+
+def test_group_block_default_name_joins_short_labels() -> None:
+    assert group_block_default_name(["fl", "ob", "cl"]) == "fl+ob+cl"
+
+
+def test_group_pick_session_includes_block_relations() -> None:
+    note_matrix = [
+        _note(0.0, 60, "A"),
+        _note(1.0, 64, "A"),
+        _note(0.0, 72, "B"),
+        _note(1.0, 76, "B"),
+    ]
+    group_a = auto_pick_samples_for_group(note_matrix, ["A"])
+    group_b = auto_pick_samples_for_group(note_matrix, ["B"])
+    session = compute_vd10_session(
+        [
+            {"id": "g_a", "name": "A", "samples": group_a},
+            {"id": "g_b", "name": "B", "samples": group_b},
+        ]
+    )
+    assert session["blocks"][0]["vd10"] is not None
+    assert len(session["relations"]["pairs"]) == 1

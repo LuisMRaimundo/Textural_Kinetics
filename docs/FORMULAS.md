@@ -96,7 +96,7 @@ Aggregates:
 
 ## Auto-pick (optional GUI / API)
 
-One block per note-matrix `part`; sample at each distinct onset; chord in same part → \(\mathrm{low}=\min\mathrm{pitch}\), \(\mathrm{high}=\max\mathrm{pitch}\); single pitch → band width 1 st. **API:** `auto_pick_blocks_from_note_matrix` → feed to `compute_vd10_session`. Does not alter VD10 formulas.
+One block per note-matrix `part`; sample at each distinct onset; chord in same part → \(\mathrm{low}=\min\mathrm{pitch}\), \(\mathrm{high}=\max\mathrm{pitch}\); single pitch → band width 1 st. **Group parts:** several `part` labels → one block; at each onset \(\mathrm{low}=\min\) and \(\mathrm{high}=\max\) across **all** selected parts (envelope, not average). **API:** `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_group` → feed to `compute_vd10_session`. Does not alter VD10 formulas.
 
 ## Image axis calibration (VD10 image tab)
 

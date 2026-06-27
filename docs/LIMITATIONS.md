@@ -20,7 +20,7 @@ Optional partition indices are simplified (channel-based); not a complete partit
 
 ## VD10 registral trajectory
 
-- **User-defined block (default):** manual picks on the heatmap. Optional **Auto-pick from score** fills one block per XML part from the loaded note matrix (editable afterward).
+- **User-defined block (default):** manual picks on the heatmap. Optional **Auto-pick from score** fills one block per XML part from the loaded note matrix (editable afterward). Optional **Group selected parts** merges several parts into one envelope block (appends; editable afterward).
 - **Note-map display:** part-coloured registral lines on the VD10 heatmap are visual only; they do not change metrics.
 - **Separate from granularity:** high event rate does not imply registral motion; a registral round-trip can yield **net_speed ≈ 0** while `total_path` is large.
 - **Semitone resolution:** picks snap to integer MIDI pitch; no quarter-tone precision.

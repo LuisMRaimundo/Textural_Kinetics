@@ -696,6 +696,68 @@ def auto_pick_samples_for_part(notes: Sequence[Mapping[str, Any]]) -> List[Dict[
     return samples
 
 
+def distinct_part_labels_from_note_matrix(
+    note_matrix: Sequence[Mapping[str, Any]],
+) -> List[str]:
+    """Distinct XML part labels in note-matrix order (earliest onset first)."""
+    by_part: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for note in note_matrix:
+        by_part[part_label_from_note(note)].append(note)
+    return sorted(
+        by_part.keys(),
+        key=lambda label: min(float(n.get("onset_sec", 0)) for n in by_part[label]),
+    )
+
+
+def group_block_default_name(part_labels: Sequence[str]) -> str:
+    """Short joined label for a multi-part block (e.g. ``fl+ob+cl``)."""
+    tokens: List[str] = []
+    for raw in part_labels:
+        label = str(raw).strip()
+        if not label:
+            continue
+        tokens.append(label if len(label) <= 10 else f"{label[:9]}…")
+    if not tokens:
+        return "Group"
+    joined = "+".join(tokens)
+    return joined[:64] if len(joined) > 64 else joined
+
+
+def auto_pick_samples_for_group(
+    note_matrix: Sequence[Mapping[str, Any]],
+    part_labels: Sequence[str],
+) -> List[Dict[str, float]]:
+    """
+    Build VD10 samples for a textural group spanning several score parts.
+
+    Considers only notes whose ``part`` label is in ``part_labels``. At each
+    distinct ``onset_sec`` across those parts combined, gathers **all** sounding
+    pitches and forms one band via ``band_from_pitches`` (global min/low, global
+    max/high at that instant).
+
+    This is the **envelope** of the combined group — the registral mass spanned
+    by the selected lines — **not** an average of per-part trajectories. Envelope
+    width at each onset reflects how far apart the grouped lines are (internal
+    convergence/divergence in register). Coherence/anisotropy (VD8) is out of scope.
+    """
+    allowed = {str(p).strip() for p in part_labels if str(p).strip()}
+    if not allowed:
+        return []
+
+    by_onset: dict[float, list[int]] = defaultdict(list)
+    for note in note_matrix:
+        if part_label_from_note(note) not in allowed:
+            continue
+        onset = round(float(note.get("onset_sec", 0)), 9)
+        by_onset[onset].append(snap_semitone(float(note.get("pitch", 60))))
+
+    samples: List[Dict[str, float]] = []
+    for onset in sorted(by_onset.keys()):
+        lo, hi = band_from_pitches(by_onset[onset])
+        samples.append({"time_s": float(onset), "low": float(lo), "high": float(hi)})
+    return samples
+
+
 def _auto_pick_block_id(part_label: str, index: int) -> str:
     slug = "".join(ch if ch.isalnum() else "_" for ch in part_label.lower()).strip("_")
     slug = (slug[:36] or "part").rstrip("_")
