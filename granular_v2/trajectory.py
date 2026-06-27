@@ -19,6 +19,20 @@ centre[start] over elapsed seconds). It is **never** ``total_path / total_time``
 A block that rises and returns to its starting register yields net ≈ 0; that is
 correct. ``total_path`` and ``inflections`` are descriptive oscillation metrics,
 not substitutes for net speed.
+
+Robust vs sampling-dependent descriptors
+---------------------------------------
+**Robust** (invariant to how many picks lie between endpoints; thesis interpretation):
+
+- ``net_speed``, ``net_displacement``, ``straightness``, ``total_path``, ``inflections``
+
+**Sampling-dependent** (segment quotients ``Δcentre/Δt``; explode when picks are
+very close in time):
+
+- ``mean_speed``, ``max_speed``, ``median_speed``, per-segment ``speed_centre``
+
+Always inspect ``segments[].dt_s`` before citing ``max_speed``. A tiny ``dt_s`` can
+yield thousands of st/s without any musically plausible registral gesture.
 """
 
 from __future__ import annotations
@@ -29,6 +43,7 @@ from typing import Any, Dict, List, Mapping, Sequence, TypedDict
 
 DEFAULT_EPS = 0.01
 DEFAULT_TIME_TOL_S = 0.001
+DEFAULT_MIN_DT_RECOMMENDED_S = 0.1
 
 
 class TrajectoryInput(TypedDict):
@@ -65,9 +80,11 @@ class TrajectoryAggregates(TypedDict):
     straightness: float
     inflections: int
     mean_speed: float
+    median_speed: float
     max_speed: float
     net_speed: float
     total_time_s: float
+    min_segment_dt_s: float
 
 
 class TrajectoryError(ValueError):
@@ -149,6 +166,45 @@ def _label_shape_hint(straightness: float) -> str:
     return "mixed"
 
 
+def _median(values: Sequence[float]) -> float:
+    if not values:
+        return 0.0
+    ordered = sorted(float(v) for v in values)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        return ordered[mid]
+    return (ordered[mid - 1] + ordered[mid]) / 2.0
+
+
+def _sampling_warnings(
+    segments: Sequence[TrajectorySegment],
+    *,
+    min_dt_recommended_s: float = DEFAULT_MIN_DT_RECOMMENDED_S,
+) -> List[Dict[str, Any]]:
+    warnings: List[Dict[str, Any]] = []
+    for i, seg in enumerate(segments):
+        dt = float(seg["dt_s"])
+        if dt >= min_dt_recommended_s:
+            continue
+        speed = float(seg["speed_centre"])
+        warnings.append(
+            {
+                "code": "short_segment_dt",
+                "segment_index": i,
+                "dt_s": dt,
+                "speed_centre": speed,
+                "abs_speed_centre": abs(speed),
+                "time_from_s": float(seg["time_from_s"]),
+                "time_to_s": float(seg["time_to_s"]),
+                "message": (
+                    f"Segment {i}: dt={dt:.4f}s → |speed_centre|={abs(speed):.1f} st/s. "
+                    "Very short Δt inflates segment speed; inspect before citing max/mean."
+                ),
+            }
+        )
+    return warnings
+
+
 def compute_vd10(
     raw_samples: Sequence[Mapping[str, float]],
     *,
@@ -219,7 +275,9 @@ def compute_vd10(
     inflections = _count_inflections(deltas, eps)
     abs_speeds = [abs(s) for s in speed_centres]
     mean_speed = sum(abs_speeds) / len(abs_speeds) if abs_speeds else 0.0
+    median_speed = _median(abs_speeds)
     max_speed = max(abs_speeds) if abs_speeds else 0.0
+    min_segment_dt_s = min(float(seg["dt_s"]) for seg in segments) if segments else 0.0
 
     total_time = samples[-1]["time_s"] - samples[0]["time_s"]
     net_speed = net_displacement / total_time if total_time > eps else 0.0
@@ -230,9 +288,11 @@ def compute_vd10(
         "straightness": straightness,
         "inflections": inflections,
         "mean_speed": mean_speed,
+        "median_speed": median_speed,
         "max_speed": max_speed,
         "net_speed": net_speed,
         "total_time_s": total_time,
+        "min_segment_dt_s": min_segment_dt_s,
     }
 
     labels: TrajectoryLabels = {
@@ -250,10 +310,27 @@ def compute_vd10(
             "time": "seconds",
         },
         "eps": float(eps),
+        "min_dt_recommended_s": float(DEFAULT_MIN_DT_RECOMMENDED_S),
         "samples": samples,
         "segments": segments,
         "aggregates": aggregates,
         "labels": labels,
+        "sampling_warnings": _sampling_warnings(segments),
+        "descriptor_roles": {
+            "robust": [
+                "net_speed",
+                "net_displacement",
+                "straightness",
+                "total_path",
+                "inflections",
+            ],
+            "sampling_dependent": [
+                "mean_speed",
+                "median_speed",
+                "max_speed",
+                "segments[].speed_centre",
+            ],
+        },
     }
     result["summary"] = format_vd10_summary(result)
     return result

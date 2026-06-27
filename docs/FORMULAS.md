@@ -79,6 +79,8 @@ Aggregates:
 - **total_path** = \(\sum_i \|\mathrm{centre}_{i+1}-\mathrm{centre}_i\|\)
 - **straightness** = net_displacement / total_path (0 if total_path = 0)
 - **inflections** = sign changes in centre deltas
-- **mean_speed**, **max_speed** = mean / max of \(\|\mathrm{speed\_centre}\|\)
+- **mean_speed**, **median_speed**, **max_speed** = mean / median / max of \(\|\mathrm{speed\_centre}\|\) — **sampling-dependent** (tiny \(\Delta t\) inflates segment quotients)
+- **min_segment_dt_s** = smallest segment duration
+- Inspect **segments** (`dt_s`, `speed_centre`); export may include **sampling_warnings** when `dt_s` < 0.1 s
 
 **Not** event-rate granularity (VD4). Block detection is user-defined; no automatic voice separation.

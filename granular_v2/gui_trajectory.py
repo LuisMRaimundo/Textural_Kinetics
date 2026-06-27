@@ -463,18 +463,42 @@ class TrajectoryTab:
         agg = self._result["aggregates"]
         labels = self._result["labels"]
         lines = [
+            "— Robust (thesis interpretation) —",
             f"net_displacement: {agg['net_displacement']:.2f} st",
             f"net_speed: {agg['net_speed']:.3f} st/s",
-            f"total_path: {agg['total_path']:.2f} st",
             f"straightness: {agg['straightness']:.3f}",
+            f"total_path: {agg['total_path']:.2f} st",
             f"inflections: {agg['inflections']}",
+            "",
+            "— Sampling-dependent (check segment dt) —",
+            f"median |speed_centre|: {agg['median_speed']:.3f} st/s",
             f"mean |speed_centre|: {agg['mean_speed']:.3f} st/s",
             f"max |speed_centre|: {agg['max_speed']:.3f} st/s",
+            f"min segment dt: {agg['min_segment_dt_s']:.4f} s",
+            "",
             f"direction: {labels['direction']}",
             f"band_behaviour: {labels['band_behaviour']}",
             f"shape_hint: {labels['shape_hint']}",
         ]
+        for i, seg in enumerate(self._result.get("segments", [])):
+            lines.append(
+                f"seg[{i}] dt={seg['dt_s']:.4f}s  "
+                f"speed_centre={seg['speed_centre']:+.2f} st/s"
+            )
+        warnings = self._result.get("sampling_warnings") or []
+        if warnings:
+            lines.append("")
+            lines.append("— Sampling warnings —")
+            for w in warnings:
+                lines.append(str(w["message"]))
         self._set_agg_text("\n".join(lines))
+        if warnings:
+            messagebox.showwarning(
+                "VD10 sampling",
+                "Some segments have very short dt (< 0.1 s).\n"
+                "max/mean segment speeds may be inflated — rely on net_speed and straightness.\n"
+                "See segment list in Aggregates panel.",
+            )
         self._redraw_overlays()
 
     def _set_agg_text(self, text: str) -> None:

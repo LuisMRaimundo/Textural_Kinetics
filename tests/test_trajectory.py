@@ -139,6 +139,24 @@ def test_format_vd10_summary_static():
     assert summary == r["summary"]
 
 
+def test_tiny_dt_inflates_max_not_net():
+    """Sampling artefact: close picks explode segment speed, not net_speed."""
+    r = compute_vd10(
+        [
+            {"time_s": 0.0, "low": 60, "high": 60},
+            {"time_s": 5.0, "low": 63, "high": 63},
+            {"time_s": 5.0046, "low": 68, "high": 68},
+            {"time_s": 10.0, "low": 65, "high": 65},
+        ]
+    )
+    agg = r["aggregates"]
+    assert abs(agg["net_speed"] - 0.5) < 0.01
+    assert agg["max_speed"] > 500.0
+    assert agg["max_speed"] > agg["median_speed"] * 5
+    assert r["sampling_warnings"]
+    assert any(w["segment_index"] == 1 for w in r["sampling_warnings"])
+
+
 def test_export_vd10_json(tmp_path: Path):
     r = compute_vd10(
         [

@@ -639,7 +639,7 @@ L = \sum_i |\mathrm{centre}_{i+1} - \mathrm{centre}_i|,\quad
 
 **inflections** = sign changes in \((\mathrm{centre}_{i+1}-\mathrm{centre}_i)\) above tolerance ε (default 0.01 st).
 
-**mean_speed**, **max_speed** = mean / max of \(|v^{\mathrm{centre}}_i|\).
+**mean_speed**, **median_speed**, **max_speed** = mean / median / max of \(|v^{\mathrm{centre}}_i|\) — **sampling-dependent**; tiny \(\Delta t\) can yield thousands of st/s without musical meaning. Always inspect `segments[].dt_s`. Recommended minimum pick spacing: **0.1 s** (`min_dt_recommended_s` in export).
 
 ### 10.4 Derived labels
 

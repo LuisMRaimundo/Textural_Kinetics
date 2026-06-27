@@ -86,7 +86,9 @@ Separate from event-rate **granularity** (VD4): VD10 measures **movement of a us
 | `total_path` | semitones | \(\sum_i \|\mathrm{centre}_{i+1}-\mathrm{centre}_i\|\) (descriptive) |
 | `straightness` | — | `net_displacement` / `total_path` (0 if path = 0) |
 | `inflections` | count | sign changes in centre deltas |
-| `mean_speed` | st/s | mean of \(\|\mathrm{speed\_centre}\|\) over segments |
-| `max_speed` | st/s | max of \(\|\mathrm{speed\_centre}\|\) over segments |
+| `mean_speed` | st/s | mean of \(\|\mathrm{speed\_centre}\|\) — **sampling-dependent** |
+| `median_speed` | st/s | median of \(\|\mathrm{speed\_centre}\|\) — less fragile than max |
+| `max_speed` | st/s | max of \(\|\mathrm{speed\_centre}\|\) — **always check `segments[].dt_s`** |
+| `min_segment_dt_s` | s | smallest \(\Delta t\) between consecutive picks |
 
 Labels: `direction` (ascending / descending / static), `band_behaviour` (diverging / converging / stable width), `shape_hint` (unidirectional / mixed / undulating). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.

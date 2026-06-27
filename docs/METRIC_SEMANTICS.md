@@ -255,7 +255,18 @@ Displacement of a **user-enclosed registral band** (lower/upper boundary per sam
 
 **net_speed** = \((\mathrm{centre}_{\mathrm{last}} - \mathrm{centre}_{\mathrm{first}}) / (t_{\mathrm{last}} - t_{\mathrm{first}})\).
 
-Per-segment **speed_centre** values are descriptive; **mean_speed** and **max_speed** summarise \(|\mathrm{speed\_centre}|\) over segments. Do not report `total_path / total_time` as “the” registral speed.
+Per-segment **speed_centre** = \(\Delta\mathrm{centre}/\Delta t\). When two picks are very close in time, \(\Delta t \to 0\) and segment speed can reach thousands of st/s **without any musically plausible gesture** — an **sampling artefact**, not a bug.
+
+### Robust vs sampling-dependent descriptors
+
+| Role | Keys | Thesis use |
+|------|------|------------|
+| **Robust** | `net_speed`, `net_displacement`, `straightness`, `total_path`, `inflections` | Primary interpretation |
+| **Sampling-dependent** | `mean_speed`, `median_speed`, `max_speed`, `segments[].speed_centre` | Secondary; always inspect `segments[].dt_s` before citing max |
+
+**median_speed** is less sensitive to a single tiny \(\Delta t\) than **max_speed**, but still depends on pick spacing. Never cite **max_speed** without checking the segment that produced it.
+
+Export includes `sampling_warnings` when any segment has `dt_s` < 0.1 s (recommended minimum spacing).
 
 ### Labels (heuristic)
 

@@ -23,4 +23,5 @@ Optional partition indices are simplified (channel-based); not a complete partit
 - **User-defined block:** the tool does not auto-detect voices or textural layers; spans are manual picks on the heatmap.
 - **Separate from granularity:** high event rate does not imply registral motion; a registral round-trip can yield **net_speed ≈ 0** while `total_path` is large.
 - **Semitone resolution:** picks snap to integer MIDI pitch; no quarter-tone precision.
+- **Segment speed artefact:** `speed_centre = Δcentre/Δt` diverges when picks are very close in time; **net_speed** and **straightness** remain stable. See `sampling_warnings` in export.
 - **GUI-only workflow** for picking; computation is pure Python (`compute_vd10`) and exportable to JSON.
