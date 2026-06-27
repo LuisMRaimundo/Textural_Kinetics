@@ -18,7 +18,7 @@
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
 | Corpus reference JSON snapshots | 3 (matching fixture stems) |
-| `granular_v2` line coverage (full suite) | **~92%** (threshold: 72%) |
+| `granular_v2` line coverage (full suite) | **~87%** (threshold: 72%) |
 | External regression script | `corpus/scripts/compare_all.py` (invoked by `tests/test_corpus.py`) |
 
 Source of truth for individual test names: `test_inventory.txt` (may lag; prefer `pytest --collect-only` for current count).
@@ -224,4 +224,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (162 tests, VD10 trajectory + sampling artefact tests). Detailed module table below is the 2026-06-06 audit snapshot; re-run `python -m pytest tests --collect-only -q` after adding tests.*
+*Summary refreshed 2026-06-27 (162 tests; VD10 multi-block GUI + relations API; trajectory module expanded — add `test_trajectory.py` cases for relations/session).*

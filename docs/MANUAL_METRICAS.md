@@ -92,3 +92,14 @@ Separate from event-rate **granularity** (VD4): VD10 measures **movement of a us
 | `min_segment_dt_s` | s | smallest \(\Delta t\) between consecutive picks |
 
 Labels: `direction` (ascending / descending / static), `band_behaviour` (diverging / converging / stable width), `shape_hint` (unidirectional / mixed / undulating). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.
+
+## Block relations (multi-block VD10)
+
+**Function:** `compute_block_relations(blocks)` · **Not** VD8 anisotropy.
+
+| Output | Unit | Meaning |
+|--------|------|---------|
+| `mean_inter_distance_rate_st_per_s` | st/s | Net change in inter-centre distance over overlap / overlap duration |
+| `relation` | — | converging / diverging / parallel (inter-block distance trend) |
+| `direction` | — | same_direction / opposite_direction / one_static / both_static (net centre motion) |
+| `distance_start_st`, `distance_end_st` | st | Inter-centre distance at overlap endpoints |

@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.10 — evidence-based rating
+# Granular_v2 v1.0.11 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,12 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.11 (VD10 editable multi-block)
+
+- **GUI:** editable picks (drag handles, numeric edit, insert); multi-block panel; live recompute; session JSON.
+- **API:** `compute_block_relations`, `compute_vd10_session`, interpolation helpers.
+- **Docs:** manual §10.6–10.8, metric semantics block-relations section.
 
 ## v1.0.10 (VD10 sampling discipline)
 

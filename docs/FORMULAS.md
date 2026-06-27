@@ -83,4 +83,13 @@ Aggregates:
 - **min_segment_dt_s** = smallest segment duration
 - Inspect **segments** (`dt_s`, `speed_centre`); export may include **sampling_warnings** when `dt_s` < 0.1 s
 
+## Block relations (multi-block)
+
+- Linear centre interpolation: `interpolate_centre_at_times`
+- Overlap \([t_0, t_1]\) = intersection of block time spans
+- \(d(t) = |\mathrm{centre}_B(t) - \mathrm{centre}_A(t)|\)
+- **mean_inter_distance_rate** = \((d(t_1) - d(t_0)) / (t_1 - t_0)\)
+- **relation:** converging / diverging / parallel from rate vs ε
+- **direction:** pairwise net centre motion labels (not VD8)
+
 **Not** event-rate granularity (VD4). Block detection is user-defined; no automatic voice separation.

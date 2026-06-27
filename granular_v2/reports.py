@@ -13,6 +13,7 @@ SCOPE = [
     "Event rates: per second, per millisecond, per bar, Mustextu rate_eps",
     "Heatmaps: symbolic pitch-time (not measured audio)",
     "VD10 registral trajectory: user-defined registral band displacement (semitones/s)",
+    "VD10 multi-block relations: pairwise inter-centre convergence/divergence (not VD8)",
 ]
 
 NOT_CLAIMED = [

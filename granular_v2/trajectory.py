@@ -369,3 +369,209 @@ def export_vd10_json(result: Mapping[str, Any], path: Path | str) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as f:
         json.dump(dict(result), f, indent=2, ensure_ascii=False)
+
+
+def interpolate_band_at_time(
+    raw_samples: Sequence[Mapping[str, float]],
+    time_s: float,
+) -> TrajectorySample:
+    """
+    Linear interpolation of registral band bounds at ``time_s``.
+
+    Uses piecewise-linear interpolation between consecutive picks; clamps to the
+    first/last sample outside the sampled span.
+    """
+    norm = normalize_samples(raw_samples)
+    if not norm:
+        return normalize_sample(time_s, 60.0, 60.0)
+    if len(norm) == 1:
+        s0 = norm[0]
+        return normalize_sample(time_s, s0["low"], s0["high"])
+    t = float(time_s)
+    if t <= norm[0]["time_s"]:
+        s0 = norm[0]
+        return normalize_sample(t, s0["low"], s0["high"])
+    if t >= norm[-1]["time_s"]:
+        s1 = norm[-1]
+        return normalize_sample(t, s1["low"], s1["high"])
+    for i in range(len(norm) - 1):
+        s0, s1 = norm[i], norm[i + 1]
+        t0, t1 = s0["time_s"], s1["time_s"]
+        if t0 <= t <= t1:
+            if t1 <= t0:
+                return normalize_sample(t, s0["low"], s0["high"])
+            alpha = (t - t0) / (t1 - t0)
+            low = s0["low"] + alpha * (s1["low"] - s0["low"])
+            high = s0["high"] + alpha * (s1["high"] - s0["high"])
+            return normalize_sample(t, low, high)
+    s1 = norm[-1]
+    return normalize_sample(t, s1["low"], s1["high"])
+
+
+def interpolate_centre_at_times(
+    raw_samples: Sequence[Mapping[str, float]],
+    times: Sequence[float],
+) -> List[float]:
+    """Piecewise-linear centre values at each time in ``times``."""
+    return [interpolate_band_at_time(raw_samples, t)["centre"] for t in times]
+
+
+def _pair_direction_label(
+    net_a: float,
+    net_b: float,
+    *,
+    eps: float,
+) -> str:
+    dir_a = _label_direction(net_a, eps)
+    dir_b = _label_direction(net_b, eps)
+    if dir_a == "static" and dir_b == "static":
+        return "both_static"
+    if dir_a == "static" or dir_b == "static":
+        return "one_static"
+    if dir_a == dir_b:
+        return "same_direction"
+    return "opposite_direction"
+
+
+def compute_block_relations(
+    blocks: Sequence[Mapping[str, Any]],
+    *,
+    eps: float = DEFAULT_EPS,
+    n_points: int = 64,
+) -> Dict[str, Any]:
+    """
+    Characterise pairwise relationships between block centre-trajectories.
+
+    Resamples each block's centre with linear interpolation over the shared
+    overlap of all block time spans, then for each pair reports whether
+    inter-centre distance converges, diverges, or stays parallel, plus whether
+    net centre motion is in the same or opposite direction.
+
+    This describes **inter-block registral geometry**, not intra-block coherence
+    (orientation / anisotropy — VD8) and not VD10 net speed per block.
+    """
+    valid: List[Mapping[str, Any]] = []
+    for block in blocks:
+        samples = block.get("samples") or []
+        if len(normalize_samples(samples)) >= 2:
+            valid.append(block)
+    pairs: List[Dict[str, Any]] = []
+    if len(valid) < 2:
+        return {
+            "metric": "VD10_block_relations",
+            "pairs": pairs,
+            "note": "At least two blocks with ≥2 samples each are required.",
+        }
+
+    for i in range(len(valid)):
+        for j in range(i + 1, len(valid)):
+            a, b = valid[i], valid[j]
+            name_a = str(a.get("name") or a.get("id") or f"block_{i}")
+            name_b = str(b.get("name") or b.get("id") or f"block_{j}")
+            samples_a = a.get("samples") or []
+            samples_b = b.get("samples") or []
+            norm_a = normalize_samples(samples_a)
+            norm_b = normalize_samples(samples_b)
+            t0 = max(norm_a[0]["time_s"], norm_b[0]["time_s"])
+            t1 = min(norm_a[-1]["time_s"], norm_b[-1]["time_s"])
+            duration = t1 - t0
+            if duration <= eps:
+                pairs.append(
+                    {
+                        "block_a": name_a,
+                        "block_b": name_b,
+                        "overlap_from_s": t0,
+                        "overlap_to_s": t1,
+                        "overlap_duration_s": duration,
+                        "relation": "no_overlap",
+                        "direction": "n/a",
+                        "mean_inter_distance_rate_st_per_s": 0.0,
+                        "distance_start_st": None,
+                        "distance_end_st": None,
+                    }
+                )
+                continue
+
+            n = max(2, int(n_points))
+            step = duration / float(n - 1)
+            times = [t0 + k * step for k in range(n)]
+            centres_a = interpolate_centre_at_times(samples_a, times)
+            centres_b = interpolate_centre_at_times(samples_b, times)
+            distances = [abs(cb - ca) for ca, cb in zip(centres_a, centres_b)]
+            d0, d1 = distances[0], distances[-1]
+            delta_d = d1 - d0
+            mean_rate = delta_d / duration if duration > eps else 0.0
+            if delta_d > eps:
+                relation = "diverging"
+            elif delta_d < -eps:
+                relation = "converging"
+            else:
+                relation = "parallel"
+            net_a = centres_a[-1] - centres_a[0]
+            net_b = centres_b[-1] - centres_b[0]
+            pairs.append(
+                {
+                    "block_a": name_a,
+                    "block_b": name_b,
+                    "overlap_from_s": t0,
+                    "overlap_to_s": t1,
+                    "overlap_duration_s": duration,
+                    "distance_start_st": d0,
+                    "distance_end_st": d1,
+                    "mean_inter_distance_rate_st_per_s": mean_rate,
+                    "relation": relation,
+                    "direction": _pair_direction_label(net_a, net_b, eps=eps),
+                }
+            )
+
+    return {"metric": "VD10_block_relations", "pairs": pairs, "eps": float(eps)}
+
+
+def compute_vd10_session(
+    blocks: Sequence[Mapping[str, Any]],
+    *,
+    eps: float = DEFAULT_EPS,
+) -> Dict[str, Any]:
+    """
+    Compute VD10 for each block and pairwise block relations.
+
+    Blocks with fewer than two samples are included with ``vd10: null`` and an
+    error message; single-block sessions match legacy ``compute_vd10`` output
+    inside ``blocks[0]["vd10"]``.
+    """
+    block_results: List[Dict[str, Any]] = []
+    for block in blocks:
+        name = str(block.get("name") or block.get("id") or "block")
+        block_id = str(block.get("id") or name)
+        raw = list(block.get("samples") or [])
+        entry: Dict[str, Any] = {
+            "id": block_id,
+            "name": name,
+            "samples": raw,
+            "vd10": None,
+            "vd10_error": None,
+        }
+        if len(raw) < 2:
+            entry["vd10_error"] = "VD10 requires at least two samples."
+        else:
+            try:
+                entry["vd10"] = compute_vd10(raw, eps=eps)
+            except TrajectoryError as exc:
+                entry["vd10_error"] = str(exc)
+        block_results.append(entry)
+
+    relations = compute_block_relations(blocks, eps=eps)
+    return {
+        "metric": "VD10_session",
+        "label": "Registral trajectory (multi-block)",
+        "blocks": block_results,
+        "relations": relations,
+    }
+
+
+def export_vd10_session_json(session: Mapping[str, Any], path: Path | str) -> None:
+    """Write multi-block VD10 session (blocks + relations) to JSON."""
+    out = Path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as f:
+        json.dump(dict(session), f, indent=2, ensure_ascii=False)

@@ -1,7 +1,7 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.10+).  
+**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.11+).  
 **Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–9.
 
 ---
@@ -280,7 +280,27 @@ Internal coherence / orientation of the block (e.g. anisotropy / VD8) is **out o
 
 ### Export
 
-Separate JSON via `export_vd10_json` (not merged into `analysis.json` from `run_analysis`). Keys: `metric` = `"VD10"`, `samples`, `segments`, `aggregates`, `labels`, `summary`.
+Separate JSON via `export_vd10_json` (single block) or `export_vd10_session_json` (multi-block). Keys: `metric` = `"VD10"` / `"VD10_session"`, `samples`, `segments`, `aggregates`, `labels`, `summary`; session adds `blocks[]` and `relations`.
+
+---
+
+## VD10 block relations (multi-block)
+
+**Function:** `compute_block_relations` · **Module:** `granular_v2/trajectory.py`
+
+### What it measures
+
+Whether the **centre trajectories** of two user-defined blocks **converge, diverge, or stay parallel** in register separation over their shared time span, and whether their **net registral directions** align or oppose.
+
+### What it does **not** measure
+
+- **Not VD10 net speed** per block (use each block's `vd10.aggregates.net_speed`).
+- **Not VD8 / anisotropy:** internal coherence or orientation within a block is out of scope.
+- **Not voice detection:** blocks are analyst-defined regions.
+
+### Implementation summary
+
+Centres are linearly interpolated between picks; inter-centre distance \(d(t)\) is sampled on the overlap grid. **mean_inter_distance_rate_st_per_s** = \((d_{\mathrm{end}} - d_{\mathrm{start}}) / T_{\mathrm{overlap}}\). Labels use the same ε tolerance as VD10 (default 0.01 st).
 
 ---
 
@@ -308,5 +328,7 @@ Separate JSON via `export_vd10_json` (not merged into `analysis.json` from `run_
 | Mustextu synchrony, `rate_eps` | `granular_v2/mustextu/horizontal_density.py` → `compute_horizontal_density_from_onsets` |
 | Mustextu summary export | `granular_v2/granularity_mustextu.py` |
 | VD10 registral trajectory | `granular_v2/trajectory.py` → `compute_vd10`, `export_vd10_json` |
+| VD10 multi-block session | `granular_v2/trajectory.py` → `compute_vd10_session`, `export_vd10_session_json` |
+| VD10 block relations | `granular_v2/trajectory.py` → `compute_block_relations`, `interpolate_centre_at_times` |
 
 No formula in this document should be read as overriding the code; if they diverge, **the code wins** and this file should be updated.

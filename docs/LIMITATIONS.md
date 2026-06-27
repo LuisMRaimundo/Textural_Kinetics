@@ -24,4 +24,5 @@ Optional partition indices are simplified (channel-based); not a complete partit
 - **Separate from granularity:** high event rate does not imply registral motion; a registral round-trip can yield **net_speed ≈ 0** while `total_path` is large.
 - **Semitone resolution:** picks snap to integer MIDI pitch; no quarter-tone precision.
 - **Segment speed artefact:** `speed_centre = Δcentre/Δt` diverges when picks are very close in time; **net_speed** and **straightness** remain stable. See `sampling_warnings` in export.
-- **GUI-only workflow** for picking; computation is pure Python (`compute_vd10`) and exportable to JSON.
+- **Multi-block:** each block is independent; relations describe inter-block geometry only, not merged VD10.
+- **GUI-only picking** for interactive edit; computation is pure Python (`compute_vd10`, `compute_vd10_session`) and exportable to JSON.

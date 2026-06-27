@@ -10,9 +10,16 @@ from .event_rates import compute_all_event_rates, global_event_rates
 from .heatmaps import save_both_heatmaps
 from .loader import load_score_and_note_matrix
 from .pipeline import run_analysis, run_heatmap_analysis
-from .trajectory import compute_vd10, export_vd10_json, format_vd10_summary
+from .trajectory import (
+    compute_block_relations,
+    compute_vd10,
+    compute_vd10_session,
+    export_vd10_json,
+    export_vd10_session_json,
+    format_vd10_summary,
+)
 
-__version__ = "1.0.10"
+__version__ = "1.0.11"
 
 __all__ = [
     "AnalysisConfig",
@@ -26,6 +33,9 @@ __all__ = [
     "global_event_rates",
     "save_both_heatmaps",
     "compute_vd10",
+    "compute_block_relations",
+    "compute_vd10_session",
     "export_vd10_json",
+    "export_vd10_session_json",
     "format_vd10_summary",
 ]

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.11
+
+- **VD10 GUI — editable picks:** select samples on heatmap or list; drag band (vertical), top/bottom handles, or time axis; double-click row for numeric edit; insert between samples or right-click centre line; undo/delete; live recompute.
+- **VD10 multi-block:** blocks panel (add/rename/delete/active); per-block colours; `compute_vd10` once per block via `compute_vd10_session`; `compute_block_relations` for pairwise converging/diverging/parallel inter-centre motion; session JSON export (`export_vd10_session_json`).
+- **API:** `interpolate_band_at_time`, `interpolate_centre_at_times`, `compute_block_relations`, `compute_vd10_session`, `export_vd10_session_json`.
+- **Docs:** README, `MANUAL_TECNICO.md` §10.6–10.7, `MANUAL_METRICAS.md`, `FORMULAS.md`, `METRIC_SEMANTICS.md`, `LIMITATIONS.md`, audit docs; version **1.0.11**.
+
 ## 1.0.10
 
 - **VD10 sampling discipline:** `median_speed`, `min_segment_dt_s`, `sampling_warnings`, `descriptor_roles` (robust vs sampling-dependent); GUI lists segment `dt_s` and warns when Δt < 0.1 s.

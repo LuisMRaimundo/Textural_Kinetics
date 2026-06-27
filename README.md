@@ -4,12 +4,12 @@
 
 Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.10 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.11 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions + CircleCI — **162** tests, coverage ≥72% (~**92%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions + CircleCI — **162** tests, coverage ≥72% (~**87%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
 ## Documentation
 
@@ -53,6 +53,19 @@ print(vd10["aggregates"]["straightness"])
 export_vd10_json(vd10, "out/vd10_registral_trajectory.json")
 ```
 
+**Multi-block session** (several independent textural blocks + pairwise relations):
+
+```python
+from granular_v2.trajectory import compute_vd10_session, export_vd10_session_json
+
+session = compute_vd10_session([
+    {"id": "block_a", "name": "Upper", "samples": [...]},
+    {"id": "block_b", "name": "Lower", "samples": [...]},
+])
+print(session["relations"]["pairs"])
+export_vd10_session_json(session, "out/vd10_session.json")
+```
+
 **VD10 interpretation:** anchor thesis claims on **`net_speed`** and **`straightness`**; `mean_speed` / `max_speed` depend on pick spacing (see `sampling_warnings` when segment Δt < 0.1 s). Full semantics: [docs/METRIC_SEMANTICS.md](docs/METRIC_SEMANTICS.md) §VD10.
 
 ## One-click install (no Python knowledge required)
@@ -88,7 +101,7 @@ python -m granular_v2.run score.musicxml -o out --no-heatmaps --partitional
 python -m granular_v2.gui
 ```
 
-Tabs: **Analysis** (event rates, heatmap pop-outs, JSON export) and **Registral trajectory** (VD10 — pick registral spans on the embedded advanced heatmap; **Compute** reports robust metrics and segment `dt`; warns on picks closer than 0.1 s).
+Tabs: **Analysis** (event rates, heatmap pop-outs, JSON export) and **Registral trajectory** (VD10 — editable multi-block picking on the embedded advanced heatmap; drag/edit/insert samples; live recompute; per-block summaries and pairwise block relations; session JSON export).
 
 Windows: `run_gui.bat` or **START-Granularity.bat** (after installer).
 

@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.10  
+**Version:** 1.0.11  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -93,7 +93,7 @@ pytest tests -q
 4. **Export JSON** — save `analysis.json`.
 5. **Heatmap basic / advanced / spectral** — opens matplotlib window (requires file loaded).
 6. **Plots** — activity/granularity curves (after analysis).
-7. **Registral trajectory** tab — embedded advanced heatmap; enable **Pick mode** to mark vertical registral spans at sample times; **Compute VD10**; **Export JSON** (`vd10_registral_trajectory.json`).
+7. **Registral trajectory** tab — embedded advanced heatmap; **Blocks** panel for multiple independent trajectories; **Pick mode** for new spans; drag/edit/insert samples (see §10.6); live **Recompute**; **Export JSON** session (`vd10_registral_trajectory.json`).
 
 ### 2.4 CLI workflow
 
@@ -141,6 +141,20 @@ vd10 = compute_vd10([
     {"time_s": 2.0, "low": 68, "high": 72},
 ])
 export_vd10_json(vd10, "out/vd10_registral_trajectory.json")
+```
+
+**Multi-block VD10 session:**
+
+```python
+from granular_v2.trajectory import compute_vd10_session, export_vd10_session_json
+
+session = compute_vd10_session([
+    {"id": "a", "name": "Block A", "samples": [{"time_s": 0, "low": 60, "high": 64}, ...]},
+    {"id": "b", "name": "Block B", "samples": [{"time_s": 0, "low": 72, "high": 76}, ...]},
+])
+print(session["blocks"][0]["vd10"]["summary"])
+print(session["relations"]["pairs"])
+export_vd10_session_json(session, "out/vd10_session.json")
 ```
 
 ### 2.6 Corpus regression
@@ -658,6 +672,53 @@ Top-level keys: `metric` (`"VD10"`), `label`, `units`, `eps`, `min_dt_recommende
 **Sampling-dependent:** `mean_speed`, `median_speed`, `max_speed`, `segments[].speed_centre` — always inspect `dt_s`.
 
 **API:** `compute_vd10`, `normalize_sample`, `format_vd10_summary`, `export_vd10_json`.
+
+### 10.6 Editable picks (GUI)
+
+Without enabling Pick mode, click an existing sample marker or list row to **select** it (highlighted on heatmap and list).
+
+| Gesture | Effect |
+|---------|--------|
+| Drag inside band | Move centre vertically; **width** preserved |
+| Drag top / bottom edge | Resize **high** or **low** bound |
+| Drag time line (outside band) | Move sample **time_s** |
+| Double-click list row | Numeric dialog: `time_s`, `low`, `high` |
+| **Insert between** | Midpoint sample between selected and next neighbour |
+| Right-click centre line | Insert interpolated sample at click time |
+| Undo / Delete | Revert or remove selected sample |
+
+After any edit, samples are re-sorted by time and VD10 is **recomputed live** for all blocks. Duplicate times at the same `time_s` are rejected.
+
+### 10.7 Multi-block trajectories
+
+Each **block** has its own sample list, colour overlay, and VD10 result. The **active** block (▶ in Blocks panel) receives new picks in Pick mode and accepts edit gestures.
+
+`compute_vd10_session(blocks)` calls `compute_vd10` once per block (formula unchanged). Export structure:
+
+| Key | Content |
+|-----|---------|
+| `blocks[]` | `id`, `name`, `samples`, `vd10`, optional `vd10_error` |
+| `relations` | output of `compute_block_relations` |
+
+Single-block sessions behave as before: one default block named **Block 1**.
+
+### 10.8 Block relations (`compute_block_relations`)
+
+Pairwise comparison of block **centre trajectories** over their **time overlap** — separate from VD10 per-block net speed and from intra-block coherence (VD8 / anisotropy).
+
+1. Piecewise-linear centre interpolation per block (`interpolate_centre_at_times`).
+2. Shared time grid on \([t_{\mathrm{overlap,0}}, t_{\mathrm{overlap,1}}]\).
+3. Inter-centre distance \(d(t) = |\mathrm{centre}_B(t) - \mathrm{centre}_A(t)|\).
+
+Per pair \((A,B)\):
+
+| Output | Definition |
+|--------|------------|
+| `mean_inter_distance_rate_st_per_s` | \((d(t_1) - d(t_0)) / (t_1 - t_0)\) over overlap |
+| `relation` | converging if rate \(< -\varepsilon\); diverging if \(> \varepsilon\); else parallel |
+| `direction` | same_direction / opposite_direction / one_static / both_static from net centre motion of each block |
+
+**API:** `interpolate_band_at_time`, `interpolate_centre_at_times`, `compute_block_relations`, `compute_vd10_session`, `export_vd10_session_json`.
 
 ---
 
