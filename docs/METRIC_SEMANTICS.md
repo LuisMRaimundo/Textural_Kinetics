@@ -1,8 +1,8 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.11+).  
-**Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–9.
+**Status:** Describes the **implemented model** in `granular_v2/` as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.12).  
+**Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–10.
 
 ---
 
@@ -239,11 +239,11 @@ Values marked **EXPLORE** for EPS global or Mustextu synchrony on specific fixtu
 ## VD10 — Registral trajectory
 
 **Module:** `granular_v2/trajectory.py` → `compute_vd10`  
-**GUI:** tab *Registral trajectory* — picks on `plot_heatmap_advanced` axes (seconds × MIDI semitones).
+**GUI:** tab *Registral trajectory* — picks on `plot_heatmap_advanced` axes (seconds × MIDI semitones). Tab *Registral trajectory (image)* — calibrated PNG/JPG excerpt (linear pixel↔pitch/time); shared pick/edit logic in `gui_trajectory_common.py`. See [LIMITATIONS.md](LIMITATIONS.md) for image calibration scope.
 
 ### What VD10 measures
 
-Displacement of a **user-enclosed registral band** (lower/upper boundary per sample time). Units: **semitones** (integer MIDI); speeds in **semitones per second**. Time comes from the same seconds axis as the note matrix (`loader` + `timebase`).
+Displacement of a **user-enclosed registral band** (lower/upper boundary per sample time). Units: **semitones** (integer MIDI); speeds in **semitones per second**. Time on the heatmap tab comes from the same seconds axis as the note matrix (`loader` + `timebase`); on the image tab, time and pitch come from user calibration (`make_axis_calibration`).
 
 ### What VD10 does **not** measure
 
@@ -280,7 +280,7 @@ Internal coherence / orientation of the block (e.g. anisotropy / VD8) is **out o
 
 ### Export
 
-Separate JSON via `export_vd10_json` (single block) or `export_vd10_session_json` (multi-block). Keys: `metric` = `"VD10"` / `"VD10_session"`, `samples`, `segments`, `aggregates`, `labels`, `summary`; session adds `blocks[]` and `relations`.
+Separate JSON via `export_vd10_json` (single block) or `export_vd10_session_json` (multi-block). Keys: `metric` = `"VD10"` / `"VD10_session"`, `samples`, `segments`, `aggregates`, `labels`, `summary`; session adds `blocks[]` and `relations`. Image sessions may add `source: "image"` and `image_calibration`.
 
 ---
 
@@ -330,5 +330,6 @@ Centres are linearly interpolated between picks; inter-centre distance \(d(t)\) 
 | VD10 registral trajectory | `granular_v2/trajectory.py` → `compute_vd10`, `export_vd10_json` |
 | VD10 multi-block session | `granular_v2/trajectory.py` → `compute_vd10_session`, `export_vd10_session_json` |
 | VD10 block relations | `granular_v2/trajectory.py` → `compute_block_relations`, `interpolate_centre_at_times` |
+| VD10 image calibration | `granular_v2/trajectory.py` → `make_axis_calibration`, `describe_axis_calibration` |
 
 No formula in this document should be read as overriding the code; if they diverge, **the code wins** and this file should be updated.

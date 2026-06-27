@@ -71,7 +71,7 @@ Not measured audio spectra.
 
 ## Registral trajectory (VD10)
 
-**Module:** `trajectory.py` · **GUI:** tab *Registral trajectory* (`gui_trajectory.py`)
+**Module:** `trajectory.py` · **GUI:** tabs *Registral trajectory* (`gui_trajectory.py`, heatmap) and *Registral trajectory (image)* (`gui_trajectory_image.py`, calibrated excerpt); shared session logic in `gui_trajectory_common.py`
 
 Separate from event-rate **granularity** (VD4): VD10 measures **movement of a user-defined registral band** over time, not attack density.
 
@@ -103,3 +103,14 @@ Labels: `direction` (ascending / descending / static), `band_behaviour` (divergi
 | `relation` | — | converging / diverging / parallel (inter-block distance trend) |
 | `direction` | — | same_direction / opposite_direction / one_static / both_static (net centre motion) |
 | `distance_start_st`, `distance_end_st` | st | Inter-centre distance at overlap endpoints |
+
+## Image axis calibration (VD10 image tab)
+
+**Functions:** `make_axis_calibration`, `describe_axis_calibration` · **Assumption:** linear pixel ↔ pitch (semitones) and pixel ↔ time (seconds). Valid for proportional graphic / spatial scores only.
+
+| Output | Meaning |
+|--------|---------|
+| `slope`, `intercept` | Linear map \(v = \mathrm{slope} \cdot p + \mathrm{intercept}\) |
+| `p0_px`, `p0_val`, `p1_px`, `p1_val` | Reference calibration points |
+
+Session export may include `image_calibration` when picks were made on an image backdrop.

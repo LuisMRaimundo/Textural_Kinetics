@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.11 — evidence-based rating
+# Granular_v2 v1.0.12 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,13 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.12 (VD10 image picking)
+
+- **GUI:** tab **Registral trajectory (image)** — PNG/JPG load, pitch/time calibration, shared pick/edit/multi-block via `gui_trajectory_common.py`.
+- **API:** `make_axis_calibration`, `describe_axis_calibration`, `TrajectoryCalibrationError`; image session export metadata (`source`, `image_calibration`).
+- **Tests:** 166 collected; `test_trajectory.py` (17 tests, incl. calibration mappers).
+- **Docs:** README, manual §10.9, metrics, formulas, limitations, audit docs synced to v1.0.12.
 
 ## v1.0.11 (VD10 editable multi-block)
 

@@ -93,3 +93,16 @@ Aggregates:
 - **direction:** pairwise net centre motion labels (not VD8)
 
 **Not** event-rate granularity (VD4). Block detection is user-defined; no automatic voice separation.
+
+## Image axis calibration (VD10 image tab)
+
+Two reference points per axis define a **linear** pixel → value map:
+
+\[
+v(p) = v_0 + \frac{v_1 - v_0}{p_1 - p_0}(p - p_0)
+\]
+
+- **Pitch axis:** \(v\) in semitones (MIDI integer after pick snap)
+- **Time axis:** \(v\) in seconds (excerpt duration set at calibration)
+
+**API:** `make_axis_calibration`, `describe_axis_calibration` · **Error:** `TrajectoryCalibrationError` if reference pixels coincide.

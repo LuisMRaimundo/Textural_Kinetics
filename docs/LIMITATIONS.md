@@ -25,4 +25,7 @@ Optional partition indices are simplified (channel-based); not a complete partit
 - **Semitone resolution:** picks snap to integer MIDI pitch; no quarter-tone precision.
 - **Segment speed artefact:** `speed_centre = Δcentre/Δt` diverges when picks are very close in time; **net_speed** and **straightness** remain stable. See `sampling_warnings` in export.
 - **Multi-block:** each block is independent; relations describe inter-block geometry only, not merged VD10.
-- **GUI-only picking** for interactive edit; computation is pure Python (`compute_vd10`, `compute_vd10_session`) and exportable to JSON.
+- **Heatmap picking:** interactive edit on the embedded advanced heatmap (MusicXML/MIDI loaded on Analysis tab).
+- **Image picking (v1.0.12):** PNG/JPG excerpt with two-axis linear calibration; assumes **proportional graphic / spatial layout** — not valid for conventional non-spatial symbolic notation where image position does not encode pitch or duration.
+- **Calibration error:** equal pixel reference points on an axis are rejected (`TrajectoryCalibrationError`).
+- **Computation:** pure Python (`compute_vd10`, `compute_vd10_session`, `make_axis_calibration`); GUI is for interactive sampling only.

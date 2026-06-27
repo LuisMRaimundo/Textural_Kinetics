@@ -2,14 +2,14 @@
 
 **Fused symbolic temporal-density analyzer** for **MusicXML** and **MIDI** scores.
 
-Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap). It is symbolic notation analysis — not audio, perception, or harmonic function.
+Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap or on a calibrated score image). It is symbolic notation analysis — not audio, perception, or harmonic function.
 
-**Package version:** 1.0.11 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.12 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions + CircleCI — **162** tests, coverage ≥72% (~**87%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions + CircleCI — **166** tests, coverage ≥72% (~**87%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
 
 ## Documentation
 
@@ -66,6 +66,16 @@ print(session["relations"]["pairs"])
 export_vd10_session_json(session, "out/vd10_session.json")
 ```
 
+**Image-based picking** (proportional graphic scores — linear pixel↔pitch/time calibration):
+
+```python
+from granular_v2.trajectory import make_axis_calibration, describe_axis_calibration
+
+map_pitch = make_axis_calibration(p0_px=120.0, p0_val=48.0, p1_px=420.0, p1_val=72.0)
+map_time = make_axis_calibration(p0_px=10.0, p0_val=0.0, p1_px=210.0, p1_val=12.5)
+# map_pitch(y_px) → semitones; map_time(x_px) → seconds
+```
+
 **VD10 interpretation:** anchor thesis claims on **`net_speed`** and **`straightness`**; `mean_speed` / `max_speed` depend on pick spacing (see `sampling_warnings` when segment Δt < 0.1 s). Full semantics: [docs/METRIC_SEMANTICS.md](docs/METRIC_SEMANTICS.md) §VD10.
 
 ## One-click install (no Python knowledge required)
@@ -101,7 +111,17 @@ python -m granular_v2.run score.musicxml -o out --no-heatmaps --partitional
 python -m granular_v2.gui
 ```
 
-Tabs: **Analysis** (event rates, heatmap pop-outs, JSON export) and **Registral trajectory** (VD10 — editable multi-block picking on the embedded advanced heatmap; drag/edit/insert samples; live recompute; per-block summaries and pairwise block relations; session JSON export).
+Tabs:
+
+- **Analysis** — event rates, heatmap pop-outs, JSON export.
+- **Registral trajectory** — VD10 on the embedded advanced heatmap (editable multi-block picking; drag/edit/insert; live recompute; block relations; session JSON).
+- **Registral trajectory (image)** — VD10 on a PNG/JPG excerpt with two-axis calibration (pitch + time); same pick/edit/multi-block workflow as the heatmap tab.
+
+Standalone image picker (no score required):
+
+```bash
+python -m granular_v2.gui_trajectory_image
+```
 
 Windows: `run_gui.bat` or **START-Granularity.bat** (after installer).
 

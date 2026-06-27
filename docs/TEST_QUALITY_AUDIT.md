@@ -13,7 +13,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **162** |
+| Collected tests | **166** |
 | Test modules (excluding `conftest.py`) | **22** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
@@ -44,13 +44,14 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_pipeline.py` | 2 | Full `run_analysis` with/without heatmaps and JSON export |
 | `test_plots.py` | 1 | Activity plot smoke test (`granular_v2.plots`, omitted from coverage) |
 | `test_timebase_axioms.py` | 13 | Tempo segments, QL→seconds, note time conversion in place |
+| `test_trajectory.py` | 17 | VD10 normalization, net_speed, sampling warnings, axis calibration, JSON export |
 | `test_util_tempo_branches.py` | 11 | Repeat detection/expansion, `build_seconds_map` multi-segment behaviour |
 | `test_util_tempo_fallbacks.py` | 8 | Repeat-expansion and metronome-boundary fallback paths (monkeypatch/fakes) |
 | `test_util_tempo_parity.py` | 4 | Parity between `util_tempo` and `timebase` on synthetic + corpus scores |
 
 ### Coverage omissions (by design)
 
-`pyproject.toml` excludes from coverage: `input_layer.py`, `gui.py`, `plots.py`, `run.py`, `__main__.py`, `logging_config.py`, `mustextu/horizontal_density.py`. Tests exist for some omitted modules indirectly (e.g. loader wraps input paths; coincidence tests hit `horizontal_density`).
+`pyproject.toml` excludes from coverage: `input_layer.py`, `gui.py`, `gui_trajectory.py`, `gui_trajectory_common.py`, `gui_trajectory_image.py`, `plots.py`, `run.py`, `__main__.py`, `logging_config.py`, `mustextu/horizontal_density.py`. Tests exist for some omitted modules indirectly (e.g. loader wraps input paths; coincidence tests hit `horizontal_density`; VD10 core in `test_trajectory.py`).
 
 ---
 
@@ -224,4 +225,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (162 tests; VD10 multi-block GUI + relations API; trajectory module expanded — add `test_trajectory.py` cases for relations/session).*
+*Summary refreshed 2026-06-27 (166 tests; VD10 image tab + calibration API; trajectory module — add `test_trajectory.py` cases for `compute_block_relations` / `compute_vd10_session`).*

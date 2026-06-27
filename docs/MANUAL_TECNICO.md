@@ -1,6 +1,6 @@
 # Granularity Analyser — Technical Manual
 
-**Version:** 1.0.11  
+**Version:** 1.0.12  
 **Package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
 
@@ -94,6 +94,7 @@ pytest tests -q
 5. **Heatmap basic / advanced / spectral** — opens matplotlib window (requires file loaded).
 6. **Plots** — activity/granularity curves (after analysis).
 7. **Registral trajectory** tab — embedded advanced heatmap; **Blocks** panel for multiple independent trajectories; **Pick mode** for new spans; drag/edit/insert samples (see §10.6); live **Recompute**; **Export JSON** session (`vd10_registral_trajectory.json`).
+8. **Registral trajectory (image)** tab — load PNG/JPG excerpt; calibrate pitch and time axes (§10.9); same multi-block pick/edit/compute/export as the heatmap tab. Standalone: `python -m granular_v2.gui_trajectory_image`.
 
 ### 2.4 CLI workflow
 
@@ -609,7 +610,9 @@ Vertical lines at measure start times \(t_m\) (seconds), from score or `measure_
 ## 10. Registral trajectory (VD10)
 
 **Module:** `trajectory.py` (pure functions, no Tkinter)  
-**GUI:** `gui_trajectory.py` — tab *Registral trajectory*; reuses `plot_heatmap_advanced` and `FigureCanvasTkAgg`.
+**Shared GUI:** `gui_trajectory_common.py` — `TrajectorySessionBase` (multi-block session, side panel, pick/edit handlers).  
+**Heatmap GUI:** `gui_trajectory.py` — tab *Registral trajectory*; reuses `plot_heatmap_advanced` and `FigureCanvasTkAgg`.  
+**Image GUI:** `gui_trajectory_image.py` — tab *Registral trajectory (image)*; calibrated PNG/JPG backdrop (§10.9).
 
 VD10 measures **where a user-defined textural block moves in register** and how fast — **not** how many events occur (VD4 granularity). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.
 
@@ -720,6 +723,37 @@ Per pair \((A,B)\):
 
 **API:** `interpolate_band_at_time`, `interpolate_centre_at_times`, `compute_block_relations`, `compute_vd10_session`, `export_vd10_session_json`.
 
+### 10.9 Image-based picking (`gui_trajectory_image.py`)
+
+For **proportional graphic scores** or spatial layouts where image position encodes pitch and time linearly (not conventional non-spatial symbolic notation).
+
+**Workflow:**
+
+1. **Load image…** — PNG/JPG/BMP/TIF excerpt.
+2. **Calibrate pitch** — click two reference points on the vertical axis; enter MIDI semitone (or note name) for each.
+3. **Calibrate time** — click start and end of the excerpt horizontally; enter total duration in seconds.
+4. Canvas switches to **Time (s) × Pitch (semitones)** with the image as background.
+5. Enable **Pick mode** — same gestures as §10.6 (drag span, two-click, edit handles, insert, undo, multi-block).
+
+**Calibration API** (`trajectory.py` — unit-tested, no Tkinter):
+
+Linear map from pixel position to musical value:
+
+\[
+v = \mathrm{slope} \cdot p + \mathrm{intercept},\quad
+\mathrm{slope} = \frac{v_1 - v_0}{p_1 - p_0}
+\]
+
+- `make_axis_calibration(p0_px, p0_val, p1_px, p1_val)` → callable `map_px(px) -> value`
+- `describe_axis_calibration(...)` → serialisable record (`p0_px`, `p0_val`, `p1_px`, `p1_val`, `slope`, `intercept`)
+- Raises `TrajectoryCalibrationError` if `p0_px == p1_px`
+
+Time axis: `p0_val = 0`, `p1_val = duration_s` at the chosen start/end pixel columns. Pitch axis: semitones at two reference y-positions.
+
+**Export:** session JSON includes `source: "image"`, optional `image_path`, and `image_calibration` (reference points + duration) for reproducibility.
+
+**Standalone:** `python -m granular_v2.gui_trajectory_image` launches the image tab without loading a score on the Analysis tab.
+
 ---
 
 ## 11. Partitional layer (optional)
@@ -811,8 +845,8 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 
 | Mechanism | Command / file |
 |-----------|----------------|
-| Unit + integration tests | `pytest tests -q` (**147** tests) |
-| Coverage gate | ≥72% on `granular_v2` (~**91%** typical) |
+| Unit + integration tests | `pytest tests -q` (**166** tests) |
+| Coverage gate | ≥72% on `granular_v2` (~**87%** typical) |
 | Corpus regression | `python corpus/scripts/compare_all.py` |
 | Offset audit tests | `tests/test_offset_audit.py` |
 | Global offset integration | `tests/test_global_offsets_integration.py` |

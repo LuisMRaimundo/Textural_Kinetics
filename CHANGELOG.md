@@ -8,6 +8,8 @@
 - **Export:** image session JSON includes `source: "image"` and `image_calibration` reference points for reproducibility.
 - **Standalone:** `python -m granular_v2.gui_trajectory_image` launches image picker without a score.
 
+- **Docs:** README, `MANUAL_TECNICO.md` §10.9, `MANUAL_METRICAS.md`, `FORMULAS.md`, `METRIC_SEMANTICS.md`, `LIMITATIONS.md`, `current_rating.md`, `TEST_QUALITY_AUDIT.md`; version **1.0.12**.
+
 ## 1.0.11
 
 - **VD10 GUI — editable picks:** select samples on heatmap or list; drag band (vertical), top/bottom handles, or time axis; double-click row for numeric edit; insert between samples or right-click centre line; undo/delete; live recompute.
