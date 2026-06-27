@@ -101,6 +101,49 @@ def test_descending_summary():
     assert "descends at" in r["summary"]
 
 
+def test_vd10_shape_hint_directionality():
+    """shape_hint uses |straightness|; direction uses signed net displacement."""
+    ascending = compute_vd10(
+        [
+            {"time_s": 0.0, "low": 60, "high": 64},
+            {"time_s": 2.0, "low": 68, "high": 72},
+        ]
+    )
+    assert ascending["labels"]["direction"] == "ascending"
+    assert ascending["labels"]["shape_hint"] == "unidirectional"
+    assert ascending["aggregates"]["straightness"] > 0.8
+
+    descending = compute_vd10(
+        [
+            {"time_s": 0.0, "low": 72, "high": 72},
+            {"time_s": 2.0, "low": 64, "high": 64},
+        ]
+    )
+    assert descending["labels"]["direction"] == "descending"
+    assert descending["labels"]["shape_hint"] == "unidirectional"
+    assert descending["aggregates"]["straightness"] < -0.8
+
+    static = compute_vd10(
+        [
+            {"time_s": 0.0, "low": 60, "high": 64},
+            {"time_s": 1.0, "low": 60, "high": 64},
+        ]
+    )
+    assert static["labels"]["direction"] == "static"
+    assert static["labels"]["shape_hint"] == "undulating"
+    assert static["aggregates"]["straightness"] == 0.0
+
+    undulating = compute_vd10(
+        [
+            {"time_s": 0.0, "low": 60, "high": 64},
+            {"time_s": 1.0, "low": 64, "high": 68},
+            {"time_s": 2.0, "low": 60, "high": 64},
+        ]
+    )
+    assert undulating["labels"]["shape_hint"] == "undulating"
+    assert abs(undulating["aggregates"]["straightness"]) < 0.4
+
+
 def test_band_behaviour_diverging_and_converging():
     up = compute_vd10(
         [

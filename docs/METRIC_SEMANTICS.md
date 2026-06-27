@@ -274,7 +274,7 @@ Export includes `sampling_warnings` when any segment has `dt_s` < 0.1 s (recomme
 |-------|----------------------------|
 | `direction` | ascending / descending / static from `net_displacement` |
 | `band_behaviour` | diverging / converging / stable width from Δwidth end−start |
-| `shape_hint` | straightness > 0.8 → unidirectional; < 0.4 → undulating; else mixed |
+| `shape_hint` | \|straightness\| > 0.8 → unidirectional; \|straightness\| < 0.4 → undulating; else mixed (export `straightness` is **signed**) |
 
 Internal coherence / orientation of the block (e.g. anisotropy / VD8) is **out of scope** for VD10.
 
