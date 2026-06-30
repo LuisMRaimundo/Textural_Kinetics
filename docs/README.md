@@ -17,4 +17,4 @@
 | **[MELHORAMENTO_util_tempo.md](MELHORAMENTO_util_tempo.md)** | History | Tempo-map fix notes |
 
 **Canonical tool name:** **Textural_Kinetics**  
-Repository: https://github.com/LuisMRaimundo/Temporal_Granularity
+Repository: https://github.com/LuisMRaimundo/Textural_Kinetics

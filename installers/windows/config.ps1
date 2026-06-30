@@ -1,6 +1,6 @@
 # Textural_Kinetics - Windows installer constants
 $script:TexturalKineticsConfig = @{
-    GitHubRepoUrl      = 'https://github.com/LuisMRaimundo/Temporal_Granularity'
+    GitHubRepoUrl      = 'https://github.com/LuisMRaimundo/Textural_Kinetics'
     AppName            = 'Textural_Kinetics'
     PythonVersion      = '3.11'
     PythonMinMinor     = 10

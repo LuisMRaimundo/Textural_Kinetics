@@ -3,7 +3,7 @@
 **Canonical tool name:** **Textural_Kinetics**  
 **Version:** 1.0.16  
 **Python package:** `granular_v2`  
-**Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
+**Repository:** https://github.com/LuisMRaimundo/Textural_Kinetics
 
 This manual documents purpose, architecture, **mathematical definitions**, and **algorithms implemented in this project**. Behaviour delegated to external libraries (music21 parsing, NumPy linear algebra, SciPy Gaussian filters) is named but not re-derived.
 
@@ -80,8 +80,8 @@ Creates `.venv/`, installs `requirements-app.txt` (`pip install -e .[full]`), la
 ### 2.2 Installation (developer)
 
 ```bash
-git clone https://github.com/LuisMRaimundo/Temporal_Granularity.git
-cd Temporal_Granularity
+git clone https://github.com/LuisMRaimundo/Textural_Kinetics.git
+cd Textural_Kinetics
 pip install -e ".[dev,full]"
 pytest tests -q
 ```

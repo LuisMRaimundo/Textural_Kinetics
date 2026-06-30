@@ -14,7 +14,7 @@ echo Textural_Kinetics
 echo One-click install for Windows 10/11
 echo ========================================
 echo.
-echo GitHub: https://github.com/LuisMRaimundo/Temporal_Granularity
+echo GitHub: https://github.com/LuisMRaimundo/Textural_Kinetics
 echo.
 echo This installs Python if needed, sets up the app,
 echo and opens the desktop GUI.

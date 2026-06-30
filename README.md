@@ -1,7 +1,7 @@
 # Textural_Kinetics
 
 **Canonical tool name:** **Textural_Kinetics**  
-**Repository:** [github.com/LuisMRaimundo/Temporal_Granularity](https://github.com/LuisMRaimundo/Temporal_Granularity)
+**Repository:** [github.com/LuisMRaimundo/Textural_Kinetics](https://github.com/LuisMRaimundo/Textural_Kinetics)
 
 **Fused symbolic temporal-density analyzer** for **MusicXML** and **MIDI** scores.
 
@@ -163,7 +163,7 @@ Corpus fixtures: `corpus/fixtures/*.musicxml`.
 
 ## Installers (optional)
 
-**Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
+**Repository:** https://github.com/LuisMRaimundo/Textural_Kinetics
 
 End users without Python: see **installers/** — especially on Windows, double-click **`installers/windows/INSTALL.bat`**.
 

@@ -7,8 +7,8 @@ authors:
     given-names: "Luís"
 version: "1.0.16"
 date-released: "2026-06-27"
-repository-code: "https://github.com/LuisMRaimundo/Temporal_Granularity"
-url: "https://github.com/LuisMRaimundo/Temporal_Granularity"
+repository-code: "https://github.com/LuisMRaimundo/Textural_Kinetics"
+url: "https://github.com/LuisMRaimundo/Textural_Kinetics"
 abstract: "Fused symbolic MusicXML/MIDI analyzer: precise event rates (per second, millisecond, bar), activity granularity, Mustextu horizontal coincidence density, basic/advanced/spectral heatmaps, and VD10 registral trajectory (heatmap and calibrated image picking, part-coloured note map, auto-pick from score, editable multi-block samples, pairwise block relations). Not audio analysis or general orchestration scoring."
 keywords:
   - textural_kinetics

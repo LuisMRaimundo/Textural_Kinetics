@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- **Naming:** canonical research tool name **Textural_Kinetics** (formerly **Temporal_Granularity**) applied across documentation, installers, GUI titles, `CITATION.cff`, and JSON `export_metadata` (`canonical_tool_name`, `package_version`, `python_package`). GitHub repository slug remains **Temporal_Granularity**.
+- **Naming:** canonical research tool name **Textural_Kinetics** (formerly **Temporal_Granularity**) applied across documentation, installers, GUI titles, `CITATION.cff`, and JSON `export_metadata` (`canonical_tool_name`, `package_version`, `python_package`).
+- **Repository:** GitHub slug and local clone folder renamed to **Textural_Kinetics** (was `Temporal_Granularity` / `Temporal_Granularity-git`).
 - **Launchers:** `START-Textural_Kinetics.{bat,command,sh}`; Windows installer script `Install-Textural_Kinetics.ps1`.
 
 ## 1.0.16

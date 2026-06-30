@@ -3,7 +3,7 @@
 **Canonical tool name:** **Textural_Kinetics**  
 One-click setup for users **without Python**. Scripts install Python 3.10+ when needed, create `.venv/`, install `requirements-app.txt`, and launch the desktop GUI (Tkinter).
 
-**Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
+**Repository:** https://github.com/LuisMRaimundo/Textural_Kinetics
 
 ## Quick start
 
@@ -19,7 +19,7 @@ After install, use **`START-Textural_Kinetics.bat`** (Windows), **`START-Textura
 
 | Folder | Standard install | Portable build (PyInstaller) |
 |--------|------------------|------------------------------|
-| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Textural_Kinetics.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Temporal_Granularity/releases) if distributed |
+| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Textural_Kinetics.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Textural_Kinetics/releases) if distributed |
 | [`mac/`](mac/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 | [`linux/`](linux/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 
