@@ -1,4 +1,4 @@
-# Temporal_Granularity — instruções de melhoramento (util_tempo)
+# Textural_Kinetics — instruções de melhoramento (util_tempo)
 
 ## Prioridade 1 — Corrigido em v1.0.3
 

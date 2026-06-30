@@ -1,5 +1,5 @@
 """
-Publication-style matplotlib setup for Temporal_Granularity heatmaps.
+Publication-style matplotlib setup for Textural_Kinetics heatmaps.
 
 Sobré palettes, robust percentile scaling, and consistent typography.
 """

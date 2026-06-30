@@ -1,5 +1,5 @@
 """
-Unified pitch–time heatmaps for Temporal_Granularity.
+Unified pitch–time heatmaps for Textural_Kinetics.
 
 Two complementary views (both kept, improved):
 

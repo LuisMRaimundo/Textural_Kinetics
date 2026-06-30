@@ -1,6 +1,6 @@
-﻿# Temporal_Granularity — Technical Manual
+# Textural_Kinetics — Technical Manual
 
-**Canonical tool name:** **Temporal_Granularity**  
+**Canonical tool name:** **Textural_Kinetics**  
 **Version:** 1.0.16  
 **Python package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
@@ -35,9 +35,9 @@ This manual documents purpose, architecture, **mathematical definitions**, and *
 
 ## 1. Introduction
 
-### 1.1 What Temporal_Granularity is
+### 1.1 What Textural_Kinetics is
 
-Temporal_Granularity is a **symbolic** analyser for MusicXML and MIDI scores. It fuses:
+Textural_Kinetics is a **symbolic** analyser for MusicXML and MIDI scores. It fuses:
 
 - **Temporal event rates** at multiple scales (global, sliding windows, per bar);
 - **Activity granularity** (inter-onset intervals, coefficient of variation, burstiness);
@@ -71,9 +71,9 @@ See repository [README.md](../README.md) and [installers/README.md](../installer
 
 | OS | First install | Later |
 |----|---------------|-------|
-| Windows | `INSTALL-WINDOWS.bat` or `installers/windows/INSTALL.bat` | `START-Temporal_Granularity.bat` |
-| macOS | `INSTALL-MAC.command` | `START-Temporal_Granularity.command` |
-| Linux | `INSTALL-LINUX.sh` | `START-Temporal_Granularity.sh` |
+| Windows | `INSTALL-WINDOWS.bat` or `installers/windows/INSTALL.bat` | `START-Textural_Kinetics.bat` |
+| macOS | `INSTALL-MAC.command` | `START-Textural_Kinetics.command` |
+| Linux | `INSTALL-LINUX.sh` | `START-Textural_Kinetics.sh` |
 
 Creates `.venv/`, installs `requirements-app.txt` (`pip install -e .[full]`), launches **Tkinter GUI**.
 
@@ -88,7 +88,7 @@ pytest tests -q
 
 ### 2.3 GUI workflow
 
-1. Run `START-Temporal_Granularity.bat` (or `python -m granular_v2.gui`).
+1. Run `START-Textural_Kinetics.bat` (or `python -m granular_v2.gui`).
 2. **Open file** — MusicXML (`.musicxml`, `.xml`, `.mxl`) or MIDI.
 3. **Run analysis** — computes `event_rates`, `activity_granularity`, `mustextu_summary`, attaches `tempo_audit`.
 4. **Export JSON** — save `analysis.json`.

@@ -1,4 +1,4 @@
-# Metric reference (Temporal_Granularity)
+# Metric reference (Textural_Kinetics)
 
 Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANUAL_TECNICO.md)**.  
 **Interpretive limits** (what each metric does *not* mean): **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.

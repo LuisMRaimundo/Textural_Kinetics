@@ -1,4 +1,4 @@
-# Temporal_Granularity v1.0.16 — evidence-based rating
+# Textural_Kinetics v1.0.16 — evidence-based rating
 
 ## Rubric (100)
 

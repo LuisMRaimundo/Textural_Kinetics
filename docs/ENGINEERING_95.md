@@ -1,10 +1,10 @@
-# Engineering path to 95+ (Temporal_Granularity)
+# Engineering path to 95+ (Textural_Kinetics)
 
 What is **implemented in software** vs what remains **thesis / corpus work**.
 
 ## Done in v1.0.5 (engineering)
 
-1. **Offset class closed in Temporal_Granularity** — central `offsets.py`, Mustextu legacy path aligned, static + corpus tests.
+1. **Offset class closed in Textural_Kinetics** — central `offsets.py`, Mustextu legacy path aligned, static + corpus tests.
 2. **Structured degradation** — `tempo_audit.warnings[]` with `{code, message}`; `tempo_model: stepwise_plateau`.
 3. **Corpus regression** — three MusicXML fixtures + `compare_all.py`.
 4. **CI** — Ubuntu + Windows, Python 3.10–3.11, pytest + corpus + mypy (core modules).

@@ -1,12 +1,12 @@
 #!/bin/bash
-# Double-click this file in Finder to install and run Temporal_Granularity on macOS.
+# Double-click this file in Finder to install and run Textural_Kinetics on macOS.
 
 cd "$(dirname "$0")"
 
 clear
 echo ""
 echo " ========================================"
-echo " Temporal_Granularity"
+echo " Textural_Kinetics"
 echo " One-click install for macOS"
 echo " ========================================"
 echo ""

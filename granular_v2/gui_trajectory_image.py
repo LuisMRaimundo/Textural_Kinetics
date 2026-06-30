@@ -410,7 +410,7 @@ class TrajectoryImageTab(TrajectorySessionBase):
 def main() -> None:
     """Launch standalone image-based VD10 picker."""
     root = tk.Tk()
-    root.title("Temporal_Granularity — VD10 registral trajectory (image)")
+    root.title("Textural_Kinetics — VD10 registral trajectory (image)")
     root.geometry("1200x720")
     from .logging_config import configure_logging
 

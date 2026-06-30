@@ -1,4 +1,4 @@
-# Test Quality Audit — Temporal_Granularity
+# Test Quality Audit — Textural_Kinetics
 
 **Date:** 2026-06-27 (summary refreshed for v1.0.16)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  

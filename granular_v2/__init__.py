@@ -1,5 +1,5 @@
 """
-Temporal_Granularity — fused symbolic temporal-density analyzer.
+Textural_Kinetics — fused symbolic temporal-density analyzer.
 
 Python package: ``granular_v2`` (install name ``granular-v2``).
 

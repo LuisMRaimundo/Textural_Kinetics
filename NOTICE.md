@@ -1,10 +1,10 @@
-﻿# Copyright and Use Notice
+# Copyright and Use Notice
 
 Copyright © 2026 Luís Raimundo. All rights reserved.
 
 This repository and its contents, including source code, documentation, mathematical formulations, tests, validation reports, data structures, configuration files, and associated materials, are proprietary research material.
 
-**Temporal_Granularity** (repository: [Temporal_Granularity](https://github.com/LuisMRaimundo/Temporal_Granularity)) is a fused symbolic MusicXML/MIDI analyzer for temporal density, precise event rates, Mustextu coincidence granularity, and pitch–time heatmaps. It is not distributed under an open-source licence.
+**Textural_Kinetics** (repository: [Temporal_Granularity](https://github.com/LuisMRaimundo/Temporal_Granularity)) is a fused symbolic MusicXML/MIDI analyzer for temporal density, precise event rates, Mustextu coincidence granularity, and pitch–time heatmaps. It is not distributed under an open-source licence.
 
 No open-source licence is granted.
 

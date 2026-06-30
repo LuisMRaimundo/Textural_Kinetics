@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 clear
 echo ""
 echo " ========================================"
-echo " Temporal_Granularity"
+echo " Textural_Kinetics"
 echo " One-click install for Linux"
 echo " ========================================"
 echo ""

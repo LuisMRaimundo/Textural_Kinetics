@@ -1,7 +1,7 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in **Temporal_Granularity** (`granular_v2/`) as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.16).  
+**Status:** Describes the **implemented model** in **Textural_Kinetics** (`granular_v2/`) as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.16).  
 **Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–10.
 
 ---

@@ -1,5 +1,5 @@
-﻿#Requires -Version 5.1
-# Temporal_Granularity - Windows one-click installer (PowerShell)
+#Requires -Version 5.1
+# Textural_Kinetics - Windows one-click installer (PowerShell)
 
 $ErrorActionPreference = 'Stop'
 $InstallerRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
@@ -8,7 +8,7 @@ $ProjectRoot = (Resolve-Path (Join-Path $InstallerRoot '..\..')).Path
 . (Join-Path $InstallerRoot 'config.ps1')
 . (Join-Path $InstallerRoot 'lib\InstallerHelpers.ps1')
 
-$cfg = $script:TemporalGranularityConfig
+$cfg = $script:TexturalKineticsConfig
 $VenvDir = Join-Path $ProjectRoot $cfg.VenvFolder
 $script:InstallLogPath = Join-Path $ProjectRoot 'install.log'
 
@@ -42,7 +42,7 @@ try {
     Write-Host " Run again later: $($cfg.StartBatName)"
     Write-Host ''
 
-    Start-TemporalGranularityApp -VenvPython $venvPython -ProjectRoot $ProjectRoot
+    Start-TexturalKineticsApp -VenvPython $venvPython -ProjectRoot $ProjectRoot
 }
 catch {
     Write-InstallLog $_.Exception.Message 'ERROR'

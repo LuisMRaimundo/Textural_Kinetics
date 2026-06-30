@@ -1,4 +1,4 @@
-﻿# Temporal_Granularity — documentation index
+# Textural_Kinetics — documentation index
 
 | Document | Audience | Contents |
 |----------|----------|----------|
@@ -16,5 +16,5 @@
 | **[current_rating.md](current_rating.md)** | Internal | Evidence-based score |
 | **[MELHORAMENTO_util_tempo.md](MELHORAMENTO_util_tempo.md)** | History | Tempo-map fix notes |
 
-**Canonical tool name:** **Temporal_Granularity**  
+**Canonical tool name:** **Textural_Kinetics**  
 Repository: https://github.com/LuisMRaimundo/Temporal_Granularity

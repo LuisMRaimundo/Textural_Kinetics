@@ -1,6 +1,6 @@
-﻿# Installers — Temporal_Granularity
+# Installers — Textural_Kinetics
 
-**Canonical tool name:** **Temporal_Granularity**  
+**Canonical tool name:** **Textural_Kinetics**  
 One-click setup for users **without Python**. Scripts install Python 3.10+ when needed, create `.venv/`, install `requirements-app.txt`, and launch the desktop GUI (Tkinter).
 
 **Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
@@ -13,13 +13,13 @@ One-click setup for users **without Python**. Scripts install Python 3.10+ when 
 | **macOS** | Double-click root **`INSTALL-MAC.command`** (runs `installers/mac/install.sh`) |
 | **Linux** | **`bash installers/linux/install-easy.sh`** or root **`INSTALL-LINUX.sh`** |
 
-After install, use **`START-Temporal_Granularity.bat`** (Windows), **`START-Temporal_Granularity.command`** (macOS), or **`START-Temporal_Granularity.sh`** (Linux).
+After install, use **`START-Textural_Kinetics.bat`** (Windows), **`START-Textural_Kinetics.command`** (macOS), or **`START-Textural_Kinetics.sh`** (Linux).
 
 ## Layout
 
 | Folder | Standard install | Portable build (PyInstaller) |
 |--------|------------------|------------------------------|
-| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Temporal_Granularity.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Temporal_Granularity/releases) if distributed |
+| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Textural_Kinetics.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Temporal_Granularity/releases) if distributed |
 | [`mac/`](mac/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 | [`linux/`](linux/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 

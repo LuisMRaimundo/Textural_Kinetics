@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env bash
-# Temporal_Granularity — Linux one-click installer
+#!/usr/bin/env bash
+# Textural_Kinetics — Linux one-click installer
 
 set -euo pipefail
 
@@ -56,7 +56,7 @@ install_python_linux() {
 }
 
 echo ""
-echo " Temporal_Granularity — Linux installer"
+echo " Textural_Kinetics — Linux installer"
 echo " Project: $PROJECT_ROOT"
 echo ""
 
@@ -79,8 +79,8 @@ step "Installing dependencies (first time may take 5–15 minutes)..."
 "$VENV_PY" -m pip install --upgrade pip wheel setuptools
 "$VENV_PY" -m pip install -r "$REQ_FILE"
 
-step "Writing START-Temporal_Granularity.sh launcher..."
-cat > "$PROJECT_ROOT/START-Temporal_Granularity.sh" << 'LAUNCHER'
+step "Writing START-Textural_Kinetics.sh launcher..."
+cat > "$PROJECT_ROOT/START-Textural_Kinetics.sh" << 'LAUNCHER'
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 if [[ ! -x ".venv/bin/python" ]]; then
@@ -88,13 +88,13 @@ if [[ ! -x ".venv/bin/python" ]]; then
     read -r -p "Press Enter to close..."
     exit 1
 fi
-echo "Starting Temporal_Granularity..."
+echo "Starting Textural_Kinetics..."
 echo "Press Ctrl+C in this terminal to stop the app."
 exec .venv/bin/python -m granular_v2.gui
 LAUNCHER
-chmod +x "$PROJECT_ROOT/START-Temporal_Granularity.sh"
+chmod +x "$PROJECT_ROOT/START-Textural_Kinetics.sh"
 
-step "Starting Temporal_Granularity (GUI window should open)..."
-echo "To run again later, run: ./START-Temporal_Granularity.sh"
+step "Starting Textural_Kinetics (GUI window should open)..."
+echo "To run again later, run: ./START-Textural_Kinetics.sh"
 echo ""
 exec "$VENV_PY" -m "$LAUNCH_MODULE"

@@ -1,10 +1,10 @@
-﻿@echo off
-title Temporal_Granularity - Install (Windows)
+@echo off
+title Textural_Kinetics - Install (Windows)
 cd /d "%~dp0"
 
 echo.
 echo ========================================
-echo Temporal_Granularity
+echo Textural_Kinetics
 echo One-click install for Windows 10/11
 echo ========================================
 echo.
@@ -13,7 +13,7 @@ echo and open the desktop GUI.
 echo.
 pause
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0installers\windows\Install-Temporal_Granularity.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0installers\windows\Install-Textural_Kinetics.ps1"
 if errorlevel 1 (
     echo.
     echo Installation failed. Read the messages above.

@@ -1,11 +1,11 @@
-# Offset audit manifest (Temporal_Granularity)
+# Offset audit manifest (Textural_Kinetics)
 
 ## Root cause
 
 In music21, `element.offset` inside a measure is **measure-local** (restarts at 0 each bar).
 Timeline code must use `getOffsetInHierarchy(score|part)` via `granular_v2.offsets.global_ql`.
 
-## Temporal_Granularity — audited modules (v1.0.5+; release 1.0.6)
+## Textural_Kinetics — audited modules (v1.0.5+; release 1.0.6)
 
 | Module | Role | Status |
 |--------|------|--------|

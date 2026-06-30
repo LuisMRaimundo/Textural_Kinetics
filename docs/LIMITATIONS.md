@@ -1,4 +1,4 @@
-# Temporal_Granularity — documented limitations
+# Textural_Kinetics — documented limitations
 
 ## Tempo → seconds (stepwise model)
 
