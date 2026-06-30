@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 
 function Write-InstallLog {
     param([string]$Message, [string]$Level = 'INFO')
@@ -29,7 +29,7 @@ function Test-PythonVersionOk {
         }
         if ($out -match '^3\.(\d+)$') {
             $minor = [int]$Matches[1]
-            $cfg = $script:GranularityConfig
+            $cfg = $script:TemporalGranularityConfig
             return ($minor -ge $cfg.PythonMinMinor -and $minor -le $cfg.PythonMaxMinor)
         }
     } catch { }
@@ -118,7 +118,7 @@ function Test-PythonInstallerExitOk {
 }
 
 function Install-PythonIfNeeded {
-    $cfg = $script:GranularityConfig
+    $cfg = $script:TemporalGranularityConfig
     Write-InstallLog "Python 3.10-3.12 not found. Installing Python $($cfg.PythonVersion)..."
 
     try {
@@ -195,7 +195,7 @@ function Initialize-ProjectVenv {
         [string]$ProjectRoot,
         [string]$VenvDir
     )
-    $cfg = $script:GranularityConfig
+    $cfg = $script:TemporalGranularityConfig
     if (-not (Test-Path $VenvDir)) {
         Write-InstallLog 'Creating virtual environment (.venv)...'
         Invoke-PythonCommand -Py $Py -Args @('-m', 'venv', $VenvDir)
@@ -220,7 +220,7 @@ function Initialize-ProjectVenv {
 
 function Write-StartLauncherBat {
     param([string]$ProjectRoot)
-    $cfg = $script:GranularityConfig
+    $cfg = $script:TemporalGranularityConfig
     $startBat = @"
 @echo off
 cd /d "$ProjectRoot"
@@ -238,12 +238,12 @@ pause
     Write-InstallLog "Wrote launcher: $($cfg.StartBatName)"
 }
 
-function Start-GranularityApp {
+function Start-TemporalGranularityApp {
     param(
         [string]$VenvPython,
         [string]$ProjectRoot
     )
-    $cfg = $script:GranularityConfig
-    Write-InstallLog 'Starting Granularity Analyser (desktop GUI)...'
+    $cfg = $script:TemporalGranularityConfig
+    Write-InstallLog 'Starting Temporal_Granularity (desktop GUI)...'
     & $VenvPython -m $cfg.LaunchModule
 }

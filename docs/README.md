@@ -1,4 +1,4 @@
-# Granularity Analyser — documentation index
+﻿# Temporal_Granularity — documentation index
 
 | Document | Audience | Contents |
 |----------|----------|----------|
@@ -16,4 +16,5 @@
 | **[current_rating.md](current_rating.md)** | Internal | Evidence-based score |
 | **[MELHORAMENTO_util_tempo.md](MELHORAMENTO_util_tempo.md)** | History | Tempo-map fix notes |
 
-Repository: https://github.com/LuisMRaimundo/Granularity-Analyser
+**Canonical tool name:** **Temporal_Granularity**  
+Repository: https://github.com/LuisMRaimundo/Temporal_Granularity

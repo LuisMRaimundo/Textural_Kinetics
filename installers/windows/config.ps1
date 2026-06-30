@@ -1,7 +1,7 @@
-# Granularity Analyser - Windows installer constants
-$script:GranularityConfig = @{
-    GitHubRepoUrl      = 'https://github.com/LuisMRaimundo/Granularity-Analyser'
-    AppName            = 'Granularity Analyser'
+﻿# Temporal_Granularity - Windows installer constants
+$script:TemporalGranularityConfig = @{
+    GitHubRepoUrl      = 'https://github.com/LuisMRaimundo/Temporal_Granularity'
+    AppName            = 'Temporal_Granularity'
     PythonVersion      = '3.11'
     PythonMinMinor     = 10
     PythonMaxMinor     = 12
@@ -9,5 +9,5 @@ $script:GranularityConfig = @{
     RequirementsFile   = 'requirements-app.txt'
     LaunchModule       = 'granular_v2.gui'
     VenvFolder         = '.venv'
-    StartBatName       = 'START-Granularity.bat'
+    StartBatName       = 'START-Temporal_Granularity.bat'
 }

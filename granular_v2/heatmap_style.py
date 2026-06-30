@@ -1,5 +1,5 @@
 """
-Publication-style matplotlib setup for Granularity Analyser heatmaps.
+Publication-style matplotlib setup for Temporal_Granularity heatmaps.
 
 Sobré palettes, robust percentile scaling, and consistent typography.
 """

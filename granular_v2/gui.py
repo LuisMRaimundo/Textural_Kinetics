@@ -1,4 +1,4 @@
-"""Tkinter GUI — Granular_v2 fused analysis."""
+"""Tkinter GUI — Temporal_Granularity fused analysis."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ class GranularGUI:
         from .logging_config import configure_logging
         configure_logging()
         self.root = root
-        root.title("Granular_v2 — temporal density & heatmaps")
+        root.title("Temporal_Granularity — temporal density & heatmaps")
         root.geometry("1200x720")
         self.path_var = tk.StringVar(value="(no file)")
         self.status_var = tk.StringVar(value="Open a MusicXML/MIDI file.")

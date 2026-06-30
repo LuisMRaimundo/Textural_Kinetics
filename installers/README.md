@@ -1,8 +1,9 @@
-# Installers — Granularity Analyser
+﻿# Installers — Temporal_Granularity
 
+**Canonical tool name:** **Temporal_Granularity**  
 One-click setup for users **without Python**. Scripts install Python 3.10+ when needed, create `.venv/`, install `requirements-app.txt`, and launch the desktop GUI (Tkinter).
 
-**Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
+**Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
 
 ## Quick start
 
@@ -12,13 +13,13 @@ One-click setup for users **without Python**. Scripts install Python 3.10+ when 
 | **macOS** | Double-click root **`INSTALL-MAC.command`** (runs `installers/mac/install.sh`) |
 | **Linux** | **`bash installers/linux/install-easy.sh`** or root **`INSTALL-LINUX.sh`** |
 
-After install, use **`START-Granularity.bat`** (Windows), **`START-Granularity.command`** (macOS), or **`START-Granularity.sh`** (Linux).
+After install, use **`START-Temporal_Granularity.bat`** (Windows), **`START-Temporal_Granularity.command`** (macOS), or **`START-Temporal_Granularity.sh`** (Linux).
 
 ## Layout
 
 | Folder | Standard install | Portable build (PyInstaller) |
 |--------|------------------|------------------------------|
-| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Granularity.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Granularity-Analyser/releases) if distributed |
+| [`windows/`](windows/) | **`INSTALL.bat`**, `Install-Temporal_Granularity.ps1` | *Not included in git* — see [GitHub Releases](https://github.com/LuisMRaimundo/Temporal_Granularity/releases) if distributed |
 | [`mac/`](mac/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 | [`linux/`](linux/) | `install.sh`, `install-easy.sh` | *Not included in git* |
 

@@ -5,7 +5,7 @@ if not exist ".venv\Scripts\python.exe" (
     pause
     exit /b 1
 )
-echo Starting Granularity Analyser...
+echo Starting Temporal_Granularity...
 echo Close this window to stop the app.
 ".venv\Scripts\python.exe" -m granular_v2.gui
 pause

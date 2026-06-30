@@ -1,4 +1,4 @@
-# Granular_v2 — instruções de melhoramento (util_tempo)
+# Temporal_Granularity — instruções de melhoramento (util_tempo)
 
 ## Prioridade 1 — Corrigido em v1.0.3
 

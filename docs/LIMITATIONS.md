@@ -1,4 +1,4 @@
-# Granular_v2 — documented limitations
+# Temporal_Granularity — documented limitations
 
 ## Tempo → seconds (stepwise model)
 

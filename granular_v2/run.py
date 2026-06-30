@@ -8,7 +8,7 @@ from .pipeline import run_analysis
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(description="Granular_v2 — fused symbolic density analysis")
+    p = argparse.ArgumentParser(description="Temporal_Granularity — fused symbolic temporal-density analysis")
     p.add_argument("score", type=Path)
     p.add_argument("-o", "--output-dir", type=Path, default=Path("out"))
     p.add_argument("--no-heatmaps", action="store_true")

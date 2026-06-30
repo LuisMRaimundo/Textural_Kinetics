@@ -1,4 +1,4 @@
-# Metric reference (Granularity Analyser)
+# Metric reference (Temporal_Granularity)
 
 Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANUAL_TECNICO.md)**.  
 **Interpretive limits** (what each metric does *not* mean): **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.

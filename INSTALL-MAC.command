@@ -1,12 +1,12 @@
 #!/bin/bash
-# Double-click this file in Finder to install and run Granularity Analyser on macOS.
+# Double-click this file in Finder to install and run Temporal_Granularity on macOS.
 
 cd "$(dirname "$0")"
 
 clear
 echo ""
 echo " ========================================"
-echo " Granularity Analyser"
+echo " Temporal_Granularity"
 echo " One-click install for macOS"
 echo " ========================================"
 echo ""

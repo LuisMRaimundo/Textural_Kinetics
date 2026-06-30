@@ -1,5 +1,5 @@
 """
-Unified pitch–time heatmaps for Granular_v2.
+Unified pitch–time heatmaps for Temporal_Granularity.
 
 Two complementary views (both kept, improved):
 
@@ -7,7 +7,7 @@ Two complementary views (both kept, improved):
    - Basic: log-scaled bin counts, time × MIDI pitch.
    - Advanced: Gaussian smoothing, gamma, row percentile, note-name axis, optional ms/cs.
 
-2. **Spectral energy heatmap** (from Granularidade, improved)
+2. **Spectral energy heatmap** (legacy Granularidade lineage, improved)
    - Velocity-weighted density on a regular grid, Gaussian smooth, contours,
      measure lines and peak markers — always in **seconds** when using note_matrix.
 """
@@ -688,6 +688,6 @@ def save_both_heatmaps(
     return paths
 
 
-# Backward-compatible aliases (v3 / Granularidade names)
+# Backward-compatible aliases (legacy Granularidade / v3 names)
 build_heatmap_from_note_matrix = build_pitch_time_matrix
 plot_heatmap_from_note_matrix = plot_heatmap_basic

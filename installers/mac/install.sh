@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-# Granularity Analyser — macOS one-click installer
+﻿#!/usr/bin/env bash
+# Temporal_Granularity — macOS one-click installer
 
 set -euo pipefail
 
@@ -48,7 +48,7 @@ install_python_macos() {
 }
 
 echo ""
-echo " Granularity Analyser — macOS installer"
+echo " Temporal_Granularity — macOS installer"
 echo " Project: $PROJECT_ROOT"
 echo ""
 
@@ -71,8 +71,8 @@ step "Installing dependencies (first time may take 5–15 minutes)..."
 "$VENV_PY" -m pip install --upgrade pip wheel setuptools
 "$VENV_PY" -m pip install -r "$REQ_FILE"
 
-step "Writing START-Granularity.command launcher..."
-cat > "$PROJECT_ROOT/START-Granularity.command" << 'LAUNCHER'
+step "Writing START-Temporal_Granularity.command launcher..."
+cat > "$PROJECT_ROOT/START-Temporal_Granularity.command" << 'LAUNCHER'
 #!/bin/bash
 cd "$(dirname "$0")"
 if [[ ! -x ".venv/bin/python" ]]; then
@@ -80,13 +80,13 @@ if [[ ! -x ".venv/bin/python" ]]; then
     read -r -p "Press Enter to close..."
     exit 1
 fi
-echo "Starting Granularity Analyser..."
+echo "Starting Temporal_Granularity..."
 echo "Close this Terminal window to stop the app."
 exec .venv/bin/python -m granular_v2.gui
 LAUNCHER
-chmod +x "$PROJECT_ROOT/START-Granularity.command"
+chmod +x "$PROJECT_ROOT/START-Temporal_Granularity.command"
 
-step "Starting Granularity Analyser (GUI window should open)..."
-echo "To run again later, double-click START-Granularity.command"
+step "Starting Temporal_Granularity (GUI window should open)..."
+echo "To run again later, double-click START-Temporal_Granularity.command"
 echo ""
 exec "$VENV_PY" -m "$LAUNCH_MODULE"

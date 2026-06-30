@@ -1,8 +1,13 @@
-# Granularity Analyser
+﻿# Temporal_Granularity
+
+**Canonical tool name:** **Temporal_Granularity**  
+**Repository:** [github.com/LuisMRaimundo/Temporal_Granularity](https://github.com/LuisMRaimundo/Temporal_Granularity)
 
 **Fused symbolic temporal-density analyzer** for **MusicXML** and **MIDI** scores.
 
-Granularity Analyser combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap or on a calibrated score image). It is symbolic notation analysis — not audio, perception, or harmonic function.
+Temporal_Granularity combines precise **event rates** (per second, millisecond, bar), **activity granularity**, **Mustextu** horizontal coincidence density (LCM/GCD onset structure), three **pitch–time heatmaps** (basic, advanced, spectral), and **VD10 registral trajectory** (interactive registral displacement on the heatmap or on a calibrated score image). It is symbolic notation analysis — not audio, perception, or harmonic function.
+
+Installable distribution name: **`granular-v2`** (Python package `granular_v2`; canonical research tool name **Temporal_Granularity**).
 
 **Package version:** 1.0.16 (`granular_v2/__init__.py`)  
 **Python:** ≥ 3.10
@@ -94,9 +99,9 @@ Download or clone the project, then use **one file** for your system:
 
 | System | First-time install | Later (already installed) |
 |--------|-------------------|---------------------------|
-| **Windows 10/11** | Double-click **installers/windows/INSTALL.bat** (or **INSTALL-WINDOWS.bat** at repo root) | **START-Granularity.bat** |
-| **macOS** | Double-click **INSTALL-MAC.command** | **START-Granularity.command** |
-| **Linux** | **bash installers/linux/install-easy.sh** (or **INSTALL-LINUX.sh**) | **./START-Granularity.sh** |
+| **Windows 10/11** | Double-click **installers/windows/INSTALL.bat** (or **INSTALL-WINDOWS.bat** at repo root) | **START-Temporal_Granularity.bat** |
+| **macOS** | Double-click **INSTALL-MAC.command** | **START-Temporal_Granularity.command** |
+| **Linux** | **bash installers/linux/install-easy.sh** (or **INSTALL-LINUX.sh**) | **./START-Temporal_Granularity.sh** |
 
 The installer installs Python 3.10+ if needed, creates `.venv/`, installs dependencies, and opens the **desktop GUI** (Tkinter). Details: [installers/README.md](installers/README.md).
 
@@ -133,7 +138,7 @@ Standalone image picker (no score required):
 python -m granular_v2.gui_trajectory_image
 ```
 
-Windows: `run_gui.bat` or **START-Granularity.bat** (after installer).
+Windows: `run_gui.bat` or **START-Temporal_Granularity.bat** (after installer).
 
 ## Tests and corpus
 
@@ -158,7 +163,7 @@ Corpus fixtures: `corpus/fixtures/*.musicxml`.
 
 ## Installers (optional)
 
-**Repository:** https://github.com/LuisMRaimundo/Granularity-Analyser
+**Repository:** https://github.com/LuisMRaimundo/Temporal_Granularity
 
 End users without Python: see **installers/** — especially on Windows, double-click **`installers/windows/INSTALL.bat`**.
 

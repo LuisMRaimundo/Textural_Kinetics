@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from .config import AnalysisConfig
+from .metadata import CANONICAL_TOOL_NAME, __version__
 
 SCOPE = [
     "Symbolic MusicXML/MIDI analysis only",
@@ -24,6 +25,9 @@ NOT_CLAIMED = [
 
 def export_metadata(config: AnalysisConfig) -> Dict[str, Any]:
     return {
+        "canonical_tool_name": CANONICAL_TOOL_NAME,
+        "package_version": __version__,
+        "python_package": "granular_v2",
         "scope": SCOPE,
         "not_claimed": NOT_CLAIMED,
         "merge_ties": config.merge_ties,

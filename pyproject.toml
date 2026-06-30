@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "granular-v2"
 version = "1.0.16"
-description = "Fused symbolic density: precise event rates, Mustextu, heatmaps, partitional option"
+description = "Temporal_Granularity — fused symbolic temporal density (Python package granular_v2)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

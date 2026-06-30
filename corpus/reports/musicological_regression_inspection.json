@@ -1,7 +1,7 @@
-[
+﻿[
   {
     "fixture": "dense_chordal_blocks",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\dense_chordal_blocks.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\dense_chordal_blocks.musicxml",
     "load_ok": true,
     "num_events": 12,
     "tempo_audit": {
@@ -39,7 +39,7 @@
   },
   {
     "fixture": "empty_or_degenerate_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\empty_or_degenerate_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\empty_or_degenerate_score.musicxml",
     "load_ok": false,
     "num_events": 0,
     "tempo_audit": {
@@ -58,7 +58,7 @@
   },
   {
     "fixture": "grace_note_passage",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\grace_note_passage.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\grace_note_passage.musicxml",
     "load_ok": true,
     "num_events": 8,
     "tempo_audit": {
@@ -100,7 +100,7 @@
   },
   {
     "fixture": "layered_async",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\layered_async.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\layered_async.musicxml",
     "load_ok": true,
     "num_events": 12,
     "tempo_audit": {
@@ -138,7 +138,7 @@
   },
   {
     "fixture": "multi_voice_polyphony",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\multi_voice_polyphony.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\multi_voice_polyphony.musicxml",
     "load_ok": true,
     "num_events": 5,
     "tempo_audit": {
@@ -176,7 +176,7 @@
   },
   {
     "fixture": "regular_homorhythm",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\regular_homorhythm.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\regular_homorhythm.musicxml",
     "load_ok": true,
     "num_events": 48,
     "tempo_audit": {
@@ -214,7 +214,7 @@
   },
   {
     "fixture": "repeated_section",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\repeated_section.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\repeated_section.musicxml",
     "load_ok": true,
     "num_events": 2,
     "tempo_audit": {
@@ -256,7 +256,7 @@
   },
   {
     "fixture": "tempo_change_mid_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\tempo_change_mid_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\tempo_change_mid_score.musicxml",
     "load_ok": true,
     "num_events": 16,
     "tempo_audit": {
@@ -311,7 +311,7 @@
   },
   {
     "fixture": "tied_sustained_texture",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\tied_sustained_texture.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\tied_sustained_texture.musicxml",
     "load_ok": true,
     "num_events": 4,
     "tempo_audit": {
@@ -355,7 +355,7 @@
   },
   {
     "fixture": "transposing_instrument_score",
-    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Granularity-Analyser-git\\corpus\\fixtures\\musicological_regression\\transposing_instrument_score.musicxml",
+    "path": "C:\\Users\\lmr20\\Desktop\\C\u00d3DIGOS FINAIS - GIT HUB\\Temporal_Granularity-git\\corpus\\fixtures\\musicological_regression\\transposing_instrument_score.musicxml",
     "load_ok": true,
     "num_events": 3,
     "tempo_audit": {

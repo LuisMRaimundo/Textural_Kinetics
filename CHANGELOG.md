@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **Naming:** canonical research tool name **Temporal_Granularity** applied across documentation, installers, GUI titles, `CITATION.cff`, and JSON `export_metadata` (`canonical_tool_name`, `package_version`, `python_package`).
+- **Repository:** GitHub slug renamed to **Temporal_Granularity** (was `Granularity-Analyser`).
+- **Launchers:** `START-Temporal_Granularity.{bat,command,sh}`; Windows installer script `Install-Temporal_Granularity.ps1`.
+
 ## 1.0.16
 
 - **Tests:** `test_audit_merge.py` (**24** tests) — `merge_audits` warning concatenation, scalar metadata override, shallow nested-dict replace, malformed warning structures, loader-shaped integration smoke, JSON serialisability; `audit.py` **~92%** line coverage.

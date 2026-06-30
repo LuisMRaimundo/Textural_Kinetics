@@ -1,5 +1,5 @@
-cff-version: 1.2.0
-title: "Granularity Analyser"
+﻿cff-version: 1.2.0
+title: "Temporal_Granularity"
 message: "If you refer to this software or its methodology, cite it as below. No licence for reuse is granted by this citation file."
 type: software
 authors:
@@ -7,10 +7,11 @@ authors:
     given-names: "Luís"
 version: "1.0.16"
 date-released: "2026-06-27"
-repository-code: "https://github.com/LuisMRaimundo/Granularity-Analyser"
-url: "https://github.com/LuisMRaimundo/Granularity-Analyser"
+repository-code: "https://github.com/LuisMRaimundo/Temporal_Granularity"
+url: "https://github.com/LuisMRaimundo/Temporal_Granularity"
 abstract: "Fused symbolic MusicXML/MIDI analyzer: precise event rates (per second, millisecond, bar), activity granularity, Mustextu horizontal coincidence density, basic/advanced/spectral heatmaps, and VD10 registral trajectory (heatmap and calibrated image picking, part-coloured note map, auto-pick from score, editable multi-block samples, pairwise block relations). Not audio analysis or general orchestration scoring."
 keywords:
+  - temporal_granularity
   - musicxml
   - music notation
   - temporal density

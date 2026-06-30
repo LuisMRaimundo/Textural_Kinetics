@@ -1,4 +1,4 @@
-# Granular_v2 v1.0.16 — evidence-based rating
+# Temporal_Granularity v1.0.16 — evidence-based rating
 
 ## Rubric (100)
 
