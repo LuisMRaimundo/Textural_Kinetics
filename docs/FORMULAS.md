@@ -88,7 +88,7 @@ Aggregates:
 - Linear centre interpolation: `interpolate_centre_at_times`
 - Overlap \([t_0, t_1]\) = intersection of block time spans
 - \(d(t) = |\mathrm{centre}_B(t) - \mathrm{centre}_A(t)|\)
-- **mean_inter_distance_rate** = \((d(t_1) - d(t_0)) / (t_1 - t_0)\)
+- **mean_inter_distance_rate_st_per_s** = \((d(t_1) - d(t_0)) / (t_1 - t_0)\)
 - **relation:** converging / diverging / parallel from rate vs ε
 - **direction:** pairwise net centre motion labels (not VD8)
 

@@ -90,20 +90,32 @@ pytest tests -q
 
 1. Run `START-Textural_Kinetics.bat` (or `python -m granular_v2.gui`).
 2. **Open file** — MusicXML (`.musicxml`, `.xml`, `.mxl`) or MIDI.
-3. **Run analysis** — computes `event_rates`, `activity_granularity`, `mustextu_summary`, attaches `tempo_audit`.
+3. **Run analysis** — computes `event_rates`, `activity_granularity`, `mustextu_summary`, attaches `tempo_audit`. Does **not** write PNG heatmaps (GUI sets `enable_heatmaps = False` for this step).
 4. **Export JSON** — save `analysis.json`.
-5. **Heatmap basic / advanced / spectral** — opens matplotlib window (requires file loaded).
+5. **Heatmap basic / advanced / spectral** — on-demand matplotlib pop-outs (requires file loaded; independent of step 3).
 6. **Plots** — activity/granularity curves (after analysis).
-7. **Registral trajectory** tab — embedded advanced heatmap; **Blocks** panel for multiple independent trajectories; **Pick mode** for new spans; drag/edit/insert samples (see §10.6); live **Recompute**; **Export JSON** session (`vd10_registral_trajectory.json`).
-8. **Registral trajectory (image)** tab — load PNG/JPG excerpt; calibrate pitch and time axes (§10.9); same multi-block pick/edit/compute/export as the heatmap tab. Standalone: `python -m granular_v2.gui_trajectory_image`.
+7. **Registral trajectory** tab — embedded advanced heatmap; **Blocks** panel for multiple independent trajectories; **Pick mode** for new spans; drag/edit/insert samples (see §10.6); **Refresh heatmap** to redraw after score reload; live **Recompute**; **Export JSON** session (`vd10_registral_trajectory.json`).
+8. **Registral trajectory (image)** tab — load PNG/JPG/BMP/TIF excerpt; calibrate pitch and time axes (§10.9); same multi-block pick/edit/compute/export as the heatmap tab. Standalone: `python -m granular_v2.gui_trajectory_image`.
+
+**Status line:** `N=` shows top-level **raw** note-matrix count; `events/s` and `events/ms` come from **fused-onset** rates in `event_rates.global`.
 
 ### 2.4 CLI workflow
 
 ```bash
 python -m granular_v2.run score.musicxml -o out
 python -m granular_v2.run score.musicxml -o out --no-heatmaps
+python -m granular_v2.run score.musicxml -o out --no-mustextu
 python -m granular_v2.run score.musicxml -o out --partitional --intervals 0.1,0.25,0.5
 ```
+
+Flags:
+
+| Flag | Effect |
+|------|--------|
+| `--no-heatmaps` | Skip PNG export (`heatmap_paths` omitted) |
+| `--no-mustextu` | Omit Mustextu block (`mustextu_summary` omitted) |
+| `--partitional` | Include optional partition time series |
+| `--intervals` | Comma-separated density bin widths (seconds) |
 
 Outputs in `out/`:
 
@@ -802,6 +814,8 @@ d = \binom{n}{2} - \alpha = \frac{n(n-1)}{2} - \sum_i \binom{n_i}{2}
 
 Simplified channel-based proxy — not a complete partitional formalism (see [LIMITATIONS.md](LIMITATIONS.md)).
 
+**`partition_mode`:** only **`"channels"`** implements the agglomeration/dispersion formulas above. Values `"rhythmic"` and `"linear"` are accepted by config but currently fall back to a simple active-note count per bin (stub — not documented as full modes).
+
 ---
 
 ## 12. Exported JSON schema
@@ -810,15 +824,27 @@ Top-level keys from `run_full_analysis` / `run_analysis`:
 
 | Key | Description |
 |-----|-------------|
-| `num_events` | \(N\) |
-| `event_rates` | global, binned, ms windows, per_bar |
-| `activity_granularity` | IOI list, granularity dict, by_interval |
-| `mustextu_summary` | rates, synchrony, granularity_score |
-| `tempo_audit` | source, warnings, tempo_model |
+| `num_events` | **Raw** note-matrix row count (not fused onset count) |
+| `event_rates` | Nested rate report (see below) |
+| `activity_granularity` | IOI list, `granularity` dict (fused metrics), `by_interval`, top-level `num_events` (raw) |
+| `mustextu_summary` | `rate_events_per_second`, `rate_events_per_second_raw`, `synchrony_fraction`, `granularity_score`, plus nested `mustextu`, `initial_bpm`, `window_ms` |
+| `tempo_audit` | `source`, `warnings`, `tempo_model` |
 | `export_metadata` | `canonical_tool_name`, `package_version`, `python_package`, `scope` / `not_claimed` disclaimers + config echo (`merge_ties`, `pitch_domain`, `density_intervals`, `enable_mustextu`, `enable_heatmaps`, `include_partitional`) |
-| `partitional` | optional time series |
-| `heatmap_paths` | if saved |
+| `partitional` | optional time series (when `include_partitional=True`) |
+| `heatmap_paths` | if saved (`heatmap_basic`, `heatmap_advanced`, `heatmap_spectral`) |
 | `source_file` | path string (added by `run_analysis`) |
+
+### `event_rates` nested keys
+
+| Key | Description |
+|-----|-------------|
+| `global` | Fused/raw counts, EPS, sync fraction, IOI CV, granularity index, burstiness, inline `definition` |
+| `by_bin_sec` | Map `"<Δ>"` → per-bin onset/active counts and rates (Δ from `density_intervals`) |
+| `by_ms_window` | Map `"<W>"` → centred ms-window rates (default W: 50, 100, 500) |
+| `per_bar` | List of per-measure rate records |
+| `per_bar_summary` | `mean_events_per_second_in_bar`, `mean_events_per_millisecond_in_bar`, `num_bars` |
+
+**Fused vs raw:** use `event_rates.global.num_events` (fused) and `event_rates.global.num_events_raw` (raw). Do not assume top-level `num_events` equals fused count.
 
 Event-rate unit definitions are documented inside `event_rates.global.definition` and `event_rates.by_ms_window.<W>.definition`.
 
@@ -835,10 +861,12 @@ Event-rate unit definitions are documented inside `event_rates.global.definition
 | `merge_ties` | true | Tie-aware extraction |
 | `pitch_domain` | written | or sounding (transposing) |
 | `default_bpm` | 120 | Fallback tempo |
-| `density_intervals` | 0.1,0.5,1.0 | Bin widths (s) |
+| `density_intervals` | 0.1,0.5,1.0 | Bin widths (s) for `by_bin_sec` |
+| `ms_rate_windows` | 50,100,500 | Ms window widths for `by_ms_window` |
 | `enable_mustextu` | true | Mustextu block |
-| `enable_heatmaps` | true | PNG export in CLI |
+| `enable_heatmaps` | true | PNG export in CLI (GUI Run analysis forces false) |
 | `include_partitional` | false | Partition series |
+| `partition_mode` | channels | Only `"channels"` fully implemented; `"rhythmic"`/`"linear"` are stubs |
 
 ### 13.2 `HeatmapConfig`
 

@@ -3,11 +3,24 @@
 Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANUAL_TECNICO.md)**.  
 **Interpretive limits** (what each metric does *not* mean): **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
-## Event rates (global, VD4)
+## `num_events` — naming (read carefully)
+
+The export JSON uses **`num_events` in three places with different meanings**:
+
+| JSON path | Meaning |
+|-----------|---------|
+| Top-level `num_events` | **Raw** note-matrix row count (every extracted note event) |
+| `event_rates.global.num_events` | **Fused** unique onsets (τ = 2 ms coincidence merge) |
+| `activity_granularity.granularity.num_events` | **Fused** unique onsets (same engine as above) |
+| `activity_granularity.num_events` | **Raw** note-matrix row count (duplicate of top-level) |
+
+The GUI status line `N=` shows **top-level (raw)** count. Rate metrics under `event_rates.global` use the **fused** series. Prefer `event_rates.global.num_events_raw` vs `num_events` when comparing fusion effects.
+
+## Event rates (global, under `event_rates.global`)
 
 | Metric | Unit | Formula |
 |--------|------|---------|
-| `num_events` | count | unique **fused** onsets (τ = 2 ms) |
+| `num_events` | count | unique **fused** onsets (τ = 2 ms) — **under `event_rates.global` only** |
 | `num_events_raw` | count | raw note-matrix onsets before fusion |
 | `sync_fraction` | — | \(1 - \mathrm{num\_events}/\mathrm{num\_events\_raw}\) |
 | `events_per_second` | s⁻¹ | \(N_{\mathrm{unique}} / T_{\mathrm{span}}\) on fused series (diagnostic) |
@@ -16,25 +29,32 @@ Compact definitions. Full derivations and algorithms: **[MANUAL_TECNICO.md](MANU
 
 \(T_{\mathrm{span}} = t_{\mathrm{last}} - t_{\mathrm{first}}\) on **fused** onsets (1 s support if degenerate). Not full score duration. **Canonical VD4\_s:** Mustextu `rate_eps` — see [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §3.
 
-## Per time bin (width \(\Delta\) s)
+## Per time bin (width \(\Delta\) s, under `event_rates.by_bin_sec.<Δ>`)
 
 | Metric | Formula |
 |--------|---------|
 | `onset_count_per_bin` | attacks in \([t, t+\Delta)\) |
 | `events_per_second_per_bin` | count / \(\Delta\) |
+| `events_per_millisecond_per_bin` | `events_per_second_per_bin` / 1000 |
+| `active_count_per_bin` | sounding-note overlap count per bin (sustain-inclusive) |
 
-## Per millisecond window (width \(W\) ms)
+## Per millisecond window (width \(W\) ms, under `event_rates.by_ms_window.<W>`)
+
+Default window widths: **50**, **100**, **500** ms (`AnalysisConfig.ms_rate_windows`).
 
 | Metric | Formula |
 |--------|---------|
 | `events_per_millisecond_in_window` | count in centred window \([t_c - W/2,\ t_c + W/2)\) / \(W\) (window shrinks if the timeline is shorter than \(W\)) |
 
-## Per bar
+## Per bar (under `event_rates.per_bar[]`)
 
 | Metric | Formula |
 |--------|---------|
 | `events_per_second_in_bar` | onsets in bar / bar duration (s) |
+| `events_per_millisecond_in_bar` | `events_per_second_in_bar` / 1000 |
 | `events_per_beat_in_bar` | onsets in bar / notated beats |
+
+Aggregate: `event_rates.per_bar_summary` — `mean_events_per_second_in_bar`, `mean_events_per_millisecond_in_bar`, `num_bars`.
 
 ## Activity / IOI (VD4 — fused onsets)
 

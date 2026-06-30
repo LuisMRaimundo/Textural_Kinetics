@@ -16,7 +16,7 @@ Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids tra
 
 ## Partitional layer
 
-Optional partition indices are simplified (channel-based); not a complete partitional formalism.
+Optional partition indices are simplified (channel-based); not a complete partitional formalism. Only `partition_mode="channels"` implements agglomeration/dispersion; `"rhythmic"` and `"linear"` are config stubs (active-count fallback only).
 
 ## VD10 registral trajectory
 

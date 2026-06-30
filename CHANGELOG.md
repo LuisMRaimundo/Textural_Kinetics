@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Docs:** align manuals with implemented behaviour — disambiguate `num_events` (raw vs fused), exact JSON schema keys (`by_bin_sec`, `by_ms_window`, `per_bar_summary`), CLI `--no-mustextu`, GUI heatmap-on-demand workflow, `partition_mode` stub note, `mean_inter_distance_rate_st_per_s` in FORMULAS, three-heatmap package docstring.
+
 - **Naming:** canonical research tool name **Textural_Kinetics** (formerly **Temporal_Granularity**) applied across documentation, installers, GUI titles, `CITATION.cff`, and JSON `export_metadata` (`canonical_tool_name`, `package_version`, `python_package`).
 - **Repository:** GitHub slug and local clone folder renamed to **Textural_Kinetics** (was `Temporal_Granularity` / `Temporal_Granularity-git`).
 - **Launchers:** `START-Textural_Kinetics.{bat,command,sh}`; Windows installer script `Install-Textural_Kinetics.ps1`.

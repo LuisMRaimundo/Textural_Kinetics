@@ -118,7 +118,15 @@ Runtime-only deps (used by installers): `requirements-app.txt`.
 ```bash
 python -m granular_v2.run score.musicxml -o out
 python -m granular_v2.run score.musicxml -o out --no-heatmaps --partitional
+python -m granular_v2.run score.musicxml -o out --no-mustextu
 ```
+
+| Flag | Effect |
+|------|--------|
+| `--no-heatmaps` | Skip PNG heatmap export |
+| `--no-mustextu` | Omit Mustextu block from output |
+| `--partitional` | Include optional partition time series |
+| `--intervals` | Density bin widths in seconds (default `0.1,0.5,1.0`) |
 
 ## GUI
 
@@ -128,9 +136,9 @@ python -m granular_v2.gui
 
 Tabs:
 
-- **Analysis** — event rates, heatmap pop-outs, JSON export.
+- **Analysis** — event rates, on-demand heatmap pop-outs (not saved during **Run analysis**), JSON export. Status `N=` = raw note count; rates = fused onsets.
 - **Registral trajectory** — VD10 on the embedded advanced heatmap (part-coloured registral lines; **Auto-pick from score**; **Group selected parts** into one envelope block; editable multi-block picking; drag/edit/insert; live recompute; block relations; session JSON).
-- **Registral trajectory (image)** — VD10 on a PNG/JPG excerpt with two-axis calibration (pitch + time); same pick/edit/multi-block workflow; auto-pick when a score is loaded on Analysis.
+- **Registral trajectory (image)** — VD10 on a PNG/JPG/BMP/TIF excerpt with two-axis calibration (pitch + time); same pick/edit/multi-block workflow; auto-pick when a score is loaded on Analysis.
 
 Standalone image picker (no score required):
 
