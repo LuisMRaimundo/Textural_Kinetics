@@ -1,6 +1,6 @@
 # VD4 / VD10 conformance — 2026-09-18
 
-Branch: `fix/vd4-vd10-conformance`. Package **1.0.17**. No push, merge, or tag.
+Package **1.0.17**. Landed on `main` as `1f0d9fb` (`Merge branch 'fix/vd4-vd10-conformance'`). No tag.
 
 Executed snapshots: `docs/audit/_before_vd4_vd10.json` (commit `76eeef9`, pre-change) and `docs/audit/_after_vd4_vd10.json` (`run_analysis` + `auto_pick_blocks_from_note_matrix` on this branch).
 

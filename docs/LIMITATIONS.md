@@ -12,7 +12,7 @@ Scalar metrics (EPS global, IOI CV, synchrony fraction, burstiness) are likewise
 
 ## Mustextu coincidence merge
 
-Onsets within `coincidence_ms` of a group **anchor** are merged. This avoids transitive chaining across distant onsets (fixed in v1.0.1).
+Onsets within the **effective τ** (`min(2 ms, 0.05 × min layer-median IOI)`) of a group **anchor** are merged. This avoids transitive chaining across distant onsets (fixed in v1.0.1).
 
 ## Partitional layer
 

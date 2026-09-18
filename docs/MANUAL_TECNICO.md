@@ -1,7 +1,7 @@
 # Textural_Kinetics — Technical Manual
 
 **Canonical tool name:** **Textural_Kinetics**  
-**Version:** 1.0.16  
+**Version:** 1.0.17  
 **Python package:** `granular_v2`  
 **Repository:** https://github.com/LuisMRaimundo/Textural_Kinetics
 

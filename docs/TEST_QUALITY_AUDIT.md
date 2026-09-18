@@ -35,8 +35,8 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_fusion.py` | 2 | Partitional fusion layer and empty-matrix handling |
 | `test_global_offsets_integration.py` | 3 | Global QL through tempo segments, loader onsets, sparse_homophony span/rate |
 | `test_granularity_axioms.py` | 6 | VD4 fused IOI CV, Fano burstiness, raw/fused diagnostics, global rate |
-| `test_vd4_vd10_conformance.py` | 16 | Thesis B1–B5, T1–T3, G1–G2, F1, R1, V1–V3 |
-| `test_musicological_regression.py` | 11 | Phase-1 fixture invariants (ties, grace, tempo, repeats) |
+| `test_vd4_vd10_conformance.py` | 20 | Thesis B1–B5, T1–T3, G1–G2, F1, R1, V1–V3 |
+| `test_musicological_regression.py` | 22 | Phase-1 fixture invariants (ties, grace, tempo, repeats) |
 | `test_heatmaps.py` | 8 | Pitch–time matrices, spectral energy, plot smoke tests, heatmap pipeline |
 | `test_loader.py` | 5 | Single-parse loader, tempo fallback chain, MIDI branch, sounding pitch |
 | `test_mustextu.py` | 1 | Mustextu wiring through loader (smoke) |
@@ -75,7 +75,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Repeat expansion and tempo fallback** | **Strong** | Repeat expand/disable/safe-fail paths in branches + fallbacks; empty/exception boundaries and global BPM fallback with auditable `tempo_info`. |
 | **Event rates** | **Strong** | `test_event_rates.py` on synthetic matrices; `event_rates.py` at 100% coverage. |
 | **Fusion / coincidence** | **Medium** | `test_fusion.py` and `test_coincidence_merge.py` cover key behaviours; `horizontal_density` (Mustextu core) excluded from coverage metrics. Partitional layer tested on minimal fixture only. |
-| **Granularity axioms** | **Strong** | `test_granularity_axioms.py` plus `test_vd4_vd10_conformance.py` validate fused IOI CV, Fano burstiness, adaptive τ, grace attacks, and VD10 sounding bands; `granularity_index` removed in v1.0.17. |
+| **Granularity axioms** | **Strong** | `test_granularity_axioms.py` plus `test_vd4_vd10_conformance.py` validate fused IOI CV, Fano burstiness, adaptive τ, grace attacks, and VD10 sounding bands; the old VD4 granularity scalar was removed in v1.0.17. |
 | **Corpus regression fixtures** | **Medium** | Three fixtures with JSON snapshots and `compare_all.py`; parametrized offset/Mustextu alignment. Limited musical diversity; no per-metric golden files beyond three scalars. |
 | **Heatmaps and plotting** | **Medium** | `test_heatmaps.py` strong on matrix shapes and smoke plots; `heatmaps.py` 87%. `plots.py` omitted from coverage; only one activity-plot smoke test. |
 | **Reports / export** | **Medium** | `reports.py` 100%; `test_pipeline.py` checks `analysis.json`; `test_offset_audit.py` checks `tempo_model` and `warnings` key. No deep schema/content regression for exports. |
