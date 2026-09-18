@@ -1,0 +1,305 @@
+{
+  "dense_onset_burst.musicxml": {
+    "rate_eps": 20.0,
+    "events_per_second": 21.05263157894737,
+    "ioi_cv": 8.022880158403198e-16,
+    "burstiness": null,
+    "num_events": 20,
+    "num_events_raw": 20,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 20,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 72.0,
+        "last_centre": 72.0
+      }
+    }
+  },
+  "layered_async.musicxml": {
+    "rate_eps": 8.0,
+    "events_per_second": 8.767123287671232,
+    "ioi_cv": 0.41004464512591166,
+    "burstiness": -1.0,
+    "num_events": 16,
+    "num_events_raw": 16,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 8,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      },
+      "Part-2": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 8,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 67.0,
+        "last_centre": 67.0
+      }
+    }
+  },
+  "sparse_homophony.musicxml": {
+    "rate_eps": 0.6,
+    "events_per_second": 0.75,
+    "ioi_cv": 0.0,
+    "burstiness": -0.17647058823529416,
+    "num_events": 3,
+    "num_events_raw": 3,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 3,
+        "first_width": 7.0,
+        "last_width": 7.0,
+        "first_centre": 63.5,
+        "last_centre": 63.5
+      }
+    }
+  },
+  "musicological_regression\\dense_chordal_blocks.musicxml": {
+    "rate_eps": 1.0,
+    "events_per_second": 1.5,
+    "ioi_cv": 0.0,
+    "burstiness": -0.3333333333333333,
+    "num_events": 3,
+    "num_events_raw": 3,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 3.5,
+        "net_speed": 1.75,
+        "total_path": 3.5,
+        "n_samples": 3,
+        "first_width": 11.0,
+        "last_width": 10.0,
+        "first_centre": 65.5,
+        "last_centre": 69.0
+      }
+    }
+  },
+  "musicological_regression\\empty_or_degenerate_score.musicxml": {
+    "error": "onsets_per_layer_ms cannot be empty."
+  },
+  "musicological_regression\\grace_note_passage.musicxml": {
+    "rate_eps": 3.5,
+    "events_per_second": 5.161290322580645,
+    "ioi_cv": 0.8939617071323236,
+    "burstiness": -0.8064516129032258,
+    "num_events": 8,
+    "num_events_raw": 8,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 4,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      }
+    }
+  },
+  "musicological_regression\\layered_async.musicxml": {
+    "rate_eps": 3.0,
+    "events_per_second": 3.4285714285714284,
+    "ioi_cv": 0.3499271061118826,
+    "burstiness": -0.7142857142857143,
+    "num_events": 12,
+    "num_events_raw": 12,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 4,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      },
+      "Part-2": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 4,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      },
+      "Part-3": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 4,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      }
+    }
+  },
+  "musicological_regression\\multi_voice_polyphony.musicxml": {
+    "rate_eps": 1.6666666666666667,
+    "events_per_second": 4.0,
+    "ioi_cv": 0.34641016151377546,
+    "burstiness": -0.016949152542372933,
+    "num_events": 5,
+    "num_events_raw": 5,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 15.0,
+        "n_samples": 5,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      }
+    }
+  },
+  "musicological_regression\\regular_homorhythm.musicxml": {
+    "rate_eps": 2.0,
+    "events_per_second": 2.1333333333333333,
+    "ioi_cv": 0.0,
+    "burstiness": -1.0,
+    "num_events": 16,
+    "num_events_raw": 48,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 16,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 60.0
+      },
+      "Part-2": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 16,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 64.0,
+        "last_centre": 64.0
+      },
+      "Part-3": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 16,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 67.0,
+        "last_centre": 67.0
+      }
+    }
+  },
+  "musicological_regression\\repeated_section.musicxml": {
+    "rate_eps": 0.5,
+    "events_per_second": 1.0,
+    "ioi_cv": 0.0,
+    "burstiness": -0.14285714285714285,
+    "num_events": 2,
+    "num_events_raw": 2,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 2.0,
+        "net_speed": 1.0,
+        "total_path": 2.0,
+        "n_samples": 2,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 62.0
+      }
+    }
+  },
+  "musicological_regression\\tempo_change_mid_score.musicxml": {
+    "rate_eps": 1.3333333333333333,
+    "events_per_second": 1.391304347826087,
+    "ioi_cv": 0.32536151189338613,
+    "burstiness": -0.49999999999999994,
+    "num_events": 16,
+    "num_events_raw": 16,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 16,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 67.0,
+        "last_centre": 67.0
+      }
+    }
+  },
+  "musicological_regression\\tied_sustained_texture.musicxml": {
+    "rate_eps": 0.5,
+    "events_per_second": 1.0,
+    "ioi_cv": 0.0,
+    "burstiness": -0.14285714285714285,
+    "num_events": 2,
+    "num_events_raw": 4,
+    "vd10": {
+      "Part-1": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 2,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 69.0,
+        "last_centre": 69.0
+      },
+      "Part-2": {
+        "net_displacement": 0.0,
+        "net_speed": 0.0,
+        "total_path": 0.0,
+        "n_samples": 2,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 50.0,
+        "last_centre": 50.0
+      }
+    }
+  },
+  "musicological_regression\\transposing_instrument_score.musicxml": {
+    "rate_eps": 2.0,
+    "events_per_second": 3.0,
+    "ioi_cv": 0.0,
+    "burstiness": -1.0,
+    "num_events": 3,
+    "num_events_raw": 3,
+    "vd10": {
+      "Clarinet": {
+        "net_displacement": 7.0,
+        "net_speed": 7.0,
+        "total_path": 7.0,
+        "n_samples": 3,
+        "first_width": 0.0,
+        "last_width": 0.0,
+        "first_centre": 60.0,
+        "last_centre": 67.0
+      }
+    }
+  }
+}

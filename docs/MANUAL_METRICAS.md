@@ -10,7 +10,7 @@ The export JSON uses **`num_events` in three places with different meanings**:
 | JSON path | Meaning |
 |-----------|---------|
 | Top-level `num_events` | **Raw** note-matrix row count (every extracted note event) |
-| `event_rates.global.num_events` | **Fused** unique onsets (τ = 2 ms coincidence merge) |
+| `event_rates.global.num_events` | **Fused** unique onsets (effective-τ coincidence merge) |
 | `activity_granularity.granularity.num_events` | **Fused** unique onsets (same engine as above) |
 | `activity_granularity.num_events` | **Raw** note-matrix row count (duplicate of top-level) |
 
@@ -20,8 +20,8 @@ The GUI status line `N=` shows **top-level (raw)** count. Rate metrics under `ev
 
 | Metric | Unit | Formula |
 |--------|------|---------|
-| `num_events` | count | unique **fused** onsets (τ = 2 ms) — **under `event_rates.global` only** |
-| `num_events_raw` | count | raw note-matrix onsets before fusion |
+| `num_events` | count | unique **fused** onsets (effective τ) — **under `event_rates.global` only** |
+| `num_events_raw` | count | unique per-layer onsets before cross-layer fusion |
 | `sync_fraction` | — | \(1 - \mathrm{num\_events}/\mathrm{num\_events\_raw}\) |
 | `events_per_second` | s⁻¹ | \(N_{\mathrm{unique}} / T_{\mathrm{span}}\) on fused series (diagnostic) |
 | `events_per_second_raw` | s⁻¹ | \(N_{\mathrm{raw}} / T_{\mathrm{span}}\) |
@@ -60,12 +60,12 @@ Aggregate: `event_rates.per_bar_summary` — `mean_events_per_second_in_bar`, `m
 
 | Metric | Formula |
 |--------|---------|
-| IOI\(_k\) (canonical) | \(t^{\mathrm{fused}}_{k+1} - t^{\mathrm{fused}}_k\) after τ = 2 ms merge |
+| IOI\(_k\) (canonical) | \(t^{\mathrm{fused}}_{k+1} - t^{\mathrm{fused}}_k\) after effective-τ merge |
 | `ioi_cv` | \(\sigma_{\mathrm{IOI}} / \mu_{\mathrm{IOI}}\) on fused IOIs |
-| `granularity_index` | \(1 / (1 + \mathrm{ioi\_cv})\) |
-| `burstiness` | \((\sigma - \mu) / (\sigma + \mu)\) on **fused-onset** counts in **0.5 s** windows |
-| `ioi_cv_raw` | IOI CV on raw sorted onsets (includes zero IOIs) |
-| `granularity_index_raw` | \(1 / (1 + \mathrm{ioi\_cv\_raw})\) |
+| `burstiness` | Fano transform \((F-1)/(F+1)\) on full 0.5 s windows |
+| `ioi_cv_raw` | IOI CV on the pre-fusion shared onset set |
+| `coincidence_tol_sec_effective` | \(\min(0.002, 0.05 \times \min_{\mathrm{layer}} \mathrm{median\,IOI})\) |
+| `grace_onsets_included` | grace-note attacks in the shared onset source |
 
 Raw IOI list for plots: `inter_onset_intervals()` / `run_activity_granularity.ioi_sec`.
 
@@ -113,7 +113,7 @@ Separate from event-rate **granularity** (VD4): VD10 measures **movement of a us
 
 Labels: `direction` (ascending / descending / static), `band_behaviour` (diverging / converging / stable width), `shape_hint` (unidirectional / mixed / undulating). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §VD10.
 
-**Auto-pick (GUI / API):** `auto_pick_blocks_from_note_matrix` — one block per XML `part`, one sample per onset (chord merge). **Group parts:** `auto_pick_samples_for_group` — envelope of selected parts at each onset. Toolbar **Auto-pick from score** and side-panel **Group selected into one block** on trajectory tabs when note matrix is available.
+**Auto-pick (GUI / API):** `auto_pick_blocks_from_note_matrix` — one block per XML `part`, one sample per non-grace onset; band from all sounding pitches (`onset ≤ t < offset`). Single pitch → width 0. Grace notes are not sample times. **Group parts:** `auto_pick_samples_for_group` — sounding envelope of selected parts at each attack. Toolbar **Auto-pick from score** and side-panel **Group selected into one block** on trajectory tabs when note matrix is available.
 
 ## Block relations (multi-block VD10)
 

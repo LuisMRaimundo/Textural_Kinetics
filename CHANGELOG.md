@@ -3,10 +3,21 @@
 ## Unreleased
 
 - **Docs:** align manuals with implemented behaviour — disambiguate `num_events` (raw vs fused), exact JSON schema keys (`by_bin_sec`, `by_ms_window`, `per_bar_summary`), CLI `--no-mustextu`, GUI heatmap-on-demand workflow, `partition_mode` stub note, `mean_inter_distance_rate_st_per_s` in FORMULAS, three-heatmap package docstring.
-
 - **Naming:** canonical research tool name **Textural_Kinetics** (formerly **Temporal_Granularity**) applied across documentation, installers, GUI titles, `CITATION.cff`, and JSON `export_metadata` (`canonical_tool_name`, `package_version`, `python_package`).
 - **Repository:** GitHub slug and local clone folder renamed to **Textural_Kinetics** (was `Temporal_Granularity` / `Temporal_Granularity-git`).
 - **Launchers:** `START-Textural_Kinetics.{bat,command,sh}`; Windows installer script `Install-Textural_Kinetics.ps1`.
+
+## 1.0.17
+
+- **VD4 burst:** Fano-factor transform \(B=(F-1)/(F+1)\), \(F=\mathrm{var}/\mathrm{mean}\) of fused-onset counts in full 0.5 s windows; trailing partial window dropped; `< 2` windows → undefined. Rate, IOI CV, and burst from this version are **not comparable** with ≤ 1.0.16.
+- **VD4 onset source:** rate and regularity share the tie-merged note matrix. A chord is an attack if any pitch is new. Grace notes are attacks (nominal 50 ms spacing, compressed if the gap is tight).
+- **VD4 fusion:** one adaptive τ (`min(2 ms, 0.05 × min layer-median IOI)`) and the anchor merge in `activity_granularity.merge_coincident_onsets` everywhere.
+- **VD4 GI removed:** `granularity_index` / `granularity_index_raw` deleted from computation, export, GUI, and docs. `granularity_score` / `granularity_label` (Mustextu) unchanged.
+- **VD10 auto-pick:** band from sounding pitches (`onset ≤ t < offset`); single pitch has width 0; grace notes are not sample times. Auto-picked VD10 results are **not comparable** with ≤ 1.0.16.
+- **Tests:** `test_vd4_vd10_conformance.py` (B1–B5, T1–T3, G1–G2, F1, R1, V1–V3).
+- **Docs:** manuals, FORMULAS, METRIC_SEMANTICS, LIMITATIONS, test/corpus/golden notes; audit report `docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md`.
+
+Suite: **292** tests; coverage ~**93%** on `granular_v2`.
 
 ## 1.0.16
 

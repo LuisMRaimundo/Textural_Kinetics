@@ -10,6 +10,7 @@ from .event_rates import compute_all_event_rates
 from .granularity_mustextu import analyze_mustextu_from_score
 from .measures import attach_measure_to_notes, build_measure_timeline
 from .note_types import NoteMatrix
+from .onset_extraction import score_support_sec
 from .partition_state import PartitionStateAnalyzer
 from .reports import export_metadata
 
@@ -25,21 +26,28 @@ def run_full_analysis(
     if measures:
         attach_measure_to_notes(note_matrix, measures)
 
+    support = score_support_sec(score, default_bpm=cfg.default_bpm) if score is not None else None
+
     results: Dict[str, Any] = {
         "num_events": len(note_matrix),
-        "activity_granularity": run_activity_granularity(note_matrix, cfg.density_intervals),
+        "activity_granularity": run_activity_granularity(
+            note_matrix, cfg.density_intervals, support=support
+        ),
         "event_rates": compute_all_event_rates(
             note_matrix,
             density_intervals=cfg.density_intervals,
             ms_windows=cfg.ms_rate_windows,
             measures=measures,
+            support=support,
         ),
         "export_metadata": export_metadata(cfg),
         "tempo_audit": tempo_audit or {},
     }
 
     if cfg.enable_mustextu and score is not None:
-        results["mustextu_summary"] = analyze_mustextu_from_score(score, cfg.mustextu)
+        results["mustextu_summary"] = analyze_mustextu_from_score(
+            score, cfg.mustextu, note_matrix=note_matrix
+        )
 
     if cfg.include_partitional:
         ps = PartitionStateAnalyzer(partition_mode=cfg.partition_mode)

@@ -1,4 +1,4 @@
-"""IOI, burstiness, granularity index — textbook checks."""
+"""IOI, burstiness — textbook checks."""
 
 import pytest
 
@@ -19,8 +19,8 @@ def test_regular_train_maximally_regular():
     onsets = [i * 0.5 for i in range(8)]
     g = granularity_metrics(_matrix_from_onsets(onsets))
     assert g["ioi_cv"] == pytest.approx(0.0, abs=1e-12)
-    assert g["granularity_index"] == pytest.approx(1.0, abs=1e-12)
-    assert g["burstiness"] < 0.0
+    assert "granularity_index" not in g
+    assert g["burstiness"] == pytest.approx(-1.0, abs=1e-9)
 
 
 def test_global_rate_exact():
@@ -53,7 +53,7 @@ def test_vd4_fused_onsets_doubled_grid():
     assert g["num_events_raw"] == 10
     assert g["sync_fraction"] == pytest.approx(0.5)
     assert g["ioi_cv"] == pytest.approx(0.0, abs=1e-12)
-    assert g["granularity_index"] == pytest.approx(1.0, abs=1e-12)
+    assert "granularity_index" not in g
     assert g["ioi_cv_raw"] > 0.5
 
 
@@ -61,5 +61,6 @@ def test_vd4_no_simultaneity_raw_matches_fused():
     onsets = [0.0, 0.37, 0.91, 1.55, 2.8]
     g = granularity_metrics(_matrix_from_onsets(onsets))
     assert g["ioi_cv"] == pytest.approx(g["ioi_cv_raw"])
-    assert g["granularity_index"] == pytest.approx(g["granularity_index_raw"])
+    assert "granularity_index" not in g
+    assert "granularity_index_raw" not in g
     assert g["sync_fraction"] == pytest.approx(0.0)

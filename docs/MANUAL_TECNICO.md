@@ -317,7 +317,7 @@ t_{\mathrm{start}} = t(q_0),\quad t_{\mathrm{end}} = t(q_0 + \Delta q)
 
 ### 5.1 Global rate (VD4 span diagnostic)
 
-Let \(N_{\mathrm{raw}}\) = note-matrix rows, \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **τ = 2 ms** (`merge_coincident_onsets`). Sorted fused onsets \(t^{\mathrm{fused}}_1 \le \cdots \le t^{\mathrm{fused}}_{N_{\mathrm{unique}}}\).
+Let \(N_{\mathrm{raw}}\) = unique per-layer onsets from the tie-merged note matrix (grace attacks included), \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **effective τ** (`min(2 ms, 0.05 × min layer-median IOI)`). Sorted fused onsets \(t^{\mathrm{fused}}_1 \le \cdots \le t^{\mathrm{fused}}_{N_{\mathrm{unique}}}\).
 
 \[
 T_{\mathrm{span}} = t^{\mathrm{fused}}_{N_{\mathrm{unique}}} - t^{\mathrm{fused}}_1 \quad (\text{support } 1\text{s if degenerate})
@@ -371,11 +371,11 @@ where \(B_m\) = notated beats in bar (quarterLength sum).
 ## 6. Activity granularity and IOI (VD4)
 
 **Module:** `activity_granularity.py`  
-**Constants:** `COINCIDENCE_TOL_SEC = 0.002`, `BURST_WINDOW_SEC = 0.5`
+**Constants:** `COINCIDENCE_TOL_SEC = 0.002`, `TOL_FRAC_OF_MIN_MEDIAN_IOI = 0.05`, `BURST_WINDOW_SEC = 0.5`
 
 ### 6.1 Coincidence merge (fused onsets)
 
-Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anchor = first onset of group; no transitive chaining). Fused time = mean of group members.
+Effective \(\tau = \min(0.002, 0.05 \times \min_{\mathrm{layer}} \mathrm{median\,IOI})\). Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anchor = first onset of group; no transitive chaining). Fused time = mean of group members. Same helper is used for Mustextu.
 
 ### 6.2 Inter-onset intervals (IOI) — canonical
 
@@ -396,29 +396,18 @@ Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anch
 \mathrm{ioi\_cv} = \frac{\sigma_{\mathrm{IOI}}}{\mu_{\mathrm{IOI}}}
 \]
 
-Raw diagnostics: `ioi_cv_raw`, `granularity_index_raw` from pre-fusion IOIs.
+Raw diagnostic: `ioi_cv_raw` from the pre-fusion shared onset set.
 
-### 6.4 Granularity index
+### 6.4 Burstiness (VD4\_burst)
 
-\[
-G_{\mathrm{index}} = \frac{1}{1 + \mathrm{ioi\_cv}}
-\]
-
-High \(G_{\mathrm{index}}\) → lower IOI CV on the **fused horizontal pulse** (Annex VD4).
-
-### 6.5 Burstiness (VD4\_burst)
-
-Fused-onset counts in fixed **0.5 s** windows anchored at \(\min(\mathrm{fused})\): \(c_0,\ldots,c_{K-1}\).
+Full 0.5 s windows tile the support \([t_{\mathrm{start}}, t_{\mathrm{end}})\) (or first-to-last unique onset). A trailing partial window is dropped.
 
 \[
-\mu_c = \mathrm{mean}(c_k),\quad \sigma_c = \mathrm{std}(c_k)
+F = \frac{\mathrm{var}(c)}{\mathrm{mean}(c)},\qquad
+B = \frac{F-1}{F+1}
 \]
 
-\[
-B = \frac{\sigma_c - \mu_c}{\sigma_c + \mu_c}
-\]
-
-(Burstiness-style asymmetry; positive → bursty.)
+Requires ≥ 2 full windows and \(\mathrm{mean}(c) > 0\); otherwise undefined. \(B=0\) is Poisson-like; \(B=-1\) is a perfectly regular count series.
 
 ### 6.6 Activity rate (sliding window)
 
@@ -464,11 +453,9 @@ Mustextu quantifies **how many distinct onset times** occur per second when mult
 
 ### 8.1 Onset extraction for Mustextu
 
-**Module:** `onset_extraction.extract_onsets_per_layer_ms_from_score`
+**Module:** `onset_extraction.extract_onsets_per_layer_ms_from_score` (delegates to the tie-merged note matrix)
 
-Per part label, collect attack times (ms), using **global** quarterLength → seconds via same tempo map as note matrix.
-
-Grace notes optional skip (`quarterLength == 0` or `duration.isGrace`).
+Per part label, unique attack times (ms) from the same note matrix used for IOI CV and burst. A chord is an attack if any pitch is new. Grace notes **are** attacks by default (`ignore_grace=False`); they receive nominal onsets at `GRACE_NOMINAL_SPACING_SEC = 0.05` before the principal note (compressed if the available gap is smaller).
 
 ### 8.2 Coincidence merge (algorithm)
 
@@ -729,11 +716,11 @@ Display-only **proposal** of picks from the note matrix; **VD10 formulas unchang
 | Function | Role |
 |----------|------|
 | `auto_pick_blocks_from_note_matrix(note_matrix)` | One block per XML `part`; returns `{blocks, stats}` |
-| `auto_pick_samples_for_part(notes)` | One sample per distinct onset in a part |
-| `auto_pick_samples_for_group(note_matrix, part_labels)` | Envelope samples for several parts (min/max at each onset) |
+| `auto_pick_samples_for_part(notes)` | One sample per distinct non-grace onset; band from sounding pitches |
+| `auto_pick_samples_for_group(note_matrix, part_labels)` | Sounding envelope of selected parts at each attack |
 | `distinct_part_labels_from_note_matrix(note_matrix)` | Part labels for GUI multi-select |
 | `group_block_default_name(part_labels)` | Default joined block name (e.g. `fl+ob+cl`) |
-| `band_from_pitches(pitches)` | Registral band; single pitch → 1 semitone width |
+| `band_from_pitches(pitches)` | Registral band; single pitch → width 0 (`(p, p)`) |
 | `part_label_from_note(note)` | Part name from note-matrix row |
 
 **Stats:** `num_parts`, `total_samples`, `computable_parts`, `parts_with_few_samples`, `dense_sample_warning` (>150 samples).
@@ -838,7 +825,7 @@ Top-level keys from `run_full_analysis` / `run_analysis`:
 
 | Key | Description |
 |-----|-------------|
-| `global` | Fused/raw counts, EPS, sync fraction, IOI CV, granularity index, burstiness, inline `definition` |
+| `global` | Fused/raw counts, EPS, sync fraction, IOI CV, burstiness, effective τ, grace audit, inline `definition` |
 | `by_bin_sec` | Map `"<Δ>"` → per-bin onset/active counts and rates (Δ from `density_intervals`) |
 | `by_ms_window` | Map `"<W>"` → centred ms-window rates (default W: 50, 100, 500) |
 | `per_bar` | List of per-measure rate records |

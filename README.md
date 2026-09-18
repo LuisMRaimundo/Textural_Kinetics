@@ -9,12 +9,14 @@ Textural_Kinetics combines precise **event rates** (per second, millisecond, bar
 
 Installable distribution name: **`granular-v2`** (Python package `granular_v2`; canonical research tool name **Textural_Kinetics**).
 
-**Package version:** 1.0.16 (`granular_v2/__init__.py`)  
+**Package version:** 1.0.17 (`granular_v2/metadata.py`)  
 **Python:** ≥ 3.10
 
 **Structure:** `granular_v2/` (loader, timebase, event rates, Mustextu, heatmaps, trajectory/VD10, GUI) + `corpus/` (fixtures & regression).
 
-**CI:** GitHub Actions + CircleCI — **273** tests, coverage ≥72% (~**94%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+**CI:** GitHub Actions + CircleCI — **292** tests, coverage ≥72% (~**93%**), corpus comparison (`compare_all.py`), mypy on core timeline modules — see `.github/workflows/ci.yml`.
+
+**1.0.17:** VD4 rate, `ioi_cv`, burstiness, and VD10 auto-picked results are **not comparable** with ≤ 1.0.16 (Fano burst, shared tie-aware onset source, grace attacks, adaptive τ, sounding-pitch bands, zero-width monody). See `docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md`.
 
 ## Documentation
 
@@ -27,6 +29,7 @@ Installable distribution name: **`granular-v2`** (Python package `granular_v2`; 
 | [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | Scope and tempo model |
 | [docs/CORPUS_REFERENCIA.md](docs/CORPUS_REFERENCIA.md) | Regression corpus |
 | [docs/README.md](docs/README.md) | Documentation index |
+| [docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md](docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md) | v1.0.17 VD4/VD10 conformance report |
 
 ## Heatmaps
 

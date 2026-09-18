@@ -15,6 +15,7 @@
 | **[ENGINEERING_95.md](ENGINEERING_95.md)** | Engineering | Quality rubric & roadmap |
 | **[current_rating.md](current_rating.md)** | Internal | Evidence-based score |
 | **[MELHORAMENTO_util_tempo.md](MELHORAMENTO_util_tempo.md)** | History | Tempo-map fix notes |
+| **[audit/VD4_VD10_CONFORMANCE_2026-09-18.md](audit/VD4_VD10_CONFORMANCE_2026-09-18.md)** | Maintainers / thesis | v1.0.17 VD4/VD10 conformance report |
 
 **Canonical tool name:** **Textural_Kinetics**  
 Repository: https://github.com/LuisMRaimundo/Textural_Kinetics

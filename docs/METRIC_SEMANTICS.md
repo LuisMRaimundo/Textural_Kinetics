@@ -1,7 +1,7 @@
 # Metric semantics and interpretive limits
 
 **Audience:** Analysts, thesis readers, and maintainers promoting values to golden regression.  
-**Status:** Describes the **implemented model** in **Textural_Kinetics** (`granular_v2/`) as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.16).  
+**Status:** Describes the **implemented model** in **Textural_Kinetics** (`granular_v2/`) as of the current export schema (VD4 fused-onset granularity, VD10 registral trajectory, v1.0.17).  
 **Companion docs:** [FORMULAS.md](FORMULAS.md), [MANUAL_METRICAS.md](MANUAL_METRICAS.md), [MANUAL_TECNICO.md](MANUAL_TECNICO.md) §5–10.
 
 ---
@@ -27,8 +27,8 @@ They describe how **this implementation** quantifies attacks, overlaps, and mult
 |------|--------------------------|
 | **Event** | One row in the note matrix after loader extraction (typically one symbolic pitch attack). Several events may share the same onset time (chords, homorhythm across parts). |
 | **Onset** | The attack time of an event: `onset_sec` (or `onset_beats` if seconds unavailable). |
-| **Raw onset** | One onset value per note-matrix row (not deduplicated). |
-| **Fused / unique onset (VD4)** | After `merge_coincident_onsets`: anchor-based merge within **τ = 2 ms** (`COINCIDENCE_TOL_SEC`); group time = mean of members. Basis for VD4 IOI CV, granularity index, burstiness, and span-referenced EPS global. |
+| **Raw onset** | Unique per-layer attack from the tie-merged note matrix (grace notes included by default). Chordal pitches that share a layer time count once before cross-layer fusion. |
+| **Fused / unique onset (VD4)** | After `merge_coincident_onsets`: anchor-based merge within **effective τ** (`coincidence_tol_sec_effective`); group time = mean of members. Basis for VD4 IOI CV, burstiness, and span-referenced EPS global. |
 | **Coincident onset** | Two or more raw onsets whose times fall within τ of the **group anchor** (first onset of the group; no transitive chaining). |
 | **Active event** | An event whose sounding interval `[onset, onset + duration)` overlaps a time bin. |
 | **Onset count per bin** | Number of events whose onset falls in bin \([t, t+\Delta)\). Stored as `onset_density[j]` (float count). |
@@ -46,17 +46,19 @@ They describe how **this implementation** quantifies attacks, overlaps, and mult
 
 **Module:** `activity_granularity.granularity_metrics` → `event_rates.global_event_rates`.
 
-**Implementation (v1.0.7+):**
+**Implementation (v1.0.17):**
 
 ```text
-raw_onsets  = sorted onset_sec per note-matrix row
-merged      = merge_coincident_onsets(raw_onsets, tau=2 ms)
+raw_onsets  = pooled unique per-layer onsets (tie-merged matrix; grace attacks included)
+merged      = merge_coincident_onsets(raw_onsets, tau=effective τ)
 N_unique    = len(merged)
 N_raw       = len(raw_onsets)
 span        = max(merged) - min(merged)   # if N_unique < 2 → span := 0, support := 1.0
 events_per_second = N_unique / support
 events_per_second_raw = N_raw / support   # diagnostic
 ```
+
+Effective \(\tau = \min(2\,\mathrm{ms},\, 0.05 \times \min_{\mathrm{layer}} \mathrm{median\,IOI})\).
 
 Equivalent export definition: **unique fused onsets / (t_last − t_first)** on the fused series — a **span-referenced diagnostic**.
 
@@ -65,7 +67,7 @@ Equivalent export definition: **unique fused onsets / (t_last − t_first)** on 
 **Interpretive limits:**
 
 - Denominator is **fused onset span only**, not full notated duration or Mustextu window length.
-- Homorhythmic or chordal scores: `events_per_second` reflects **horizontal attack times** after 2 ms fusion; `events_per_second_raw` retains pre-fusion count on the same span support.
+- Homorhythmic or chordal scores: `events_per_second` reflects **horizontal attack times** after effective-τ fusion; `events_per_second_raw` retains the pre-fusion shared onset count on the same span support.
 - Sustained overlap after the last fused onset is not described by EPS global (use **active density**).
 
 ---
@@ -77,7 +79,7 @@ Equivalent export definition: **unique fused onsets / (t_last − t_first)** on 
 **Implementation (VD4 — canonical export):**
 
 ```text
-merged = merge_coincident_onsets(get_onsets_sorted(note_matrix), tau=2 ms)
+merged = merge_coincident_onsets(shared_per_layer_onsets, tau=effective τ)
 IOI_k  = merged[k+1] - merged[k]          # no zero IOIs from vertical simultaneity
 ioi_mean = mean(IOI)
 ioi_std  = std(IOI)
@@ -87,9 +89,8 @@ ioi_cv   = ioi_std / ioi_mean             # NaN if mean ≤ 0
 **Raw diagnostics** (pre-fusion, same note matrix):
 
 ```text
-raw_iois = diff(sorted raw onsets)        # includes zero IOIs when simultaneous
+raw_iois = diff(sorted pre-fusion shared onsets)
 ioi_cv_raw = std(raw_iois) / mean(raw_iois)
-granularity_index_raw = 1 / (1 + ioi_cv_raw)
 ```
 
 **Interpretive warning:**
@@ -100,31 +101,14 @@ granularity_index_raw = 1 / (1 + ioi_cv_raw)
 
 ---
 
-## 5. `granularity_index`
+## 5. `burstiness`
 
-**Implementation** (`granularity_metrics`):
+**Implementation** (`granularity_metrics`, Fano form):
 
-```text
-granularity_index = 1 / (1 + ioi_cv)           # on fused IOIs; 0.5 if ioi_cv non-finite
-granularity_index_raw = 1 / (1 + ioi_cv_raw) # diagnostic
-```
-
-**Interpretation:**
-
-- Inversely related to **IOI CV on fused unique onsets** (§4).
-- High chordal density with a regular fused grid can yield **`granularity_index = 1.0`** even when `num_events_raw` ≫ `num_events`.
-- Read together with `sync_fraction`, EPS diagnostics, density curves, and Mustextu `rate_eps`.
-
----
-
-## 6. `burstiness`
-
-**Implementation** (`granularity_metrics`, v1.0.7+):
-
-1. Fuse onsets (§4); let \(T = \max(\mathrm{merged}) - \min(\mathrm{merged})\).
-2. Fixed window **0.5 s** (`BURST_WINDOW_SEC`); bin edges anchored at \(\min(\mathrm{merged})\).
-3. Histogram **fused-onset** counts \(c_k\) across bins; \(\mu = \mathrm{mean}(c_k)\), \(\sigma = \mathrm{std}(c_k)\).
-4. `burstiness = (σ − μ) / (σ + μ)` if \((\sigma + \mu) > 0\) and ≥ 2 bins, else `NaN` / omitted in export when undefined.
+1. Fuse onsets (§4).
+2. Tile the support \([t_{\mathrm{start}}, t_{\mathrm{end}})\) with full **0.5 s** windows; drop a trailing partial window.
+3. Counts \(c_k\) of fused onsets in those windows; \(F = \mathrm{var}(c)/\mathrm{mean}(c)\).
+4. `burstiness = (F − 1) / (F + 1)` if ≥ 2 full windows and \(\mathrm{mean}(c) > 0\), else undefined.
 
 **Interpretation:**
 
@@ -144,7 +128,7 @@ granularity_index_raw = 1 / (1 + ioi_cv_raw) # diagnostic
 sync_fraction = 1 - N_unique / N_raw    # 0 if N_raw == 0
 ```
 
-τ = 2 ms anchor merge on **all note-matrix onsets** (single pool, not per-part layers). Measures how many raw attacks collapse to the same horizontal time within tolerance.
+Effective-τ anchor merge on the **shared per-layer onset set** (tie-merged note matrix, grace attacks included). Measures how many raw attacks collapse to the same horizontal time within tolerance.
 
 ### 7.2 `synchrony_fraction` — Mustextu multi-layer pool
 
@@ -154,12 +138,12 @@ sync_fraction = 1 - N_unique / N_raw    # 0 if N_raw == 0
 
 **Procedure:**
 
-1. For each part/layer, collect onset times in ms (optionally skip grace notes).
+1. For each part/layer, collect unique attack times from the same tie-merged note matrix (grace notes included by default).
 2. Concatenate all layer lists → `all_onsets`; `total_raw = len(all_onsets)`.
-3. Sort and **merge** within `coincidence_ms_effective` (default **2.0 ms**; adaptive optional). Anchor-based merge.
+3. Sort and **merge** within the same effective τ as VD4 (`min(2 ms, 0.05 × min layer-median IOI)`). Anchor-based merge.
 4. `synchrony_fraction = 1 - total_unique / total_raw`.
 
-**What it measures:** redundant **layer onset entries** after cross-layer τ-merge — not identical to `sync_fraction` when layer lists differ from the flat note matrix or grace policy diverges.
+**What it measures:** redundant **layer onset entries** after cross-layer τ-merge. With the shared onset source this matches VD4 `sync_fraction` unless `ignore_grace=True` is set on one path only.
 
 **Related Mustextu fields (not interchangeable):**
 
@@ -197,9 +181,8 @@ A passage can show **high initial onset density** (many entries in a short bin) 
 | **Onset count per bin** | Raw attacks entering each bin | Fused horizontal pulse; notes already sounding | Equating bin peaks with fused IOI regularity |
 | **Active count per bin** | Concurrent sounding events per bin | New attacks only; timbre | Treating overlap count as attack rate |
 | **IOI CV** | Variability of **fused** IOIs | Raw stream zeros from chords; Mustextu IEIs | Using `ioi_cv_raw` as the thesis VD4 scalar |
-| **granularity_index** | \(1/(1+\mathrm{ioi\_cv})\) on fused IOIs | Direct note count or vertical density | Low index on homorhythm when reading raw IOIs only |
-| **burstiness** | Unevenness of **fused** counts in 0.5 s windows | Raw bin density from `TemporalDensityAnalyzer` | Confusing with EPS or active density |
-| **sync_fraction** (VD4) | Share of note-matrix onsets merged within 2 ms | Mustextu layer pool; exact chord pitch count | Equating with `synchrony_fraction` |
+| **burstiness** | Fano transform of **fused** counts in full 0.5 s windows | Raw bin density from `TemporalDensityAnalyzer` | Confusing with EPS or active density |
+| **sync_fraction** (VD4) | Share of shared per-layer onsets merged within effective τ | Exact chord pitch count | Equating with vertical density |
 | **synchrony_fraction** (Mustextu) | Share of **layer** onsets merged within τ | Note-matrix `sync_fraction`; pairwise part correlation | Equating with vertical density |
 | **max_multiplicity** (Mustextu) | Largest τ-merge group size | Inter-part phase over long spans | Substituting for sync metrics |
 | **Mustextu `rate_eps`** | Unique merged layer onsets / Mustextu window | Global EPS span; raw rate | Comparing `rate_eps` to EPS global without aligning definitions |
@@ -215,8 +198,8 @@ Robust interpretation should normally **combine**:
 - activity-rate window curve (`activity_rate.events_per_sec`);
 - raw IOI list for plots (`ioi_sec` from `run_activity_granularity`);
 - EPS global and **`events_per_second_raw`** (with §3 in mind);
-- **fused** IOI CV, granularity index, burstiness;
-- **`ioi_cv_raw` / `granularity_index_raw`** when vertical simultaneity matters;
+- **fused** IOI CV and burstiness;
+- **`ioi_cv_raw`** when vertical simultaneity matters;
 - **`sync_fraction`** and Mustextu `synchrony_fraction`, `max_multiplicity`, `rate_eps` / `rate_eps_raw`;
 - structural counts (`num_events`, `num_events_raw`, unique onsets).
 
@@ -230,7 +213,7 @@ Phase-1 fixtures and inspection: [MUSICOLOGICAL_REGRESSION_FIXTURES.md](MUSICOLO
 
 Phase-2 promotion rules: [MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md](MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md).
 
-After v1.0.7 (VD4 fix), inspection values for **`ioi_cv`**, **`granularity_index`**, and **`burstiness`** on chordal/homorhythmic fixtures reflect **fused-onset** semantics. **`regular_homorhythm`** now shows `ioi_cv = 0`, `granularity_index = 1.0` (fused grid) with elevated `ioi_cv_raw`.
+After the VD4/VD10 conformance revision, inspection values for **`ioi_cv`** and **`burstiness`** on chordal/homorhythmic fixtures reflect **fused-onset** semantics and the Fano burst definition. **`regular_homorhythm`** shows `ioi_cv = 0` (fused grid) with `ioi_cv_raw` elevated when the pre-fusion set still has near-simultaneous layer onsets.
 
 Values marked **EXPLORE** for EPS global or Mustextu synchrony on specific fixtures should still be reviewed before strict golden lock.
 
@@ -321,7 +304,7 @@ Centres are linearly interpolated between picks; inter-centre distance \(d(t)\) 
 
 | Metric | Primary module / function |
 |--------|---------------------------|
-| Fused IOI CV, granularity index, burstiness, VD4 sync_fraction | `granular_v2/activity_granularity.py` → `granularity_metrics`, `merge_coincident_onsets` |
+| Fused IOI CV, Fano burstiness, VD4 sync_fraction | `granular_v2/activity_granularity.py` → `granularity_metrics`, `merge_coincident_onsets` |
 | Raw IOI list (plots) | `granular_v2/activity_granularity.py` → `inter_onset_intervals` |
 | Onset / active density | `granular_v2/temporal_density.py` → `TemporalDensityAnalyzer.run` |
 | Global export wrapper | `granular_v2/event_rates.py` → `global_event_rates` |

@@ -57,25 +57,33 @@ def _mk_onsets_irregular(period_ms: float, window_ms: float, offset_ms: float, j
 def _merge_coincident_onsets(onsets: List[float], coincidence_ms: float) -> Tuple[List[float], List[int]]:
     """
     Merge onsets within coincidence_ms of the group anchor (first onset in group).
-    Compares to anchor, not to previous onset, to avoid transitive chaining.
+    Delegates to activity_granularity.merge_coincident_onsets (seconds, same algorithm).
     """
-    if not onsets:
-        return [], []
-    onsets = sorted(onsets)
-    merged_times, multiplicities = [], []
-    current_group = [onsets[0]]
-    anchor = onsets[0]
-    for t in onsets[1:]:
-        if (t - anchor) <= coincidence_ms:
-            current_group.append(t)
-        else:
-            merged_times.append(sum(current_group) / len(current_group))
-            multiplicities.append(len(current_group))
-            current_group = [t]
-            anchor = t
-    merged_times.append(sum(current_group) / len(current_group))
-    multiplicities.append(len(current_group))
-    return merged_times, multiplicities
+    from ..activity_granularity import merge_coincident_onsets
+
+    times_s, mult = merge_coincident_onsets(
+        [float(t) / 1000.0 for t in onsets],
+        tol_sec=float(coincidence_ms) / 1000.0,
+    )
+    return [float(t) * 1000.0 for t in times_s], [int(m) for m in mult]
+
+
+def _effective_coincidence_ms(
+    per_layer_onsets_ms: List[List[float]],
+    coincidence_ms: float,
+    tol_frac_of_min_period: float,
+    adaptive_tolerance: bool,
+) -> float:
+    from ..activity_granularity import effective_coincidence_tol_sec
+
+    layers_s = [[t / 1000.0 for t in ts] for ts in per_layer_onsets_ms]
+    tol_s = effective_coincidence_tol_sec(
+        layers_s,
+        base_tol_sec=float(coincidence_ms) / 1000.0,
+        frac=float(tol_frac_of_min_period),
+        adaptive=adaptive_tolerance,
+    )
+    return tol_s * 1000.0
 
 def compute_horizontal_density(
     bpm: float,
@@ -105,6 +113,7 @@ def compute_horizontal_density(
 
     per_layer = []
     all_onsets = []
+    layer_onsets_ms: List[List[float]] = []
     min_period = math.inf
     all_regular = True
     offsets_ok = True
@@ -139,6 +148,7 @@ def compute_horizontal_density(
             "period_ms": float("inf") if not math.isfinite(period_ms) else period_ms,
             "events": events, "rate_eps": rate_eps, "offset_ms": offset,
         })
+        layer_onsets_ms.append(list(onsets))
         all_onsets.extend(onsets)
 
         if mode != "regular" or not float(epb).is_integer():
@@ -148,10 +158,12 @@ def compute_horizontal_density(
             if abs(offset) > 1e-9:
                 offsets_ok = False
 
-    if adaptive_tolerance and math.isfinite(min_period):
-        coincidence = max(0.0, min(coincidence_ms, tol_frac_of_min_period * min_period))
-    else:
-        coincidence = coincidence_ms
+    coincidence = _effective_coincidence_ms(
+        layer_onsets_ms,
+        coincidence_ms,
+        tol_frac_of_min_period,
+        adaptive_tolerance,
+    )
 
     all_onsets.sort()
     total_raw = len(all_onsets)
@@ -427,56 +439,23 @@ def list_part_labels_from_musicxml(path_or_stream):
         except Exception as e:
             raise RuntimeError(f"Falha a ler partes (fallback XML): {e}")
 
-def extract_onsets_per_layer_from_musicxml(path_or_stream, ignore_grace: bool = True,
+def extract_onsets_per_layer_from_musicxml(path_or_stream, ignore_grace: bool = False,
                                            part_filter: Optional[Iterable[str]] = None) -> Tuple[dict, float, float]:
     """
     Parse MusicXML/MIDI, return (onsets_per_layer_ms, t_end_ms, initial_bpm).
+
+    Delegates to the shared tie-merged note-matrix onset source.
     """
-    try:
-        from music21 import note, chord, stream
-    except Exception as e:
-        raise RuntimeError("music21 is required to parse MusicXML/MIDI") from e
+    from ..onset_extraction import extract_onsets_per_layer_ms_from_score
 
     s, tmp = _load_mxml_any(path_or_stream)
     try:
-        ql_to_s, initial_bpm = _build_seconds_map_music21(s)
-
-        def _part_label(p: "stream.Part") -> str:
-            name = p.partName or ""
-            if not name:
-                ins = p.getInstrument(returnDefault=False)
-                if ins and getattr(ins, "instrumentName", None):
-                    name = ins.instrumentName
-            return name or (p.id or "Part")
-
-        selected = set([x.strip() for x in part_filter]) if part_filter else None
-        out = {}
-        t_end_ms = 0.0
-
-        from ..offsets import global_ql
-
-        parts = list(getattr(s, "parts", [])) or list(s.getElementsByClass(stream.Part))
-        for p in parts:
-            label = _part_label(p)
-            if selected and label not in selected:
-                continue
-            times = []
-            for el in p.recurse().notesAndRests:
-                if getattr(el, "isRest", False):
-                    continue
-                if ignore_grace and _is_grace(el):
-                    continue
-                q0 = global_ql(el, s, p)
-                t0_ms = ql_to_s(q0) * 1000.0
-                times.append(t0_ms)
-                q1 = q0 + float(getattr(el, "quarterLength", 0.0) or 0.0)
-                t1_ms = ql_to_s(q1) * 1000.0
-                if t1_ms > t_end_ms:
-                    t_end_ms = t1_ms
-            if times:
-                out[label] = sorted(times)
-
-        return out, t_end_ms, initial_bpm
+        layers, t_end_ms, _, initial_bpm = extract_onsets_per_layer_ms_from_score(
+            s,
+            ignore_grace=ignore_grace,
+            part_filter=list(part_filter) if part_filter else None,
+        )
+        return layers, t_end_ms, initial_bpm
     finally:
         if tmp and os.path.exists(tmp):
             os.unlink(tmp)
@@ -538,7 +517,12 @@ def compute_horizontal_density_from_onsets(
         })
         all_onsets.extend(ts)
 
-    coincidence = min(coincidence_ms, tol_frac_of_min_period * min_period) if (adaptive_tolerance and math.isfinite(min_period)) else coincidence_ms
+    coincidence = _effective_coincidence_ms(
+        [list(ts) for ts in onsets_per_layer_ms.values()],
+        coincidence_ms,
+        tol_frac_of_min_period,
+        adaptive_tolerance,
+    )
 
     all_onsets.sort()
     total_raw = len(all_onsets)
@@ -610,7 +594,7 @@ def compute_horizontal_density_from_musicxml(
     tol_frac_of_min_period: float = 0.05,
     align_window_to_beat: bool = True,
     gran_max_eps: float = 50.0,
-    ignore_grace: bool = True,
+    ignore_grace: bool = False,
 ) -> Dict:
     """
     Convenience wrapper: parse MusicXML/MIDI, extract onsets, and compute density.

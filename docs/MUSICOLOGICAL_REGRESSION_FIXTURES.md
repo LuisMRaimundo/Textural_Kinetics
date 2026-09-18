@@ -28,7 +28,7 @@ python corpus/scripts/inspect_musicological_regression.py
 |--------|--------|
 | **Musical situation** | Three parts (Soprano, Alto, Tenor) in four measures; each part plays one pitch class per beat; all parts attack on the same quarter-note grid (120 BPM). |
 | **Analytical purpose** | Vertical alignment / homorhythmic coincidence; near-periodic IOIs on the composite onset train. |
-| **Expected behaviour** | High `max_simultaneous_pitches` (3); Mustextu synchrony fraction ≈ 0.67; **fused** IOI CV = 0 and granularity index = 1.0 on the 0.5 s quarter grid; `ioi_cv_raw` ≈ 1.46 (raw stream with chordal zero IOIs). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4. |
+| **Expected behaviour** | High `max_simultaneous_pitches` (3); Mustextu synchrony fraction ≈ 0.67; **fused** IOI CV = 0 on the 0.5 s quarter grid; `ioi_cv_raw` ≈ 1.46 (raw stream with chordal zero IOIs). See [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) §4. `granularity_index` was removed in v1.0.17. |
 
 ### `tied_sustained_texture`
 
@@ -77,8 +77,8 @@ python corpus/scripts/inspect_musicological_regression.py
 | Aspect | Detail |
 |--------|--------|
 | **Musical situation** | Grace notes before four principal quarter notes. |
-| **Analytical purpose** | `ignore_grace` policy in onset extraction / Mustextu path. |
-| **Expected behaviour** | More layer onsets when `ignore_grace=False`; grace excluded when `True`. |
+| **Analytical purpose** | Shared onset source: grace notes are attacks by default (nominal spacing); `ignore_grace=True` remains an opt-out. |
+| **Expected behaviour** | Default path includes grace-note onsets; `ignore_grace=True` drops them. |
 
 ### `transposing_instrument_score`
 

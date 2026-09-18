@@ -10,7 +10,7 @@ Units:
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -30,9 +30,12 @@ def _nan_to_none(d: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
-def global_event_rates(note_matrix: NoteMatrix) -> Dict[str, Any]:
+def global_event_rates(
+    note_matrix: NoteMatrix,
+    support: Optional[Tuple[float, float]] = None,
+) -> Dict[str, Any]:
     """Global rates with explicit unit definitions."""
-    g = granularity_metrics(note_matrix)
+    g = granularity_metrics(note_matrix, support=support)
     eps = float(g["events_per_sec_global"])
     span_sec = float(g["total_span_sec"])
     span_ms = span_sec * 1000.0
@@ -51,12 +54,13 @@ def global_event_rates(note_matrix: NoteMatrix) -> Dict[str, Any]:
         "mean_ioi_ms": float(g["ioi_mean_sec"]) * 1000.0 if np.isfinite(g.get("ioi_mean_sec", np.nan)) else None,
         "ioi_cv": g.get("ioi_cv"),
         "ioi_cv_raw": g.get("ioi_cv_raw"),
-        "granularity_index": g.get("granularity_index"),
-        "granularity_index_raw": g.get("granularity_index_raw"),
         "burstiness": g.get("burstiness"),
+        "coincidence_tol_sec_effective": g.get("coincidence_tol_sec_effective"),
+        "grace_onsets_included": int(g.get("grace_onsets_included", 0) or 0),
+        "grace_compressed": bool(g.get("grace_compressed", False)),
         "definition": {
-            "num_events": "count of unique fused onsets (coincident within 2 ms merged)",
-            "num_events_raw": "count of raw onsets before fusion",
+            "num_events": "count of unique fused onsets (coincident within effective τ merged)",
+            "num_events_raw": "count of unique per-layer onsets before cross-layer fusion",
             "sync_fraction": "1 - num_events / num_events_raw (onsets absorbed by fusion)",
             "events_per_second": (
                 "unique fused onsets / (t_last - t_first); span-referenced diagnostic; "
@@ -65,12 +69,16 @@ def global_event_rates(note_matrix: NoteMatrix) -> Dict[str, Any]:
             "events_per_second_raw": "raw onsets / (t_last - t_first) on fused span support",
             "events_per_millisecond": "events_per_second / 1000",
             "ioi_cv": "std/mean of IOIs over unique fused onsets",
-            "ioi_cv_raw": "std/mean of IOIs over raw onsets (pre-fusion)",
-            "granularity_index": "1 / (1 + ioi_cv) on unique fused onsets",
-            "granularity_index_raw": "1 / (1 + ioi_cv_raw) on raw onsets",
+            "ioi_cv_raw": "std/mean of IOIs over the pre-fusion shared onset set",
             "burstiness": (
-                "(sigma - mu) / (sigma + mu) of fused-onset counts in fixed 0.5 s windows"
+                "Fano-factor transform B=(F-1)/(F+1), F=var(counts)/mean(counts), "
+                "on fused-onset counts in full 0.5 s windows tiling the support "
+                "(trailing partial window dropped)"
             ),
+            "coincidence_tol_sec_effective": (
+                "min(0.002, 0.05 × min over layers of the median IOI)"
+            ),
+            "grace_onsets_included": "number of grace-note attacks included in the onset source",
         },
     })
 
@@ -125,11 +133,12 @@ def compute_all_event_rates(
     density_intervals: List[float],
     ms_windows: Optional[List[float]] = None,
     measures: Optional[List[MeasureInfo]] = None,
+    support: Optional[Tuple[float, float]] = None,
 ) -> Dict[str, Any]:
     """Full event-rate report: global, bins, ms windows, per bar."""
     ms_windows = ms_windows or [50.0, 100.0, 500.0]
     out: Dict[str, Any] = {
-        "global": global_event_rates(note_matrix),
+        "global": global_event_rates(note_matrix, support=support),
         "by_bin_sec": {str(iv): rates_by_time_bin(note_matrix, iv) for iv in density_intervals},
         "by_ms_window": {str(int(w)): rates_by_ms_window(note_matrix, w) for w in ms_windows},
         "per_bar": per_bar_event_rates(note_matrix, measures),

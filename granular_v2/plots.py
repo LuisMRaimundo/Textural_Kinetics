@@ -73,7 +73,6 @@ def plot_activity_granularity(
         lines.append(f"events_per_millisecond: {er_g.get('events_per_millisecond', '—')}")
     if gr:
         lines.append(f"IOI CV: {gr.get('ioi_cv', '—')}")
-        lines.append(f"granularity_index: {gr.get('granularity_index', '—')}")
         lines.append(f"burstiness: {gr.get('burstiness', '—')}")
     ms = results.get("mustextu_summary", {})
     if ms:
