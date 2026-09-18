@@ -126,7 +126,7 @@ ioi_cv_raw = std(raw_iois) / mean(raw_iois)
 sync_fraction = 1 - N_unique / N_raw    # 0 if N_raw == 0
 ```
 
-τ = 2 ms anchor merge on **all note-matrix onsets** (single pool, not per-part layers). Measures how many raw attacks collapse to the same horizontal time within tolerance.
+Effective-τ anchor merge on the **shared per-layer onset set** (tie-merged note matrix, grace attacks included). Measures how many raw attacks collapse to the same horizontal time within tolerance.
 
 ### 7.2 `synchrony_fraction` — Mustextu multi-layer pool
 
@@ -302,7 +302,7 @@ Centres are linearly interpolated between picks; inter-centre distance \(d(t)\) 
 
 | Metric | Primary module / function |
 |--------|---------------------------|
-| Fused IOI CV, granularity index, burstiness, VD4 sync_fraction | `granular_v2/activity_granularity.py` → `granularity_metrics`, `merge_coincident_onsets` |
+| Fused IOI CV, Fano burstiness, VD4 sync_fraction | `granular_v2/activity_granularity.py` → `granularity_metrics`, `merge_coincident_onsets` |
 | Raw IOI list (plots) | `granular_v2/activity_granularity.py` → `inter_onset_intervals` |
 | Onset / active density | `granular_v2/temporal_density.py` → `TemporalDensityAnalyzer.run` |
 | Global export wrapper | `granular_v2/event_rates.py` → `global_event_rates` |

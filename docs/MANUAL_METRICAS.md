@@ -10,7 +10,7 @@ The export JSON uses **`num_events` in three places with different meanings**:
 | JSON path | Meaning |
 |-----------|---------|
 | Top-level `num_events` | **Raw** note-matrix row count (every extracted note event) |
-| `event_rates.global.num_events` | **Fused** unique onsets (τ = 2 ms coincidence merge) |
+| `event_rates.global.num_events` | **Fused** unique onsets (effective-τ coincidence merge) |
 | `activity_granularity.granularity.num_events` | **Fused** unique onsets (same engine as above) |
 | `activity_granularity.num_events` | **Raw** note-matrix row count (duplicate of top-level) |
 
@@ -20,8 +20,8 @@ The GUI status line `N=` shows **top-level (raw)** count. Rate metrics under `ev
 
 | Metric | Unit | Formula |
 |--------|------|---------|
-| `num_events` | count | unique **fused** onsets (τ = 2 ms) — **under `event_rates.global` only** |
-| `num_events_raw` | count | raw note-matrix onsets before fusion |
+| `num_events` | count | unique **fused** onsets (effective τ) — **under `event_rates.global` only** |
+| `num_events_raw` | count | unique per-layer onsets before cross-layer fusion |
 | `sync_fraction` | — | \(1 - \mathrm{num\_events}/\mathrm{num\_events\_raw}\) |
 | `events_per_second` | s⁻¹ | \(N_{\mathrm{unique}} / T_{\mathrm{span}}\) on fused series (diagnostic) |
 | `events_per_second_raw` | s⁻¹ | \(N_{\mathrm{raw}} / T_{\mathrm{span}}\) |

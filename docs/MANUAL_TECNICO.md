@@ -317,7 +317,7 @@ t_{\mathrm{start}} = t(q_0),\quad t_{\mathrm{end}} = t(q_0 + \Delta q)
 
 ### 5.1 Global rate (VD4 span diagnostic)
 
-Let \(N_{\mathrm{raw}}\) = note-matrix rows, \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **τ = 2 ms** (`merge_coincident_onsets`). Sorted fused onsets \(t^{\mathrm{fused}}_1 \le \cdots \le t^{\mathrm{fused}}_{N_{\mathrm{unique}}}\).
+Let \(N_{\mathrm{raw}}\) = unique per-layer onsets from the tie-merged note matrix (grace attacks included), \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **effective τ** (`min(2 ms, 0.05 × min layer-median IOI)`). Sorted fused onsets \(t^{\mathrm{fused}}_1 \le \cdots \le t^{\mathrm{fused}}_{N_{\mathrm{unique}}}\).
 
 \[
 T_{\mathrm{span}} = t^{\mathrm{fused}}_{N_{\mathrm{unique}}} - t^{\mathrm{fused}}_1 \quad (\text{support } 1\text{s if degenerate})
@@ -371,11 +371,11 @@ where \(B_m\) = notated beats in bar (quarterLength sum).
 ## 6. Activity granularity and IOI (VD4)
 
 **Module:** `activity_granularity.py`  
-**Constants:** `COINCIDENCE_TOL_SEC = 0.002`, `BURST_WINDOW_SEC = 0.5`
+**Constants:** `COINCIDENCE_TOL_SEC = 0.002`, `TOL_FRAC_OF_MIN_MEDIAN_IOI = 0.05`, `BURST_WINDOW_SEC = 0.5`
 
 ### 6.1 Coincidence merge (fused onsets)
 
-Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anchor = first onset of group; no transitive chaining). Fused time = mean of group members.
+Effective \(\tau = \min(0.002, 0.05 \times \min_{\mathrm{layer}} \mathrm{median\,IOI})\). Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anchor = first onset of group; no transitive chaining). Fused time = mean of group members. Same helper is used for Mustextu.
 
 ### 6.2 Inter-onset intervals (IOI) — canonical
 
@@ -453,11 +453,9 @@ Mustextu quantifies **how many distinct onset times** occur per second when mult
 
 ### 8.1 Onset extraction for Mustextu
 
-**Module:** `onset_extraction.extract_onsets_per_layer_ms_from_score`
+**Module:** `onset_extraction.extract_onsets_per_layer_ms_from_score` (delegates to the tie-merged note matrix)
 
-Per part label, collect attack times (ms), using **global** quarterLength → seconds via same tempo map as note matrix.
-
-Grace notes optional skip (`quarterLength == 0` or `duration.isGrace`).
+Per part label, unique attack times (ms) from the same note matrix used for IOI CV and burst. A chord is an attack if any pitch is new. Grace notes **are** attacks by default (`ignore_grace=False`); they receive nominal onsets at `GRACE_NOMINAL_SPACING_SEC = 0.05` before the principal note (compressed if the available gap is smaller).
 
 ### 8.2 Coincidence merge (algorithm)
 
