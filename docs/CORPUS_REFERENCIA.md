@@ -14,7 +14,7 @@
 | `layered_async.musicxml` | Camadas com desfasamento | idem |
 | `dense_onset_burst.musicxml` | Rajada de onsets | idem |
 
-As referências foram geradas com **offsets globais** (v1.0.4+). Desde **v1.0.7**, `events_per_second` usa onsets **fundidos** (τ = 2 ms). Desde **v1.0.8**, `num_events` nas referências JSON = contagem VD4 fundida; `num_notes` = linhas da note matrix (ex.: `sparse_homophony`: `num_events: 3`, `num_notes: 9`, `events_per_second: 0.75`, `rate_eps: 0.6`).
+As referências foram geradas com **offsets globais** (v1.0.4+). Desde **v1.0.7**, `events_per_second` usa onsets **fundidos**. Desde **v1.0.8**, `num_events` nas referências JSON = contagem VD4 fundida; `num_notes` = linhas da note matrix (ex.: `sparse_homophony`: `num_events: 3`, `num_notes: 9`, `events_per_second: 0.75`, `rate_eps: 0.6`). Desde **v1.0.17**, a fusão usa τ efectivo (`min(2 ms, 0.05 × mediana IOI mínima por camada)`); nestas fixtures o τ permanece 2 ms.
 
 ## Executar comparação
 
@@ -24,7 +24,7 @@ python corpus/scripts/compare_all.py
 
 Tolerâncias: `events_per_second` ±1e-5; Mustextu `rate_eps` ±0.02.
 
-**Semântica:** `events_per_second` = onsets únicos fundidos (2 ms) / intervalo entre primeiro e último onset fundido (diagnóstico de span); **`rate_eps`** Mustextu = taxa canónica VD4\_s. Ver **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
+**Semântica:** `events_per_second` = onsets únicos fundidos (τ efectivo) / intervalo entre primeiro e último onset fundido (diagnóstico de span); **`rate_eps`** Mustextu = taxa canónica VD4\_s. Ver **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Regenerar referências
 

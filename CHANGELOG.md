@@ -15,7 +15,7 @@
 - **VD4 GI removed:** `granularity_index` / `granularity_index_raw` deleted from computation, export, GUI, and docs. `granularity_score` / `granularity_label` (Mustextu) unchanged.
 - **VD10 auto-pick:** band from sounding pitches (`onset ≤ t < offset`); single pitch has width 0; grace notes are not sample times. Auto-picked VD10 results are **not comparable** with ≤ 1.0.16.
 - **Tests:** `test_vd4_vd10_conformance.py` (B1–B5, T1–T3, G1–G2, F1, R1, V1–V3).
-- **Docs:** manuals, FORMULAS, METRIC_SEMANTICS, LIMITATIONS; audit report `docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md`.
+- **Docs:** manuals, FORMULAS, METRIC_SEMANTICS, LIMITATIONS, test/corpus/golden notes; audit report `docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md`.
 
 Suite: **292** tests; coverage ~**93%** on `granular_v2`.
 

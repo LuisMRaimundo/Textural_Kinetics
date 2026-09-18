@@ -45,7 +45,7 @@ Values below are taken from the current inspection report unless noted as derive
 | `transposing_instrument_score` | Onset times written vs sounding | unchanged (report: 3 events, 3 unique onsets each) | **PROMOTE** | Transposition must not alter timing. |
 | `grace_note_passage` | Layer onsets, `ignore_grace=True` | 4 | **PROMOTE** | Direct test of grace exclusion policy. |
 | `grace_note_passage` | Layer onsets, `ignore_grace=False` | 8 | **PROMOTE** | Direct test of grace inclusion policy. |
-| `grace_note_passage` | Note-matrix events | 8 | **PROMOTE** | Loader/note-extraction structural value: four principal notes plus four grace notes are preserved **before** onset filtering; analytical onset count is governed separately by `ignore_grace=True` (4) / `False` (8). |
+| `grace_note_passage` | Note-matrix events | 8 | **PROMOTE** | Loader/note-extraction structural value: four principal notes plus four grace notes are preserved. Default analysis includes graces (`ignore_grace=False` → 8); `ignore_grace=True` remains the opt-out (4). |
 | `repeated_section` | Events without repeat expansion | 2 | **PROMOTE** | Simple two-measure source material. |
 | `repeated_section` | Events with repeat expansion | 4 | **PROMOTE** | Deterministic doubling for `\|\|:` … `:\|\|` structure. |
 | `dense_chordal_blocks` | Events | 12 | **PROMOTE** | Three chords × four pitches. |
@@ -57,7 +57,7 @@ Values below are taken from the current inspection report unless noted as derive
 | `regular_homorhythm` | Unique onsets | 16 | **PROMOTE** | One composite attack time per quarter across four measures. |
 | `regular_homorhythm` | Max simultaneous pitches | 3 | **PROMOTE** | Three parts attack together. |
 | `regular_homorhythm` | Sync fraction | 0.667 | **EXPLORE** | Useful homorhythm diagnostic; confirm layer labelling and coincidence tolerance before strict lock. |
-| `regular_homorhythm` | IOI CV (fused) | 0.0 | **PROMOTE** | Resolved v1.0.7: canonical VD4 IOI CV uses fused onsets (τ = 2 ms); regular 0.5 s grid → CV = 0. Raw `ioi_cv_raw` ≈ 1.46 remains diagnostic. |
+| `regular_homorhythm` | IOI CV (fused) | 0.0 | **PROMOTE** | Canonical VD4 IOI CV uses fused onsets (effective τ; 2 ms on this 0.5 s grid); regular grid → CV = 0. Raw `ioi_cv_raw` ≈ 1.46 remains diagnostic. |
 | `tied_sustained_texture` | Raw events | 6 | **PROMOTE** | Pre-merge tie components. |
 | `tied_sustained_texture` | Merged events | 4 | **PROMOTE** | Tie merge reduces spurious attacks. |
 | `tied_sustained_texture` | Unique onsets raw → merged | 3 → 2 | **PROMOTE** | Direct sustained-texture / tie-merge proof. |

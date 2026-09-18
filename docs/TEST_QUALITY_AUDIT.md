@@ -1,9 +1,10 @@
 # Test Quality Audit — Textural_Kinetics
 
-**Date:** 2026-06-27 (summary refreshed for v1.0.16)  
+**Date:** 2026-09-18 (summary refreshed for v1.0.17)  
 **Scope:** Current pytest suite (`tests/`), `test_inventory.txt`, corpus fixtures (`corpus/fixtures/`, `corpus/reference/`), and `granular_v2` coverage as reported by the project's pytest configuration.  
 **Constraint:** Audit only — no production code, tests, or CI configuration were modified.  
-**Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).
+**Metric semantics:** [METRIC_SEMANTICS.md](METRIC_SEMANTICS.md) — use when extending scalar regression (EPS, IOI CV, synchrony).  
+**v1.0.17 conformance:** [audit/VD4_VD10_CONFORMANCE_2026-09-18.md](audit/VD4_VD10_CONFORMANCE_2026-09-18.md).
 
 ---
 
@@ -13,8 +14,8 @@
 
 | Metric | Value |
 |--------|------:|
-| Collected tests | **273** |
-| Test modules (excluding `conftest.py`) | **27** |
+| Collected tests | **292** |
+| Test modules (excluding `conftest.py`) | **29** |
 | Shared fixtures | `tests/conftest.py` → `sample_musicxml` |
 | Corpus MusicXML fixtures | 3 (`dense_onset_burst`, `layered_async`, `sparse_homophony`) |
 | Corpus reference JSON snapshots | 3 (matching fixture stems) |
@@ -33,7 +34,9 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | `test_event_rates.py` | 4 | Global, windowed, per-bar, and binned event-rate computations |
 | `test_fusion.py` | 2 | Partitional fusion layer and empty-matrix handling |
 | `test_global_offsets_integration.py` | 3 | Global QL through tempo segments, loader onsets, sparse_homophony span/rate |
-| `test_granularity_axioms.py` | 6 | VD4 fused IOI CV, burstiness, granularity index, raw/fused diagnostics, global rate |
+| `test_granularity_axioms.py` | 6 | VD4 fused IOI CV, Fano burstiness, raw/fused diagnostics, global rate |
+| `test_vd4_vd10_conformance.py` | 16 | Thesis B1–B5, T1–T3, G1–G2, F1, R1, V1–V3 |
+| `test_musicological_regression.py` | 11 | Phase-1 fixture invariants (ties, grace, tempo, repeats) |
 | `test_heatmaps.py` | 8 | Pitch–time matrices, spectral energy, plot smoke tests, heatmap pipeline |
 | `test_loader.py` | 5 | Single-parse loader, tempo fallback chain, MIDI branch, sounding pitch |
 | `test_mustextu.py` | 1 | Mustextu wiring through loader (smoke) |
@@ -72,7 +75,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Repeat expansion and tempo fallback** | **Strong** | Repeat expand/disable/safe-fail paths in branches + fallbacks; empty/exception boundaries and global BPM fallback with auditable `tempo_info`. |
 | **Event rates** | **Strong** | `test_event_rates.py` on synthetic matrices; `event_rates.py` at 100% coverage. |
 | **Fusion / coincidence** | **Medium** | `test_fusion.py` and `test_coincidence_merge.py` cover key behaviours; `horizontal_density` (Mustextu core) excluded from coverage metrics. Partitional layer tested on minimal fixture only. |
-| **Granularity axioms** | **Strong** | `test_granularity_axioms.py` validates VD4 fused-onset IOI/burstiness/granularity-index on synthetic trains plus raw/fused parity; musicological inspection report refrozen (v1.0.7). |
+| **Granularity axioms** | **Strong** | `test_granularity_axioms.py` plus `test_vd4_vd10_conformance.py` validate fused IOI CV, Fano burstiness, adaptive τ, grace attacks, and VD10 sounding bands; `granularity_index` removed in v1.0.17. |
 | **Corpus regression fixtures** | **Medium** | Three fixtures with JSON snapshots and `compare_all.py`; parametrized offset/Mustextu alignment. Limited musical diversity; no per-metric golden files beyond three scalars. |
 | **Heatmaps and plotting** | **Medium** | `test_heatmaps.py` strong on matrix shapes and smoke plots; `heatmaps.py` 87%. `plots.py` omitted from coverage; only one activity-plot smoke test. |
 | **Reports / export** | **Medium** | `reports.py` 100%; `test_pipeline.py` checks `analysis.json`; `test_offset_audit.py` checks `tempo_model` and `warnings` key. No deep schema/content regression for exports. |
@@ -92,7 +95,7 @@ Source of truth for individual test names: `test_inventory.txt` (may lag; prefer
 | **Open ties flushed at part end** | `test_note_extraction.py::test_tied_note_start_without_stop_flushes_at_part_end` | Strong |
 | **Chords → one event per pitch** | `test_note_extraction.py::test_chord_extracts_one_event_per_pitch` | Strong |
 | **Rests excluded from onsets** | `test_onset_extraction.py::test_rests_do_not_generate_onsets` | Strong |
-| **Grace notes per `ignore_grace`** | `test_onset_extraction.py` (excluded when True, included when False) | Strong |
+| **Grace notes per `ignore_grace`** | `test_onset_extraction.py` and G1–G2: default **includes** graces (`ignore_grace=False`); `True` remains the opt-out | Strong |
 | **Tempo fallback explicit and auditable** | `test_loader.py` (warning codes, `source`, `reason`); `test_util_tempo_fallbacks.py` (`tempo_info`); `test_offset_audit.py` (`tempo_model`, `warnings`) | Strong |
 | **Repeat expansion failure → safe fallback** | `test_util_tempo_branches.py`, `test_util_tempo_fallbacks.py` (RecursionError, RuntimeError, part-level failure) | Strong |
 | **Global QL (not measure-local collapse)** | `test_offset_audit.py` (span > 1.5 s for multi-measure corpus); `test_global_offsets_integration.py` (sparse_homophony span 4 s; raw note-matrix rate 2.25; fused EPS global 0.75 in corpus ref) | Strong for 3 fixtures |
@@ -186,7 +189,7 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ### Medium priority
 
-6. **`grace_note_passage`** fixture through pipeline; assert onset count with default `ignore_grace=True`.
+6. **`grace_note_passage`** fixture through pipeline; assert onset count with default `ignore_grace=False` (graces included).
 7. **`transposing_instrument_score`** with written vs sounding config and pitch assertions.
 8. Broaden **`AnalysisConfig`** validation tests (window sizes, bin widths, invalid combinations).
 9. Increase **heatmap** regression (matrix sum or hash) on one corpus fixture.
@@ -208,7 +211,7 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ### Methodologically adequate?
 
-**Partially.** Unit-level tests strongly encode music-analytical axioms (tie merge, monotonic time, rate definitions, granularity indices on synthetic trains). The **corpus layer is thin**: three music21-generated fixtures and three scalar snapshots per file. That is adequate for **engineering regression** but not yet for **musicological confidence** across real score diversity.
+**Partially.** Unit-level tests strongly encode music-analytical axioms (tie merge, monotonic time, rate definitions, Fano burstiness on synthetic trains). The **corpus layer is thin**: three music21-generated fixtures and three scalar snapshots per file. That is adequate for **engineering regression** but not yet for **musicological confidence** across real score diversity.
 
 ### Still missing musicological regression tests?
 
@@ -228,4 +231,4 @@ Each new fixture should gain a `corpus/reference/<name>.json` snapshot **and** a
 
 ---
 
-*Summary refreshed 2026-06-27 (273 tests; audit.merge_audits covered; coverage ~94%).*
+*Summary refreshed 2026-09-18 (292 tests; VD4/VD10 conformance B1–V3; coverage ~93%).*

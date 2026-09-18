@@ -43,7 +43,7 @@ Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 - **rate_events_per_second** (composite key `rate_eps`) = unique merged layer onsets / (window_ms / 1000) — **canonical VD4\_s**
 - **rate_eps_raw** = raw layer onsets / (window_ms / 1000)
-- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of **all layer** onsets (default τ = 2 ms, adaptive optional)
+- **synchrony_fraction** = \(1 - N_{\mathrm{unique}}/N_{\mathrm{raw}}\) after coincidence merge of **all layer** onsets (same effective τ as VD4)
 - **granularity_score** = clip(rate_eps / gran_max_eps, 0, 1)
 - Regular layers: \(g^\* = \gcd(e_i)\), \(\mathrm{LCM}^\* = \mathrm{lcm}(e_i)\) — see manual §8.7
 

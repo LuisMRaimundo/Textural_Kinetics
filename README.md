@@ -29,6 +29,7 @@ Installable distribution name: **`granular-v2`** (Python package `granular_v2`; 
 | [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | Scope and tempo model |
 | [docs/CORPUS_REFERENCIA.md](docs/CORPUS_REFERENCIA.md) | Regression corpus |
 | [docs/README.md](docs/README.md) | Documentation index |
+| [docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md](docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md) | v1.0.17 VD4/VD10 conformance report |
 
 ## Heatmaps
 
