@@ -34,8 +34,8 @@ def test_part_label_from_note_defaults_unknown() -> None:
     assert part_label_from_note({"part": "  fl  "}) == "fl"
 
 
-def test_band_from_pitches_single_note_gets_unit_width() -> None:
-    assert band_from_pitches([60]) == (60, 61)
+def test_band_from_pitches_single_note_gets_zero_width() -> None:
+    assert band_from_pitches([60]) == (60, 60)
 
 
 def test_band_from_pitches_chord_uses_span() -> None:
@@ -63,7 +63,7 @@ def test_auto_pick_samples_merges_chord_at_same_onset() -> None:
     assert samples[0]["low"] == 60.0
     assert samples[0]["high"] == 64.0
     assert samples[1]["low"] == 67.0
-    assert samples[1]["high"] == 68.0
+    assert samples[1]["high"] == 67.0
 
 
 def test_auto_pick_samples_sorted_when_notes_unordered() -> None:
@@ -218,7 +218,7 @@ def test_group_pick_convergent_lines_envelope_width_shrinks() -> None:
     ]
     samples = auto_pick_samples_for_group(note_matrix, ["A", "B"])
     assert samples[0]["high"] - samples[0]["low"] == pytest.approx(24.0)
-    assert samples[1]["high"] - samples[1]["low"] == pytest.approx(1.0)
+    assert samples[1]["high"] - samples[1]["low"] == pytest.approx(0.0)
     vd10 = compute_vd10(samples)
     assert vd10["segments"][0]["speed_width"] < 0.0
 

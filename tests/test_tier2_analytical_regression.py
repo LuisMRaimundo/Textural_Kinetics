@@ -202,9 +202,11 @@ def test_layered_async_partitional_state_non_trivial() -> None:
 def test_layered_async_distinguishable_from_sparse_homophony() -> None:
     layered = _global_rates(_run_corpus("layered_async"))
     sparse = _global_rates(_run_corpus("sparse_homophony"))
+    _, sparse_nm, _ = load_score_and_note_matrix(_corpus_path("sparse_homophony"))
     assert layered["num_events_raw"] > sparse["num_events_raw"]
     assert layered["events_per_second"] > sparse["events_per_second"]
-    assert sparse["num_events"] < sparse["num_events_raw"]
+    # Homophonic chords: more sounding pitches than unique attacks (shared onset source).
+    assert len(sparse_nm) > sparse["num_events"]
 
 
 def test_tied_texture_merged_reduces_fused_onset_activity() -> None:

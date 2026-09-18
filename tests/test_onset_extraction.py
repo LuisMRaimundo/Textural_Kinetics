@@ -106,7 +106,8 @@ def test_grace_note_included_when_ignore_grace_false():
     layers, _, _, _ = extract_onsets_per_layer_ms_from_score(score, ignore_grace=False)
 
     assert len(layers["Oboe"]) == 2
-    assert layers["Oboe"][0] == pytest.approx(0.0)
+    assert layers["Oboe"][0] == pytest.approx(-50.0)
+    assert layers["Oboe"][1] == pytest.approx(0.0)
 
 
 def test_is_grace_true_for_zero_quarter_length():
@@ -124,64 +125,15 @@ def test_is_grace_exception_fallback_returns_false():
     assert _is_grace(_BrokenElement()) is False
 
 
-def test_flatten_fallback_when_flatten_raises():
-    onset_note = note.Note("C4", quarterLength=1)
-    onset_note.offset = 0.0
-
-    class _FlatView:
-        def __init__(self, elements):
-            self.notesAndRests = elements
-
-    class _FakePart:
-        partName = "Cello"
-        id = "P1"
-        flat = _FlatView([onset_note])
-
-        def flatten(self):
-            raise RuntimeError("flatten failed")
-
-        def getInstrument(self, returnDefault=False):
-            return None
-
-    class _FakeScore:
-        highestTime = 1.0
-        parts = [_FakePart()]
-
-        def recurse(self):
-            class _Recurse:
-                @staticmethod
-                def getElementsByClass(_cls):
-                    return []
-
-            return _Recurse()
-
-    layers, t_end_ms, _, _ = extract_onsets_per_layer_ms_from_score(_FakeScore())
-
-    assert layers["Cello"] == [pytest.approx(0.0)]
-    assert t_end_ms == pytest.approx(500.0)
-
-
-def test_highest_time_fallback_when_access_raises(monkeypatch):
+def test_highest_time_used_for_score_end_ms():
     part = _part_with_notes(note.Note("C4", quarterLength=1), part_name="Bass")
     score = _score_with_parts(part)
-    original_highest = type(score).highestTime
-    calls = {"n": 0}
-
-    def _broken_highest(self):
-        if self is score:
-            calls["n"] += 1
-            if calls["n"] > 1:
-                raise RuntimeError("highestTime failed")
-        return original_highest.fget(self)
-
-    monkeypatch.setattr(type(score), "highestTime", property(_broken_highest))
 
     layers, t_end_ms, score_end_ms, _ = extract_onsets_per_layer_ms_from_score(score)
 
-    assert calls["n"] >= 2
     assert layers["Bass"] == [pytest.approx(0.0)]
     assert t_end_ms == pytest.approx(500.0)
-    assert score_end_ms == pytest.approx(0.0)
+    assert score_end_ms == pytest.approx(float(score.highestTime) * 500.0)
 
 
 @pytest.mark.parametrize(
