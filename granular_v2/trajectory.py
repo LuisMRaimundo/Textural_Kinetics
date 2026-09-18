@@ -668,30 +668,64 @@ def part_label_from_note(note: Mapping[str, Any]) -> str:
 
 
 def band_from_pitches(pitches: Sequence[float | int]) -> Tuple[int, int]:
-    """Registral band (low, high) for one onset; single pitch gets 1-semitone width."""
+    """Registral band (low, high) from sounding pitches; a single pitch is (p, p)."""
     if not pitches:
         raise TrajectoryError("Cannot build registral band from empty pitch list.")
     snapped = [snap_semitone(p) for p in pitches]
     lo = min(snapped)
     hi = max(snapped)
-    if lo == hi:
-        hi = min(127, lo + 1)
     return lo, hi
+
+
+def _note_onset_sec(note: Mapping[str, Any]) -> float:
+    return float(note.get("onset_sec", 0.0) or 0.0)
+
+
+def _note_offset_sec(note: Mapping[str, Any]) -> float:
+    if note.get("offset_sec") is not None:
+        return float(note["offset_sec"])
+    onset = _note_onset_sec(note)
+    dur = float(note.get("duration_sec", note.get("duration", 0.0)) or 0.0)
+    return onset + dur
+
+
+def _is_grace_note(note: Mapping[str, Any]) -> bool:
+    return bool(note.get("is_grace"))
+
+
+def _sounding_pitches_at(
+    notes: Sequence[Mapping[str, Any]],
+    time_s: float,
+) -> List[int]:
+    t = float(time_s)
+    pitches: List[int] = []
+    for note in notes:
+        onset = _note_onset_sec(note)
+        offset = _note_offset_sec(note)
+        if onset <= t < offset:
+            pitches.append(snap_semitone(float(note.get("pitch", 60))))
+    return pitches
 
 
 def auto_pick_samples_for_part(notes: Sequence[Mapping[str, Any]]) -> List[Dict[str, float]]:
     """
-    Build VD10 samples for one part: one pick per distinct onset.
+    Build VD10 samples for one part: one pick per distinct non-grace onset.
 
-    Simultaneous chord tones in the same part merge to min–max pitch band.
+    At each sample time the band is built from every pitch sounding then
+    (onset <= t < offset, after tie merging), not only pitches attacked at t.
+    Grace notes are never used as sample times.
     """
-    by_onset: dict[float, list[int]] = defaultdict(list)
-    for note in notes:
-        onset = round(float(note.get("onset_sec", 0)), 9)
-        by_onset[onset].append(snap_semitone(float(note.get("pitch", 60))))
+    attack_times = sorted({
+        round(_note_onset_sec(note), 9)
+        for note in notes
+        if not _is_grace_note(note)
+    })
     samples: List[Dict[str, float]] = []
-    for onset in sorted(by_onset.keys()):
-        lo, hi = band_from_pitches(by_onset[onset])
+    for onset in attack_times:
+        sounding = _sounding_pitches_at(notes, onset)
+        if not sounding:
+            continue
+        lo, hi = band_from_pitches(sounding)
         samples.append({"time_s": float(onset), "low": float(lo), "high": float(hi)})
     return samples
 
@@ -731,9 +765,10 @@ def auto_pick_samples_for_group(
     Build VD10 samples for a textural group spanning several score parts.
 
     Considers only notes whose ``part`` label is in ``part_labels``. At each
-    distinct ``onset_sec`` across those parts combined, gathers **all** sounding
-    pitches and forms one band via ``band_from_pitches`` (global min/low, global
-    max/high at that instant).
+    distinct non-grace ``onset_sec`` across those parts combined, gathers **all**
+    pitches sounding at that time (``onset <= t < offset``) and forms one band
+    via ``band_from_pitches`` (global min/low, global max/high). Grace notes
+    are not used as sample times.
 
     This is the **envelope** of the combined group — the registral mass spanned
     by the selected lines — **not** an average of per-part trajectories. Envelope
@@ -744,16 +779,22 @@ def auto_pick_samples_for_group(
     if not allowed:
         return []
 
-    by_onset: dict[float, list[int]] = defaultdict(list)
-    for note in note_matrix:
-        if part_label_from_note(note) not in allowed:
-            continue
-        onset = round(float(note.get("onset_sec", 0)), 9)
-        by_onset[onset].append(snap_semitone(float(note.get("pitch", 60))))
-
+    grouped = [
+        note
+        for note in note_matrix
+        if part_label_from_note(note) in allowed
+    ]
+    attack_times = sorted({
+        round(_note_onset_sec(note), 9)
+        for note in grouped
+        if not _is_grace_note(note)
+    })
     samples: List[Dict[str, float]] = []
-    for onset in sorted(by_onset.keys()):
-        lo, hi = band_from_pitches(by_onset[onset])
+    for onset in attack_times:
+        sounding = _sounding_pitches_at(grouped, onset)
+        if not sounding:
+            continue
+        lo, hi = band_from_pitches(sounding)
         samples.append({"time_s": float(onset), "low": float(lo), "high": float(hi)})
     return samples
 
