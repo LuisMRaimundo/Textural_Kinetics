@@ -15,7 +15,7 @@ class MustextuConfig:
     tol_frac_of_min_period: float = 0.05
     align_window_to_beat: bool = True
     gran_max_eps: float = 50.0
-    ignore_grace: bool = True
+    ignore_grace: bool = False
 
 
 @dataclass

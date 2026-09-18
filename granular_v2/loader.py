@@ -121,4 +121,9 @@ def load_score_and_note_matrix(
         n["end"] = ql_to_sec(float(n["end"]))
         n["duration"] = float(n["end"]) - float(n["start"])
     nm = note_matrix_from_notes_data(notes_data, time_unit="seconds")
+    from .onset_extraction import assign_grace_nominal_onsets
+
+    grace_audit = assign_grace_nominal_onsets(nm)
+    tempo_audit["grace_onsets_included"] = grace_audit["grace_onsets_included"]
+    tempo_audit["grace_compressed"] = grace_audit["grace_compressed"]
     return score, nm, tempo_audit

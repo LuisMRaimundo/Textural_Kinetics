@@ -55,6 +55,12 @@ def note_matrix_from_notes_data(
             "part": part,
             "index": i,
         }
+        if "is_grace" in n:
+            row["is_grace"] = bool(n["is_grace"])
+        if n.get("grace_compressed"):
+            row["grace_compressed"] = True
+        if n.get("grace_onset_assigned"):
+            row["grace_onset_assigned"] = True
         if time_unit == "quarterLength":
             row["onset_beats"] = n.get("onset_beats", start)
             row["duration_beats"] = n.get("duration_beats", duration)
@@ -155,6 +161,10 @@ def load_musicxml_to_note_matrix(
         convert_notes_times_inplace(notes_data, ql_to_sec)
 
     nm = note_matrix_from_notes_data(notes_data, time_unit=time_unit)
+    if time_unit == "seconds":
+        from .onset_extraction import assign_grace_nominal_onsets
+
+        assign_grace_nominal_onsets(nm)
     if return_metadata:
         return nm, {
             "has_repeats": has_repeats,
