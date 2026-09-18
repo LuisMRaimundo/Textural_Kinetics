@@ -6,8 +6,8 @@ Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## Global event rates (VD4 span diagnostic)
 
-- \(N_{\mathrm{raw}}\) = note-matrix rows (one onset per event)
-- \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **τ = 2 ms**
+- \(N_{\mathrm{raw}}\) = unique per-layer onsets from the tie-merged note matrix (pre-fusion)
+- \(N_{\mathrm{unique}}\) = fused onset count after anchor merge within **effective τ**
 - \(T_{\mathrm{span}} = t_{\mathrm{last}} - t_{\mathrm{first}}\) on **fused** onsets (seconds; support = 1 s if degenerate) — **not** full notated duration
 - **events_per_second** = \(N_{\mathrm{unique}} / T_{\mathrm{span}}\) (span-referenced diagnostic)
 - **events_per_second_raw** = \(N_{\mathrm{raw}} / T_{\mathrm{span}}\)
@@ -32,13 +32,12 @@ Interpretive limits: **[METRIC_SEMANTICS.md](METRIC_SEMANTICS.md)**.
 
 ## IOI and granularity (VD4 — fused onsets)
 
-- Fuse sorted raw onsets within **τ = 2 ms** (anchor-based; `merge_coincident_onsets`)
+- Fuse sorted raw onsets within **effective τ** = \(\min(2\,\mathrm{ms},\, 0.05 \times \min_{\mathrm{layer}} \mathrm{median\,IOI})\) (anchor-based; `merge_coincident_onsets`)
 - \(\mathrm{IOI}_k = t^{\mathrm{fused}}_{k+1} - t^{\mathrm{fused}}_k\) — **no zero IOIs** from vertical simultaneity
 - **ioi_cv** = \(\sigma / \mu\) on those fused IOIs
-- **granularity_index** = \(1 / (1 + \mathrm{ioi\_cv})\)
-- **burstiness** = \((\sigma_c - \mu_c) / (\sigma_c + \mu_c)\) on **fused-onset** counts in fixed **0.5 s** windows
+- **burstiness** = \((F-1)/(F+1)\) with Fano factor \(F = \mathrm{var}(c)/\mathrm{mean}(c)\) of fused-onset counts in **full** 0.5 s windows tiling the support (trailing partial window dropped)
 
-**Raw diagnostics:** `ioi_cv_raw`, `granularity_index_raw` from `diff(raw sorted onsets)` (includes zero IOIs). Plot helper `inter_onset_intervals()` keeps raw semantics.
+**Raw diagnostics:** `ioi_cv_raw` from `diff` of the pre-fusion shared onset set. Plot helper `inter_onset_intervals()` keeps raw note-matrix semantics.
 
 ## Mustextu
 
@@ -96,7 +95,7 @@ Aggregates:
 
 ## Auto-pick (optional GUI / API)
 
-One block per note-matrix `part`; sample at each distinct onset; chord in same part → \(\mathrm{low}=\min\mathrm{pitch}\), \(\mathrm{high}=\max\mathrm{pitch}\); single pitch → band width 1 st. **Group parts:** several `part` labels → one block; at each onset \(\mathrm{low}=\min\) and \(\mathrm{high}=\max\) across **all** selected parts (envelope, not average). **API:** `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_group` → feed to `compute_vd10_session`. Does not alter VD10 formulas.
+One block per note-matrix `part`; sample at each distinct **non-grace** onset; band from **all sounding** pitches (`onset ≤ t < offset`) → \(\mathrm{low}=\min\), \(\mathrm{high}=\max\); single pitch → width 0. **Group parts:** envelope of selected parts at each attack time. Grace notes are not VD10 sample times. **API:** `auto_pick_blocks_from_note_matrix`, `auto_pick_samples_for_group` → feed to `compute_vd10_session`. Does not alter VD10 net-speed / straightness / inflection formulas.
 
 ## Image axis calibration (VD10 image tab)
 

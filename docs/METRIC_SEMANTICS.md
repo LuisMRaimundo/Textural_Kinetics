@@ -28,7 +28,7 @@ They describe how **this implementation** quantifies attacks, overlaps, and mult
 | **Event** | One row in the note matrix after loader extraction (typically one symbolic pitch attack). Several events may share the same onset time (chords, homorhythm across parts). |
 | **Onset** | The attack time of an event: `onset_sec` (or `onset_beats` if seconds unavailable). |
 | **Raw onset** | One onset value per note-matrix row (not deduplicated). |
-| **Fused / unique onset (VD4)** | After `merge_coincident_onsets`: anchor-based merge within **τ = 2 ms** (`COINCIDENCE_TOL_SEC`); group time = mean of members. Basis for VD4 IOI CV, granularity index, burstiness, and span-referenced EPS global. |
+| **Fused / unique onset (VD4)** | After `merge_coincident_onsets`: anchor-based merge within **effective τ** (`coincidence_tol_sec_effective`); group time = mean of members. Basis for VD4 IOI CV, burstiness, and span-referenced EPS global. |
 | **Coincident onset** | Two or more raw onsets whose times fall within τ of the **group anchor** (first onset of the group; no transitive chaining). |
 | **Active event** | An event whose sounding interval `[onset, onset + duration)` overlaps a time bin. |
 | **Onset count per bin** | Number of events whose onset falls in bin \([t, t+\Delta)\). Stored as `onset_density[j]` (float count). |
@@ -87,9 +87,8 @@ ioi_cv   = ioi_std / ioi_mean             # NaN if mean ≤ 0
 **Raw diagnostics** (pre-fusion, same note matrix):
 
 ```text
-raw_iois = diff(sorted raw onsets)        # includes zero IOIs when simultaneous
+raw_iois = diff(sorted pre-fusion shared onsets)
 ioi_cv_raw = std(raw_iois) / mean(raw_iois)
-granularity_index_raw = 1 / (1 + ioi_cv_raw)
 ```
 
 **Interpretive warning:**
@@ -100,31 +99,14 @@ granularity_index_raw = 1 / (1 + ioi_cv_raw)
 
 ---
 
-## 5. `granularity_index`
+## 5. `burstiness`
 
-**Implementation** (`granularity_metrics`):
+**Implementation** (`granularity_metrics`, Fano form):
 
-```text
-granularity_index = 1 / (1 + ioi_cv)           # on fused IOIs; 0.5 if ioi_cv non-finite
-granularity_index_raw = 1 / (1 + ioi_cv_raw) # diagnostic
-```
-
-**Interpretation:**
-
-- Inversely related to **IOI CV on fused unique onsets** (§4).
-- High chordal density with a regular fused grid can yield **`granularity_index = 1.0`** even when `num_events_raw` ≫ `num_events`.
-- Read together with `sync_fraction`, EPS diagnostics, density curves, and Mustextu `rate_eps`.
-
----
-
-## 6. `burstiness`
-
-**Implementation** (`granularity_metrics`, v1.0.7+):
-
-1. Fuse onsets (§4); let \(T = \max(\mathrm{merged}) - \min(\mathrm{merged})\).
-2. Fixed window **0.5 s** (`BURST_WINDOW_SEC`); bin edges anchored at \(\min(\mathrm{merged})\).
-3. Histogram **fused-onset** counts \(c_k\) across bins; \(\mu = \mathrm{mean}(c_k)\), \(\sigma = \mathrm{std}(c_k)\).
-4. `burstiness = (σ − μ) / (σ + μ)` if \((\sigma + \mu) > 0\) and ≥ 2 bins, else `NaN` / omitted in export when undefined.
+1. Fuse onsets (§4).
+2. Tile the support \([t_{\mathrm{start}}, t_{\mathrm{end}})\) with full **0.5 s** windows; drop a trailing partial window.
+3. Counts \(c_k\) of fused onsets in those windows; \(F = \mathrm{var}(c)/\mathrm{mean}(c)\).
+4. `burstiness = (F − 1) / (F + 1)` if ≥ 2 full windows and \(\mathrm{mean}(c) > 0\), else undefined.
 
 **Interpretation:**
 
@@ -197,8 +179,7 @@ A passage can show **high initial onset density** (many entries in a short bin) 
 | **Onset count per bin** | Raw attacks entering each bin | Fused horizontal pulse; notes already sounding | Equating bin peaks with fused IOI regularity |
 | **Active count per bin** | Concurrent sounding events per bin | New attacks only; timbre | Treating overlap count as attack rate |
 | **IOI CV** | Variability of **fused** IOIs | Raw stream zeros from chords; Mustextu IEIs | Using `ioi_cv_raw` as the thesis VD4 scalar |
-| **granularity_index** | \(1/(1+\mathrm{ioi\_cv})\) on fused IOIs | Direct note count or vertical density | Low index on homorhythm when reading raw IOIs only |
-| **burstiness** | Unevenness of **fused** counts in 0.5 s windows | Raw bin density from `TemporalDensityAnalyzer` | Confusing with EPS or active density |
+| **burstiness** | Fano transform of **fused** counts in full 0.5 s windows | Raw bin density from `TemporalDensityAnalyzer` | Confusing with EPS or active density |
 | **sync_fraction** (VD4) | Share of note-matrix onsets merged within 2 ms | Mustextu layer pool; exact chord pitch count | Equating with `synchrony_fraction` |
 | **synchrony_fraction** (Mustextu) | Share of **layer** onsets merged within τ | Note-matrix `sync_fraction`; pairwise part correlation | Equating with vertical density |
 | **max_multiplicity** (Mustextu) | Largest τ-merge group size | Inter-part phase over long spans | Substituting for sync metrics |
@@ -215,8 +196,8 @@ Robust interpretation should normally **combine**:
 - activity-rate window curve (`activity_rate.events_per_sec`);
 - raw IOI list for plots (`ioi_sec` from `run_activity_granularity`);
 - EPS global and **`events_per_second_raw`** (with §3 in mind);
-- **fused** IOI CV, granularity index, burstiness;
-- **`ioi_cv_raw` / `granularity_index_raw`** when vertical simultaneity matters;
+- **fused** IOI CV and burstiness;
+- **`ioi_cv_raw`** when vertical simultaneity matters;
 - **`sync_fraction`** and Mustextu `synchrony_fraction`, `max_multiplicity`, `rate_eps` / `rate_eps_raw`;
 - structural counts (`num_events`, `num_events_raw`, unique onsets).
 
@@ -230,7 +211,7 @@ Phase-1 fixtures and inspection: [MUSICOLOGICAL_REGRESSION_FIXTURES.md](MUSICOLO
 
 Phase-2 promotion rules: [MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md](MUSICOLOGICAL_GOLDEN_VALUES_DECISION.md).
 
-After v1.0.7 (VD4 fix), inspection values for **`ioi_cv`**, **`granularity_index`**, and **`burstiness`** on chordal/homorhythmic fixtures reflect **fused-onset** semantics. **`regular_homorhythm`** now shows `ioi_cv = 0`, `granularity_index = 1.0` (fused grid) with elevated `ioi_cv_raw`.
+After the VD4/VD10 conformance revision, inspection values for **`ioi_cv`** and **`burstiness`** on chordal/homorhythmic fixtures reflect **fused-onset** semantics and the Fano burst definition. **`regular_homorhythm`** shows `ioi_cv = 0` (fused grid) with `ioi_cv_raw` elevated when the pre-fusion set still has near-simultaneous layer onsets.
 
 Values marked **EXPLORE** for EPS global or Mustextu synchrony on specific fixtures should still be reviewed before strict golden lock.
 

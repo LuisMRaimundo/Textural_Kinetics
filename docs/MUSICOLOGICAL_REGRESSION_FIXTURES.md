@@ -77,8 +77,8 @@ python corpus/scripts/inspect_musicological_regression.py
 | Aspect | Detail |
 |--------|--------|
 | **Musical situation** | Grace notes before four principal quarter notes. |
-| **Analytical purpose** | `ignore_grace` policy in onset extraction / Mustextu path. |
-| **Expected behaviour** | More layer onsets when `ignore_grace=False`; grace excluded when `True`. |
+| **Analytical purpose** | Shared onset source: grace notes are attacks by default (nominal spacing); `ignore_grace=True` remains an opt-out. |
+| **Expected behaviour** | Default path includes grace-note onsets; `ignore_grace=True` drops them. |
 
 ### `transposing_instrument_score`
 

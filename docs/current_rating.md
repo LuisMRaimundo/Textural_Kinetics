@@ -1,4 +1,4 @@
-# Textural_Kinetics v1.0.16 — evidence-based rating
+# Textural_Kinetics v1.0.17 — evidence-based rating
 
 ## Rubric (100)
 
@@ -14,6 +14,12 @@
 | Heatmaps + GUI + VD10 | 5 | **5** |
 
 **Total: 97 / 100**
+
+## v1.0.17 (VD4 / VD10 thesis conformance)
+
+- VD4 burst is the Fano transform; rate / regularity share the tie-merged onset source; grace notes are attacks; one adaptive τ; GI removed.
+- VD10 auto-pick uses sounding pitches and true zero width for a monody.
+- These scalars are not comparable with ≤ 1.0.16. Report: `docs/audit/VD4_VD10_CONFORMANCE_2026-09-18.md`.
 
 ## v1.0.16 (audit.merge_audits tests)
 

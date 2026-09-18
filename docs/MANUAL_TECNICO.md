@@ -396,29 +396,18 @@ Raw onsets sorted; groups formed when \(t - t_{\mathrm{anchor}} \le \tau\) (anch
 \mathrm{ioi\_cv} = \frac{\sigma_{\mathrm{IOI}}}{\mu_{\mathrm{IOI}}}
 \]
 
-Raw diagnostics: `ioi_cv_raw`, `granularity_index_raw` from pre-fusion IOIs.
+Raw diagnostic: `ioi_cv_raw` from the pre-fusion shared onset set.
 
-### 6.4 Granularity index
+### 6.4 Burstiness (VD4\_burst)
 
-\[
-G_{\mathrm{index}} = \frac{1}{1 + \mathrm{ioi\_cv}}
-\]
-
-High \(G_{\mathrm{index}}\) → lower IOI CV on the **fused horizontal pulse** (Annex VD4).
-
-### 6.5 Burstiness (VD4\_burst)
-
-Fused-onset counts in fixed **0.5 s** windows anchored at \(\min(\mathrm{fused})\): \(c_0,\ldots,c_{K-1}\).
+Full 0.5 s windows tile the support \([t_{\mathrm{start}}, t_{\mathrm{end}})\) (or first-to-last unique onset). A trailing partial window is dropped.
 
 \[
-\mu_c = \mathrm{mean}(c_k),\quad \sigma_c = \mathrm{std}(c_k)
+F = \frac{\mathrm{var}(c)}{\mathrm{mean}(c)},\qquad
+B = \frac{F-1}{F+1}
 \]
 
-\[
-B = \frac{\sigma_c - \mu_c}{\sigma_c + \mu_c}
-\]
-
-(Burstiness-style asymmetry; positive → bursty.)
+Requires ≥ 2 full windows and \(\mathrm{mean}(c) > 0\); otherwise undefined. \(B=0\) is Poisson-like; \(B=-1\) is a perfectly regular count series.
 
 ### 6.6 Activity rate (sliding window)
 
@@ -729,11 +718,11 @@ Display-only **proposal** of picks from the note matrix; **VD10 formulas unchang
 | Function | Role |
 |----------|------|
 | `auto_pick_blocks_from_note_matrix(note_matrix)` | One block per XML `part`; returns `{blocks, stats}` |
-| `auto_pick_samples_for_part(notes)` | One sample per distinct onset in a part |
-| `auto_pick_samples_for_group(note_matrix, part_labels)` | Envelope samples for several parts (min/max at each onset) |
+| `auto_pick_samples_for_part(notes)` | One sample per distinct non-grace onset; band from sounding pitches |
+| `auto_pick_samples_for_group(note_matrix, part_labels)` | Sounding envelope of selected parts at each attack |
 | `distinct_part_labels_from_note_matrix(note_matrix)` | Part labels for GUI multi-select |
 | `group_block_default_name(part_labels)` | Default joined block name (e.g. `fl+ob+cl`) |
-| `band_from_pitches(pitches)` | Registral band; single pitch → 1 semitone width |
+| `band_from_pitches(pitches)` | Registral band; single pitch → width 0 (`(p, p)`) |
 | `part_label_from_note(note)` | Part name from note-matrix row |
 
 **Stats:** `num_parts`, `total_samples`, `computable_parts`, `parts_with_few_samples`, `dense_sample_warning` (>150 samples).
@@ -838,7 +827,7 @@ Top-level keys from `run_full_analysis` / `run_analysis`:
 
 | Key | Description |
 |-----|-------------|
-| `global` | Fused/raw counts, EPS, sync fraction, IOI CV, granularity index, burstiness, inline `definition` |
+| `global` | Fused/raw counts, EPS, sync fraction, IOI CV, burstiness, effective τ, grace audit, inline `definition` |
 | `by_bin_sec` | Map `"<Δ>"` → per-bin onset/active counts and rates (Δ from `density_intervals`) |
 | `by_ms_window` | Map `"<W>"` → centred ms-window rates (default W: 50, 100, 500) |
 | `per_bar` | List of per-measure rate records |
